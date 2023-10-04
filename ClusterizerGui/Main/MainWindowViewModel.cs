@@ -1,15 +1,17 @@
-﻿using PRF.WPFCore;
+﻿using ClusterizerGui.Services.Navigation;
+using PRF.WPFCore;
 
 namespace ClusterizerGui.Main;
 
-public interface IMainWindowViewModel
+internal interface IMainWindowViewModel
 {
 }
 
-public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
+internal sealed class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
 {
-    public MainWindowViewModel()
+    public IMenuNavigator MenuNavigator { get; }
+    public MainWindowViewModel(IMenuNavigator menuNavigator)
     {
-        
+        MenuNavigator = menuNavigator;
     }
 }

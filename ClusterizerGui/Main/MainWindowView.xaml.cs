@@ -1,6 +1,6 @@
 ﻿namespace ClusterizerGui.Main
 {
-    public partial class MainWindowView 
+    internal partial class MainWindowView 
     {
         public MainWindowView(IMainWindowViewModel mainWindowViewModel)
         {
