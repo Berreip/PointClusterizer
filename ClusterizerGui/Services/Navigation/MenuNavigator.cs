@@ -8,7 +8,7 @@ namespace ClusterizerGui.Services.Navigation;
 internal interface IMenuNavigator
 {
     INavigationCommand[] AvailableMenuCommands { get; }
-    INavigeablePanel MainPanel { get; }
+    INavigeablePanel? MainPanel { get; }
     bool ShouldDisplayMenu { get; set; }
     void NavigateToFirstView();
 }
@@ -29,7 +29,7 @@ internal interface INavigeablePanel
 // ReSharper disable once ClassNeverInstantiated.Global
 internal sealed class MenuNavigator : ViewModelBase, IMenuNavigator
 {
-    private INavigeablePanel _mainPanel;
+    private INavigeablePanel? _mainPanel;
     private bool _shouldDisplayMenu;
 
     public MenuNavigator(IInjectionContainer container)
@@ -48,7 +48,7 @@ internal sealed class MenuNavigator : ViewModelBase, IMenuNavigator
         set => SetProperty(ref _shouldDisplayMenu, value);
     }
     
-    public INavigeablePanel MainPanel
+    public INavigeablePanel? MainPanel
     {
         get => _mainPanel;
         private set

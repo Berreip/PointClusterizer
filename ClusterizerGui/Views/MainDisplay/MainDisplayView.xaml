@@ -15,24 +15,33 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- EARTH IMAGE -->
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <!-- EARTH -->
-            <Image Source="/Ressources/earth.jpg" Stretch="Fill" />
 
+            <!-- EARTH IMAGE -->
+            <Canvas Margin="2" x:Name="CanvasEarth" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Image Source="/Ressources/earth.jpg" Stretch="Fill"
+                       Width="{Binding Path=ActualWidth, ElementName=CanvasEarth}"
+                       Height="{Binding Path=ActualHeight, ElementName=CanvasEarth}"/>
+            </Canvas>
+
+            <!-- CONFIGURATION -->
             <materialDesign:ColorZone Grid.Column="1"
                                       Mode="PrimaryDark"
-                                      Margin="5"
+                                      Margin="5, 5, 5, 0"
                                       Padding="2" CornerRadius="5"
-                                      materialDesign:ShadowAssist.ShadowDepth="Depth3"
+                                      materialDesign:ElevationAssist.Elevation="Dp3"
                                       VerticalAlignment="Stretch"
                                       HorizontalAlignment="Stretch">
                 <Grid>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
@@ -42,17 +51,77 @@
                            Margin="10, 4"
                            Content="Point creation configuration"
                            VerticalAlignment="Center"
-                           HorizontalAlignment="Center" /> 
+                           HorizontalAlignment="Center" />
                     <Separator Grid.Row="1" Margin="10" />
-                    
-                    <Button Grid.Row="3" 
+
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="100" />
+                        </Grid.ColumnDefinitions>
+                        <!-- Nb column -->
+                        <Label Margin="10, 4" Content="Nb Columns:" VerticalAlignment="Center" />
+
+                        <ComboBox Grid.Column="1" Margin="10"
+                                  MinWidth="200"
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Left"
+                                  ItemsSource="{Binding AvailableNbColumns}"
+                                  SelectedItem="{Binding SelectedNbColumn}" />
+                    </Grid>
+
+                    <Grid Grid.Row="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="100" />
+                        </Grid.ColumnDefinitions>
+                        <!-- Nb Rows -->
+                        <Label Margin="10, 4" Content="Nb Rows:" VerticalAlignment="Center" />
+
+                        <ComboBox Grid.Column="1" Margin="10"
+                                  MinWidth="200"
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Left"
+                                  ItemsSource="{Binding AvailableNbRows}"
+                                  SelectedItem="{Binding SelectedNbRows}" />
+
+                    </Grid>
+
+                    <Button Grid.Row="7"
                             Margin="6"
                             Content="AddPoints"
-                            Command="{Binding AddPointsCommand}"/>
+                            Command="{Binding AddPointsCommand}" />
                 </Grid>
             </materialDesign:ColorZone>
         </Grid>
 
+        <materialDesign:ColorZone Grid.Row="1"
+                                  Mode="PrimaryDark"
+                                  Margin="5"
+                                  Padding="2" CornerRadius="5"
+                                  materialDesign:ElevationAssist.Elevation="Dp3"
+                                  VerticalAlignment="Stretch"
+                                  HorizontalAlignment="Stretch">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!-- TAB HEADERS -->
+                <ComboBox Margin="10"
+                          MinWidth="200"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Left"
+                          ItemsSource="{Binding AlgorithmsAvailable}"
+                          SelectedItem="{Binding SelectedAlgorithm}" />
+
+                <!-- SELECTED ALGO CONTENT-->
+                <ContentControl Grid.Row="1"
+                                Content="{Binding SelectedAlgorithmView}" />
+
+            </Grid>
+        </materialDesign:ColorZone>
 
     </Grid>
 </UserControl>

@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using ClusterizerGui.Main;
 using ClusterizerGui.Services.Navigation;
+using ClusterizerGui.Views.Algorithms.DbScan;
 using ClusterizerGui.Views.MainDisplay;
 using PRF.Utils.Injection.Containers;
 using PRF.Utils.Injection.Utils;
@@ -32,6 +33,10 @@ public class ClusterizerGuiBootstrapper
         // main display:
         _internalContainer.RegisterType<MainDisplayView>(LifeTime.Singleton);
         _internalContainer.Register<IMainDisplayViewModel, MainDisplayViewModel>(LifeTime.Singleton);
+        
+        _internalContainer.RegisterType<AlgorithmDbScanView>(LifeTime.Singleton);
+        _internalContainer.Register<IAlgorithmDbScanViewModel, AlgorithmDbScanViewModel>(LifeTime.Singleton);
+
     }
 
     private void Initialize()
