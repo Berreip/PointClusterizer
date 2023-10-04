@@ -9,29 +9,145 @@
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="1200" x:ClassModifier="internal"
              d:DataContext="{d:DesignInstance local:MainDisplayViewModel, IsDesignTimeCreatable=False}">
+
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+        <!-- MAIN CONTENT EXCEPT LOADING -->
+        <Grid IsEnabled="{Binding IsIdle}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-            <!-- EARTH IMAGE -->
-            <Canvas Margin="2" x:Name="CanvasEarth" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <Image Source="/Ressources/earth.jpg" Stretch="Fill"
-                       Width="{Binding Path=ActualWidth, ElementName=CanvasEarth}"
-                       Height="{Binding Path=ActualHeight, ElementName=CanvasEarth}"/>
-            </Canvas>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-            <!-- CONFIGURATION -->
-            <materialDesign:ColorZone Grid.Column="1"
+                <!-- EARTH IMAGE -->
+                <Canvas Margin="2" x:Name="CanvasEarth" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <Image Source="/Ressources/earth.jpg" Stretch="Fill"
+                           Width="{Binding Path=ActualWidth, ElementName=CanvasEarth}"
+                           Height="{Binding Path=ActualHeight, ElementName=CanvasEarth}" />
+                </Canvas>
+
+                <!-- CONFIGURATION -->
+                <materialDesign:ColorZone Grid.Column="1"
+                                          Mode="PrimaryDark"
+                                          Margin="5, 5, 5, 0"
+                                          Padding="2" CornerRadius="5"
+                                          materialDesign:ElevationAssist.Elevation="Dp3"
+                                          VerticalAlignment="Stretch"
+                                          HorizontalAlignment="Stretch">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Label FontSize="16"
+                               Margin="10, 4"
+                               Content="Point creation configuration"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center" />
+                        <Separator Grid.Row="1" Margin="10" />
+
+                        <!-- Nb column -->
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="100" />
+                            </Grid.ColumnDefinitions>
+                            <Label Margin="10, 4" Content="Nb Columns:" VerticalAlignment="Center" />
+
+                            <ComboBox Grid.Column="1" Margin="10" MinWidth="200"
+                                      VerticalAlignment="Center"
+                                      ItemsSource="{Binding AvailableNbColumns}"
+                                      SelectedItem="{Binding SelectedNbColumn}">
+                                <ComboBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel />
+                                    </ItemsPanelTemplate>
+                                </ComboBox.ItemsPanel>
+                            </ComboBox>
+                        </Grid>
+
+                        <!-- Nb Rows -->
+                        <Grid Grid.Row="3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="100" />
+                            </Grid.ColumnDefinitions>
+                            <Label Margin="10, 4" Content="Nb Rows:" VerticalAlignment="Center" />
+
+                            <ComboBox Grid.Column="1" Margin="10" MinWidth="200"
+                                      VerticalAlignment="Center"
+                                      ItemsSource="{Binding AvailableNbRows}"
+                                      SelectedItem="{Binding SelectedNbRows}">
+                                <ComboBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel />
+                                    </ItemsPanelTemplate>
+                                </ComboBox.ItemsPanel>
+                            </ComboBox>
+                        </Grid>
+
+                        <Grid Grid.Row="4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="100" />
+                            </Grid.ColumnDefinitions>
+                            <Label Margin="10, 4" Content="Nb Points to add:" VerticalAlignment="Center" />
+
+                            <ComboBox Grid.Column="1" Margin="10"
+                                      MinWidth="200"
+                                      VerticalAlignment="Center"
+                                      HorizontalAlignment="Left"
+                                      ItemsSource="{Binding AvailableNbPoints}"
+                                      SelectedItem="{Binding SelectedNbPoints}">
+                                <ComboBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel />
+                                    </ItemsPanelTemplate>
+                                </ComboBox.ItemsPanel>
+                            </ComboBox>
+                        </Grid>
+
+                        <Button Grid.Row="5"
+                                Margin="6"
+                                Content="Add Points"
+                                Command="{Binding AddPointsCommand}" />
+
+                        <StackPanel Grid.Row="6" Orientation="Horizontal">
+                            <Label Margin="4" Content="Current point nb:" VerticalAlignment="Center" />
+                            <Label Margin="4" Content="{Binding Points.Count}" VerticalAlignment="Center" />
+
+                        </StackPanel>
+                        <DataGrid Grid.Row="7"
+                                  ItemsSource="{Binding Points}"
+                                  AutoGenerateColumns="True">
+
+                        </DataGrid>
+
+
+                        <Button Grid.Row="8"
+                                Margin="6"
+                                Content="Clear Points"
+                                Command="{Binding ClearPointsCommand}" />
+                    </Grid>
+                </materialDesign:ColorZone>
+            </Grid>
+
+            <materialDesign:ColorZone Grid.Row="1"
                                       Mode="PrimaryDark"
-                                      Margin="5, 5, 5, 0"
+                                      Margin="5"
                                       Padding="2" CornerRadius="5"
                                       materialDesign:ElevationAssist.Elevation="Dp3"
                                       VerticalAlignment="Stretch"
@@ -39,89 +155,40 @@
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <Label FontSize="16"
-                           Margin="10, 4"
-                           Content="Point creation configuration"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Center" />
-                    <Separator Grid.Row="1" Margin="10" />
 
-                    <Grid Grid.Row="2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="100" />
-                        </Grid.ColumnDefinitions>
-                        <!-- Nb column -->
-                        <Label Margin="10, 4" Content="Nb Columns:" VerticalAlignment="Center" />
+                    <!-- TAB HEADERS -->
+                    <ComboBox Margin="10"
+                              MinWidth="200"
+                              VerticalAlignment="Center"
+                              HorizontalAlignment="Left"
+                              ItemsSource="{Binding AlgorithmsAvailable}"
+                              SelectedItem="{Binding SelectedAlgorithm}" />
 
-                        <ComboBox Grid.Column="1" Margin="10"
-                                  MinWidth="200"
-                                  VerticalAlignment="Center"
-                                  HorizontalAlignment="Left"
-                                  ItemsSource="{Binding AvailableNbColumns}"
-                                  SelectedItem="{Binding SelectedNbColumn}" />
-                    </Grid>
+                    <!-- SELECTED ALGO CONTENT-->
+                    <ContentControl Grid.Row="1"
+                                    Content="{Binding SelectedAlgorithmView}" />
 
-                    <Grid Grid.Row="3">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="100" />
-                        </Grid.ColumnDefinitions>
-                        <!-- Nb Rows -->
-                        <Label Margin="10, 4" Content="Nb Rows:" VerticalAlignment="Center" />
-
-                        <ComboBox Grid.Column="1" Margin="10"
-                                  MinWidth="200"
-                                  VerticalAlignment="Center"
-                                  HorizontalAlignment="Left"
-                                  ItemsSource="{Binding AvailableNbRows}"
-                                  SelectedItem="{Binding SelectedNbRows}" />
-
-                    </Grid>
-
-                    <Button Grid.Row="7"
-                            Margin="6"
-                            Content="AddPoints"
-                            Command="{Binding AddPointsCommand}" />
                 </Grid>
             </materialDesign:ColorZone>
+
         </Grid>
 
-        <materialDesign:ColorZone Grid.Row="1"
-                                  Mode="PrimaryDark"
-                                  Margin="5"
-                                  Padding="2" CornerRadius="5"
-                                  materialDesign:ElevationAssist.Elevation="Dp3"
-                                  VerticalAlignment="Stretch"
-                                  HorizontalAlignment="Stretch">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-
-                <!-- TAB HEADERS -->
-                <ComboBox Margin="10"
-                          MinWidth="200"
-                          VerticalAlignment="Center"
-                          HorizontalAlignment="Left"
-                          ItemsSource="{Binding AlgorithmsAvailable}"
-                          SelectedItem="{Binding SelectedAlgorithm}" />
-
-                <!-- SELECTED ALGO CONTENT-->
-                <ContentControl Grid.Row="1"
-                                Content="{Binding SelectedAlgorithmView}" />
-
+        <!-- LOADING INDICATOR -->
+        <Grid Visibility="{Binding IsIdle, Converter={StaticResource InvertBooleanToVisibilityConverter}}">
+            <Grid
+                Background="Gray"
+                Opacity="0.6">
             </Grid>
-        </materialDesign:ColorZone>
-
+            <ProgressBar
+                Foreground="Orange"
+                Opacity="1"
+                Height="100"
+                Width="100"
+                Style="{StaticResource MaterialDesignCircularProgressBar}"
+                Value="40"
+                IsIndeterminate="True" />
+        </Grid>
     </Grid>
 </UserControl>
