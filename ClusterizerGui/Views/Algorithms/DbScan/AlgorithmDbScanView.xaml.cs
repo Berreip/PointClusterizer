@@ -4,7 +4,7 @@ namespace ClusterizerGui.Views.Algorithms.DbScan;
 
 internal partial class AlgorithmDbScanView : IAlgorithmView
 {
-    public AlgorithmDbScanView(IAlgorithmDbScanViewModel vm)
+    public AlgorithmDbScanView(AlgorithmDbScanViewModel vm)
     {
         InitializeComponent();
         DataContext = vm;

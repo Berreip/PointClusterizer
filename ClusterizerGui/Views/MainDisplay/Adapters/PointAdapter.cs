@@ -1,14 +1,15 @@
-﻿using PRF.WPFCore;
+﻿using ClusterizerGui.Views.Algorithms;
+using PRF.WPFCore;
 
 namespace ClusterizerGui.Views.MainDisplay.Adapters;
 
-internal sealed class PointAdapter : ViewModelBaseUnchecked
+internal sealed class PointAdapter : ViewModelBaseUnchecked, IPoint
 {
-    public int X { get; }
-    public int Y { get; }
-    public int Z { get; }
+    public double X { get; }
+    public double Y { get; }
+    public double Z { get; }
 
-    public PointAdapter(int x, int y, int z)
+    public PointAdapter(double x, double y, double z)
     {
         X = x;
         Y = y;

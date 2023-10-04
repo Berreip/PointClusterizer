@@ -34,6 +34,7 @@
 
                 <!-- CONFIGURATION -->
                 <materialDesign:ColorZone Grid.Column="1"
+                                          Width="300"
                                           Mode="PrimaryDark"
                                           Margin="5, 5, 5, 0"
                                           Padding="2" CornerRadius="5"
@@ -42,6 +43,7 @@
                                           HorizontalAlignment="Stretch">
                     <Grid>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
@@ -119,25 +121,45 @@
                                 </ComboBox.ItemsPanel>
                             </ComboBox>
                         </Grid>
+                        
+                        <!-- SELECT ALGORITHM -->
+                        
+                        <Grid Grid.Row="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Margin="10, 4" Content="Select Algorithm:" VerticalAlignment="Center" />
 
-                        <Button Grid.Row="5"
+                            <ComboBox Grid.Column="1" Margin="10"
+                                      VerticalAlignment="Center"
+                                      HorizontalAlignment="Stretch"
+                                      ItemsSource="{Binding AlgorithmsAvailable}"
+                                      SelectedItem="{Binding SelectedAlgorithm}" />
+                        </Grid>
+
+
+
+                        <Button Grid.Row="6"
                                 Margin="6"
                                 Content="Add Points"
                                 Command="{Binding AddPointsCommand}" />
 
-                        <StackPanel Grid.Row="6" Orientation="Horizontal">
+                        <StackPanel Grid.Row="7" Orientation="Horizontal">
                             <Label Margin="4" Content="Current point nb:" VerticalAlignment="Center" />
                             <Label Margin="4" Content="{Binding Points.Count}" VerticalAlignment="Center" />
 
                         </StackPanel>
-                        <DataGrid Grid.Row="7"
+                        
+                        <DataGrid Grid.Row="8"
+                                  MinHeight="100"
                                   ItemsSource="{Binding Points}"
                                   AutoGenerateColumns="True">
 
                         </DataGrid>
 
 
-                        <Button Grid.Row="8"
+                        <Button Grid.Row="9"
                                 Margin="6"
                                 Content="Clear Points"
                                 Command="{Binding ClearPointsCommand}" />
@@ -145,33 +167,9 @@
                 </materialDesign:ColorZone>
             </Grid>
 
-            <materialDesign:ColorZone Grid.Row="1"
-                                      Mode="PrimaryDark"
-                                      Margin="5"
-                                      Padding="2" CornerRadius="5"
-                                      materialDesign:ElevationAssist.Elevation="Dp3"
-                                      VerticalAlignment="Stretch"
-                                      HorizontalAlignment="Stretch">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-
-                    <!-- TAB HEADERS -->
-                    <ComboBox Margin="10"
-                              MinWidth="200"
-                              VerticalAlignment="Center"
-                              HorizontalAlignment="Left"
-                              ItemsSource="{Binding AlgorithmsAvailable}"
-                              SelectedItem="{Binding SelectedAlgorithm}" />
-
-                    <!-- SELECTED ALGO CONTENT-->
-                    <ContentControl Grid.Row="1"
-                                    Content="{Binding SelectedAlgorithmView}" />
-
-                </Grid>
-            </materialDesign:ColorZone>
+            <!-- SELECTED ALGO CONTENT-->
+            <ContentControl Grid.Row="1"
+                            Content="{Binding SelectedAlgorithmView}" />
 
         </Grid>
 

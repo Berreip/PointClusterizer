@@ -14,6 +14,6 @@ internal static class RandomPointCreator
 
     public static PointAdapter CreateNew(int xMax, int yMax, int zMax)
     {
-        return new PointAdapter(_random.Next(xMax), _random.Next(yMax), _random.Next(zMax));
+        return new PointAdapter(_random.NextDouble() * xMax, _random.NextDouble() * yMax, _random.NextDouble() * zMax);
     }
 }

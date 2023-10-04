@@ -33,10 +33,6 @@ public class ClusterizerGuiBootstrapper
         // main display:
         _internalContainer.RegisterType<MainDisplayView>(LifeTime.Singleton);
         _internalContainer.Register<IMainDisplayViewModel, MainDisplayViewModel>(LifeTime.Singleton);
-        
-        _internalContainer.RegisterType<AlgorithmDbScanView>(LifeTime.Singleton);
-        _internalContainer.Register<IAlgorithmDbScanViewModel, AlgorithmDbScanViewModel>(LifeTime.Singleton);
-
     }
 
     private void Initialize()

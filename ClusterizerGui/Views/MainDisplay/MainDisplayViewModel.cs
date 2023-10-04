@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using ClusterizerGui.Utils;
+using ClusterizerGui.Views.Algorithms;
 using ClusterizerGui.Views.Algorithms.Adapters;
 using ClusterizerGui.Views.Algorithms.DbScan;
 using ClusterizerGui.Views.MainDisplay.Adapters;
-using PRF.Utils.Injection.Containers;
 using PRF.WPFCore;
 using PRF.WPFCore.Commands;
 using PRF.WPFCore.CustomCollections;
-using PRF.WPFCore.UiWorkerThread;
 
 namespace ClusterizerGui.Views.MainDisplay;
 
@@ -35,20 +36,52 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
     public IReadOnlyList<int> AvailableNbRows { get; } = Enumerable.Range(1, 100).ToArray();
     public IReadOnlyList<int> AvailableNbPoints { get; } = new[] { 1, 5, 10, 100, 1_000, 10_000, 50_000, 100_000, 500_000, 1_000_000 };
 
-    public MainDisplayViewModel(IInjectionContainer container)
+    public MainDisplayViewModel()
     {
         AddPointsCommand = new DelegateCommandLight(ExecuteAddPointsCommand);
         ClearPointsCommand = new DelegateCommandLight(ExecuteClearPointsCommand);
+        Points = new ObservableCollectionRanged<PointAdapter>();
+
+        // create an executor that will be provided to every algorithm
+        var executor = new AlgorithmExecutor(() => Points.ToArray<IPoint>(), o => IsIdle = o);
+
         AlgorithmsAvailable = ObservableCollectionSource.GetDefaultView(new[]
         {
-            new AlgorithmAvailableAdapter("DBSCAN", container.Resolve<AlgorithmDbScanView>)
+            new AlgorithmAvailableAdapter("DBSCAN", () =>
+            {
+                var vm = new AlgorithmDbScanViewModel(executor);
+                return new AlgorithmDbScanView(vm);
+            })
         }, out var algorithmsAvailable);
-        Points = new ObservableCollectionRanged<PointAdapter>();
-        
+
+
         SelectedAlgorithm = algorithmsAvailable.FirstOrDefault();
         _selectedNbRows = AvailableNbRows[0];
         _selectedNbColumn = AvailableNbColumns[0];
         _selectedNbPoints = AvailableNbPoints[0];
+    }
+
+    private sealed class AlgorithmExecutor : IAlgorithmExecutor
+    {
+        private readonly Func<IPoint[]> _pointsProviderCallback;
+        private readonly Action<bool> _isIdleCallback;
+
+        public AlgorithmExecutor(Func<IPoint[]> pointsProviderCallback, Action<bool> isIdleCallback)
+        {
+            _pointsProviderCallback = pointsProviderCallback;
+            _isIdleCallback = isIdleCallback;
+        }
+
+        public async Task ExecuteAsync(Action<IPoint[]> action)
+        {
+            _isIdleCallback(false);
+            await AsyncWrapper.DispatchAndWrapAsync(() =>
+                {
+                    var points = _pointsProviderCallback.Invoke();
+                    action(points);
+                }, () => _isIdleCallback(true))
+                .ConfigureAwait(false);
+        }
     }
 
 
@@ -81,6 +114,7 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
         get => _selectedNbColumn;
         set => SetProperty(ref _selectedNbColumn, value);
     }
+
     public int SelectedNbPoints
     {
         get => _selectedNbPoints;
@@ -98,6 +132,7 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
             {
                 points.Add(RandomPointCreator.CreateNew(xMax: 2000, yMax: 1000, zMax: 100));
             }
+
             Points.AddRange(points);
         }, () => IsIdle = true).ConfigureAwait(false);
     }
