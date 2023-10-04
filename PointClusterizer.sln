@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClusturizerLib", "Clusturiz
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClusturizerLib.UnitTests", "ClusturizerLib.UnitTests\ClusturizerLib.UnitTests.csproj", "{9125C514-62F8-4663-8FE8-7C8BCA73C94F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClusturizerGui", "ClusturizerGui\ClusturizerGui.csproj", "{C6B053F9-4B2D-44E2-A229-AB00F2A5DAB8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClusterizerGui", "ClusterizerGui\ClusterizerGui.csproj", "{C6B053F9-4B2D-44E2-A229-AB00F2A5DAB8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
