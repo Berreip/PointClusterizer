@@ -15,6 +15,7 @@
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
+        Icon="../Ressources/group.png"
         Height="650" Width="1200"
         d:DataContext="{d:DesignInstance main:MainWindowViewModel, IsDesignTimeCreatable=False}"
         x:ClassModifier="internal">
@@ -27,7 +28,7 @@
                               HorizontalAlignment="Right" Margin="16"
                               IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" />
 
-                <!--La liste des bouttons de navigation vers des panels de la liste de panel principale-->
+                <!--La liste des boutons de navigation vers des panels de la liste de panel principale-->
                 <ItemsControl ItemsSource="{Binding MenuNavigator.AvailableMenuCommands}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>

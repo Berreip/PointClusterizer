@@ -4,9 +4,55 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:ClusterizerGui.Views.MainDisplay"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             Background="{DynamicResource MaterialDesignPaper}"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300" x:ClassModifier="internal">
+             d:DesignHeight="600" d:DesignWidth="1200" x:ClassModifier="internal"
+             d:DataContext="{d:DesignInstance local:MainDisplayViewModel, IsDesignTimeCreatable=False}">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- EARTH IMAGE -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <!-- EARTH -->
+            <Image Source="/Ressources/earth.jpg" Stretch="Fill" />
+
+            <materialDesign:ColorZone Grid.Column="1"
+                                      Mode="PrimaryDark"
+                                      Margin="5"
+                                      Padding="2" CornerRadius="5"
+                                      materialDesign:ShadowAssist.ShadowDepth="Depth3"
+                                      VerticalAlignment="Stretch"
+                                      HorizontalAlignment="Stretch">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Label FontSize="16"
+                           Margin="10, 4"
+                           Content="Point creation configuration"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center" /> 
+                    <Separator Grid.Row="1" Margin="10" />
+                    
+                    <Button Grid.Row="3" 
+                            Margin="6"
+                            Content="AddPoints"
+                            Command="{Binding AddPointsCommand}"/>
+                </Grid>
+            </materialDesign:ColorZone>
+        </Grid>
+
+
     </Grid>
 </UserControl>
