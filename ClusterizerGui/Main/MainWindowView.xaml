@@ -16,7 +16,7 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         Icon="../Ressources/group.png"
-        Height="80" Width="1600"
+        Height="800" Width="1600"
         d:DataContext="{d:DesignInstance main:MainWindowViewModel, IsDesignTimeCreatable=False}"
         x:ClassModifier="internal">
         <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
@@ -62,7 +62,7 @@
                 </StackPanel>
             </materialDesign:ColorZone>
 
-            <ContentControl Grid.Column="1" Content="{Binding MenuNavigator.MainPanel}" />
+            <ContentControl Grid.Column="1" Margin="5" Content="{Binding MenuNavigator.MainPanel}" />
 
         </Grid>
     </materialDesign:DrawerHost>
