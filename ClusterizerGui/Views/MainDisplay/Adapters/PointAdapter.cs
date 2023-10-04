@@ -1,4 +1,5 @@
 ﻿using ClusterizerGui.Views.Algorithms;
+using ClusterizerLib;
 using PRF.WPFCore;
 
 namespace ClusterizerGui.Views.MainDisplay.Adapters;

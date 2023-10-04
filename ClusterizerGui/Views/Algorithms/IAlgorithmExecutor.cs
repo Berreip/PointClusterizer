@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using ClusterizerLib;
 
 namespace ClusterizerGui.Views.Algorithms;
 
@@ -9,11 +10,4 @@ namespace ClusterizerGui.Views.Algorithms;
 public interface IAlgorithmExecutor
 {
     Task ExecuteAsync(Action<IPoint[]> action);
-}
-
-public interface IPoint
-{
-    public double X { get; }
-    public double Y { get; }
-    public double Z { get; }
 }

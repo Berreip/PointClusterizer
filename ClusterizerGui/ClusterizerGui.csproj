@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ClusturizerLib\ClusturizerLib.csproj" />
+      <ProjectReference Include="..\ClusterizerLib\ClusterizerLib.csproj" />
     </ItemGroup>
 
     <PropertyGroup>

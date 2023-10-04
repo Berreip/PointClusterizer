@@ -8,6 +8,7 @@ using ClusterizerGui.Views.Algorithms;
 using ClusterizerGui.Views.Algorithms.Adapters;
 using ClusterizerGui.Views.Algorithms.DbScan;
 using ClusterizerGui.Views.MainDisplay.Adapters;
+using ClusterizerLib;
 using PRF.WPFCore;
 using PRF.WPFCore.Commands;
 using PRF.WPFCore.CustomCollections;

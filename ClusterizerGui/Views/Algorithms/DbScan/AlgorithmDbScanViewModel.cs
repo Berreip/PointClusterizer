@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using ClusterizerGui.Views.MainDisplay.Adapters;
+using ClusterizerLib.DbScan;
 using PRF.WPFCore;
 using PRF.WPFCore.Commands;
 using PRF.WPFCore.CustomCollections;
@@ -37,9 +38,9 @@ internal sealed class AlgorithmDbScanViewModel
         {
             var watch = Stopwatch.StartNew();
             // execute
-            Thread.Sleep(2000);
+            var results = ClusterizerDbScan.Run(points);
             watch.Stop();
-            _dbScanHistory.Add(new DbScanHistory(Interlocked.Increment(ref _runDbScan), watch.Elapsed, points.Length, -1));
+            _dbScanHistory.Add(new DbScanHistory(Interlocked.Increment(ref _runDbScan), watch.Elapsed, points.Length, results.Count));
         }).ConfigureAwait(false);
     }
 }
