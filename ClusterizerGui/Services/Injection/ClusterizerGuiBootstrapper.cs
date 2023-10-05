@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using ClusterizerGui.Main;
 using ClusterizerGui.Services.Navigation;
-using ClusterizerGui.Views.Algorithms.DbScan;
 using ClusterizerGui.Views.MainDisplay;
 using PRF.Utils.Injection.Containers;
 using PRF.Utils.Injection.Utils;

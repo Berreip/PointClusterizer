@@ -1,20 +1,20 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
-using ClusterizerGui.Views.MainDisplay.Adapters;
-using ClusterizerLib.DbScan;
+using ClusterizerLib.DbScanAlgorithm;
 using PRF.WPFCore;
 using PRF.WPFCore.Commands;
 using PRF.WPFCore.CustomCollections;
 
 namespace ClusterizerGui.Views.Algorithms.DbScan;
 
-internal sealed class AlgorithmDbScanViewModel
+internal sealed class AlgorithmDbScanViewModel : ViewModelBase
 {
     private readonly IAlgorithmExecutor _algorithmExecutor;
     private readonly ObservableCollectionRanged<DbScanHistory> _dbScanHistory;
     private int _runDbScan;
+    private int _epsilonDbScan;
+    private int _minimumPointsPerCluster;
     public ICollectionView DbScanHistory { get; }
     public IDelegateCommandLight RunDbScanCommand { get; }
     public IDelegateCommandLight ClearHistoryCommand { get; }
@@ -25,6 +25,21 @@ internal sealed class AlgorithmDbScanViewModel
         DbScanHistory = ObservableCollectionSource.GetDefaultView(out _dbScanHistory);
         RunDbScanCommand = new DelegateCommandLight(ExecuteRunDbScanCommand);
         ClearHistoryCommand = new DelegateCommandLight(ExecuteClearHistoryCommand);
+        _epsilonDbScan = 20;
+        _minimumPointsPerCluster = 4;
+    }
+
+
+    public int EpsilonDbScan
+    {
+        get => _epsilonDbScan;
+        set => SetProperty(ref _epsilonDbScan, value);
+    }
+    
+    public int MinimumPointsPerCluster
+    {
+        get => _minimumPointsPerCluster;
+        set => SetProperty(ref _minimumPointsPerCluster, value);
     }
 
     private void ExecuteClearHistoryCommand()
@@ -34,29 +49,22 @@ internal sealed class AlgorithmDbScanViewModel
 
     private async void ExecuteRunDbScanCommand()
     {
+        var epsilonDbScan = EpsilonDbScan;
+        var minimumPointsPerCluster = MinimumPointsPerCluster;
+
         await _algorithmExecutor.ExecuteAsync(points =>
         {
             var watch = Stopwatch.StartNew();
             // execute
-            var results = ClusterizerDbScan.Run(points);
+            var results = ClusterizerDbScan.Run(points: points, epsilon: epsilonDbScan, minimumPointsPerCluster: minimumPointsPerCluster);
             watch.Stop();
-            _dbScanHistory.Add(new DbScanHistory(Interlocked.Increment(ref _runDbScan), watch.Elapsed, points.Length, results.Count));
+            _dbScanHistory.Add(new DbScanHistory(
+                runNumber: Interlocked.Increment(ref _runDbScan), 
+                duration: watch.Elapsed, 
+                nbInitialPoints: points.Length, 
+                clusterResults: results, 
+                epsilon: epsilonDbScan, 
+                minPointByCluster: minimumPointsPerCluster));
         }).ConfigureAwait(false);
-    }
-}
-
-internal sealed class DbScanHistory : ViewModelBase
-{
-    public int RunNumber { get; }
-    public TimeSpan Duration { get; }
-    public int NbInitialPoints { get; }
-    public int NbClusters { get; }
-
-    public DbScanHistory(int runNumber, TimeSpan duration, int nbInitialPoints, int nbClusters)
-    {
-        RunNumber = runNumber;
-        Duration = duration;
-        NbInitialPoints = nbInitialPoints;
-        NbClusters = nbClusters;
     }
 }

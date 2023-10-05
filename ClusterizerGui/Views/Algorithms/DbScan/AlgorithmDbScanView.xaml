@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:ClusterizerGui.Views.Algorithms.DbScan"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:validationRules="clr-namespace:PRF.WPFCore.ValidationRules;assembly=PRF.WPFCore"
+             xmlns:gridBase="clr-namespace:ClusterizerGui.Views.Algorithms.GridBase"
              Background="{DynamicResource MaterialDesignPaper}"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="1200" x:ClassModifier="internal"
@@ -12,13 +14,14 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*" />
-            <ColumnDefinition Width="7*"/>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="7*" />
         </Grid.ColumnDefinitions>
 
         <!-- Configuration -->
         <materialDesign:ColorZone Grid.Column="0"
                                   Mode="PrimaryDark"
-                                  Margin="0, 5, 0, 0"
+                                  Margin="0"
                                   Padding="2" CornerRadius="5"
                                   materialDesign:ElevationAssist.Elevation="Dp3"
                                   VerticalAlignment="Stretch"
@@ -27,7 +30,10 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Label FontSize="16"
                        Margin="10, 4"
@@ -35,53 +41,177 @@
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center" />
                 <Separator Grid.Row="1" Margin="10" />
-                
-            </Grid>
-        </materialDesign:ColorZone>
 
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label Margin="10, 4" Content="Epsilon"
+                           ToolTip="The epsilon parameter to use in the algorithm; used to determine the radius of the circle to find neighboring points"
+                           VerticalAlignment="Center" />
 
-        <!-- RUN -->
-        <materialDesign:ColorZone Grid.Column="1"
-                                  Mode="PrimaryDark"
-                                  Margin="5, 5, 0, 0"
-                                  Padding="2" CornerRadius="5"
-                                  materialDesign:ElevationAssist.Elevation="Dp3"
-                                  VerticalAlignment="Stretch"
-                                  HorizontalAlignment="Stretch">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                
-                <Label FontSize="16"
-                       Margin="10, 4"
-                       Content="RESULTS"
-                       VerticalAlignment="Center"
-                       HorizontalAlignment="Center" />
-                <Separator Grid.Row="1" Margin="10" />
-          
-                <DataGrid Grid.Row="2"
-                          MinHeight="100"
-                          ItemsSource="{Binding DbScanHistory}"
-                          AutoGenerateColumns="True">
-                </DataGrid>
+                    <Slider
+                        ToolTip="The epsilon parameter to use in the algorithm; used to determine the radius of the circle to find neighboring points"
+                        Margin="5"
+                        VerticalAlignment="Center"
+                        Grid.Column="1"
+                        Value="{Binding EpsilonDbScan}"
+                        Minimum="1"
+                        Maximum="300"
+                        Style="{StaticResource MaterialDesignDiscreteSlider}"
+                        TickFrequency="1" />
 
+                    <TextBox
+                        Grid.Column="2"
+                        Margin="10"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        VerticalAlignment="Center"
+                        Width="100"
+                        AcceptsReturn="True"
+                        TextWrapping="Wrap"
+                        VerticalScrollBarVisibility="Auto"
+                        IsEnabled="{Binding Path=IsChecked, ElementName=MaterialDesignOutlinedTextBoxEnabledComboBox}">
+                        <TextBox.Text>
+                            <Binding Path="EpsilonDbScan" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <validationRules:InRangeIntegerValidationRule MinValue="1" MaxValue="300" />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                </Grid>
 
-                <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Grid Grid.Row="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label Margin="10, 4" Content="Min points/cluster"
+                           ToolTip="The minimum number of points required to create a cluster or to add additional points to the cluster."
+                           VerticalAlignment="Center" />
+
+                    <Slider
+                        VerticalAlignment="Center"
+                        ToolTip="The minimum number of points required to create a cluster or to add additional points to the cluster."
+                        Margin="5"
+                        Grid.Column="1"
+                        Value="{Binding MinimumPointsPerCluster}"
+                        Minimum="1"
+                        Maximum="50"
+                        Style="{StaticResource MaterialDesignDiscreteSlider}"
+                        TickFrequency="1" />
+
+                    <TextBox
+                        Grid.Column="2"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        VerticalAlignment="Center"
+                        Width="100"
+                        Margin="10"
+                        AcceptsReturn="True"
+                        TextWrapping="Wrap"
+                        VerticalScrollBarVisibility="Auto"
+                        IsEnabled="{Binding Path=IsChecked, ElementName=MaterialDesignOutlinedTextBoxEnabledComboBox}">
+                        <TextBox.Text>
+                            <Binding Path="MinimumPointsPerCluster" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <validationRules:InRangeIntegerValidationRule MinValue="1" MaxValue="50" />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                </Grid>
+
+                <Separator Grid.Row="4" Margin="10" />
+
+                <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button Margin="20, 4"
                             Content="Run DBSCAN Clustering"
                             Command="{Binding RunDbScanCommand}" />
-                
+
                     <Button Margin="20, 4"
                             Content="Clear History"
                             Command="{Binding ClearHistoryCommand}" />
                 </StackPanel>
             </Grid>
         </materialDesign:ColorZone>
+
+        <!-- VERTICAL SEPARATOR -->
+        <GridSplitter Grid.Column="1"
+                      Margin="1"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Stretch"
+                      Background="Transparent"
+                      ShowsPreview="True"
+                      Width="4" />
+
+        <!-- RESULTS -->
+        <DataGrid Grid.Column="2"
+                  MinHeight="100"
+                  ItemsSource="{Binding DbScanHistory}"
+                  CanUserAddRows="False"
+                  CanUserSortColumns="True"
+                  AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="run id" SortMemberPath="RunNumber">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type local:DbScanHistory}">
+                            <Label Content="{Binding RunNumber}" HorizontalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Duration (s)" SortMemberPath="Duration">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type local:DbScanHistory}">
+                            <Label Content="{Binding DurationInSecond}" HorizontalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Nb. Total Points" SortMemberPath="NbInitialPoints">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type local:DbScanHistory}">
+                            <Label Content="{Binding NbInitialPoints}" HorizontalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Nb. Clusters" SortMemberPath="NbClusters">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type local:DbScanHistory}">
+                            <Label Content="{Binding NbClusters}" HorizontalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
+                <DataGridTemplateColumn Header="Nb. Un-Clustered Points" SortMemberPath="UnClusteredPoint">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type local:DbScanHistory}">
+                            <Label Content="{Binding UnClusteredPoint}" HorizontalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
+                <DataGridTemplateColumn Header="Epsilon" SortMemberPath="Epsilon">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type local:DbScanHistory}">
+                            <Label Content="{Binding Epsilon}" HorizontalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
+                <DataGridTemplateColumn Header="MinPointByCluster" SortMemberPath="MinPointByCluster">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type local:DbScanHistory}">
+                            <Label Content="{Binding MinPointByCluster}" HorizontalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
 
     </Grid>
 </UserControl>

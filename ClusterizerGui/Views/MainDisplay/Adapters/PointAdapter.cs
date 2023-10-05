@@ -1,5 +1,5 @@
-﻿using ClusterizerGui.Views.Algorithms;
-using ClusterizerLib;
+﻿using ClusterizerLib;
+using Dbscan;
 using PRF.WPFCore;
 
 namespace ClusterizerGui.Views.MainDisplay.Adapters;
@@ -15,5 +15,8 @@ internal sealed class PointAdapter : ViewModelBaseUnchecked, IPoint
         X = x;
         Y = y;
         Z = z;
+        Point = new Point(x, y);
     }
+
+    public Point Point { get; }
 }

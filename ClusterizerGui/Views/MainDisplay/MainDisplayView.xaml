@@ -5,9 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:ClusterizerGui.Views.MainDisplay"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:adapters="clr-namespace:ClusterizerGui.Views.MainDisplay.Adapters"
              Background="{DynamicResource MaterialDesignPaper}"
              mc:Ignorable="d"
-             d:DesignHeight="600" d:DesignWidth="1200" x:ClassModifier="internal"
+             d:DesignHeight="1000" d:DesignWidth="1600" x:ClassModifier="internal"
              d:DataContext="{d:DesignInstance local:MainDisplayViewModel, IsDesignTimeCreatable=False}">
 
     <Grid>
@@ -15,14 +16,16 @@
         <!-- MAIN CONTENT EXCEPT LOADING -->
         <Grid IsEnabled="{Binding IsIdle}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
+                <RowDefinition Height="6*" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="4*" />
             </Grid.RowDefinitions>
 
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" MinWidth="300" />
                 </Grid.ColumnDefinitions>
 
                 <!-- EARTH IMAGE -->
@@ -32,11 +35,19 @@
                            Height="{Binding Path=ActualHeight, ElementName=CanvasEarth}" />
                 </Canvas>
 
+                <!-- VERTICAL SEPARATOR -->
+                <GridSplitter Grid.Column="1"
+                              Margin="1"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Stretch"
+                              Background="Transparent"
+                              ShowsPreview="True"
+                              Width="4" />
+
                 <!-- CONFIGURATION -->
-                <materialDesign:ColorZone Grid.Column="1"
-                                          Width="300"
+                <materialDesign:ColorZone Grid.Column="2"
                                           Mode="PrimaryDark"
-                                          Margin="5, 0, 0, 2"
+                                          Margin="0, 0, 0, 2"
                                           Padding="2" CornerRadius="5"
                                           materialDesign:ElevationAssist.Elevation="Dp3"
                                           VerticalAlignment="Stretch"
@@ -121,23 +132,22 @@
                                 </ComboBox.ItemsPanel>
                             </ComboBox>
                         </Grid>
-                        
-                        <!-- SELECT ALGORITHM -->
-                        
-                        <Grid Grid.Row="5">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Margin="10, 4" Content="Select Algorithm:" VerticalAlignment="Center" />
 
-                            <ComboBox Grid.Column="1" Margin="10"
+                        <!-- SELECT ALGORITHM -->
+
+                        <Grid Grid.Row="5">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Label Margin="10, 4" Content="Algorithm" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+                            <ComboBox Grid.Row="1" Margin="10"
                                       VerticalAlignment="Center"
                                       HorizontalAlignment="Stretch"
                                       ItemsSource="{Binding AlgorithmsAvailable}"
                                       SelectedItem="{Binding SelectedAlgorithm}" />
                         </Grid>
-
 
 
                         <Button Grid.Row="6"
@@ -150,12 +160,38 @@
                             <Label Margin="4" Content="{Binding Points.Count}" VerticalAlignment="Center" />
 
                         </StackPanel>
-                        
+
+                        <!-- POINTS TABLE -->
                         <DataGrid Grid.Row="8"
                                   MinHeight="100"
                                   ItemsSource="{Binding Points}"
-                                  AutoGenerateColumns="True">
-
+                                  CanUserAddRows="False"
+                                  AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="X">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate DataType="{x:Type adapters:PointAdapter}">
+                                            <Label Content="{Binding X}" HorizontalAlignment="Center"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                
+                                <DataGridTemplateColumn Header="Y">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate DataType="{x:Type adapters:PointAdapter}">
+                                            <Label Content="{Binding Y}" HorizontalAlignment="Center"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                
+                                <DataGridTemplateColumn Header="Z">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate DataType="{x:Type adapters:PointAdapter}">
+                                            <Label Content="{Binding Z}" HorizontalAlignment="Center"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
                         </DataGrid>
 
 
@@ -167,8 +203,18 @@
                 </materialDesign:ColorZone>
             </Grid>
 
+            <!-- HORIZONTAL SEPARATOR -->
+            <GridSplitter Grid.Row="1"
+                          Margin="1"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Center"
+                          Background="Transparent"
+                          ShowsPreview="True"
+                          Height="4" />
+
+
             <!-- SELECTED ALGO CONTENT-->
-            <ContentControl Grid.Row="1"
+            <ContentControl Grid.Row="2"
                             Content="{Binding SelectedAlgorithmView}" />
 
         </Grid>

@@ -7,6 +7,7 @@ using ClusterizerGui.Utils;
 using ClusterizerGui.Views.Algorithms;
 using ClusterizerGui.Views.Algorithms.Adapters;
 using ClusterizerGui.Views.Algorithms.DbScan;
+using ClusterizerGui.Views.Algorithms.GridBase;
 using ClusterizerGui.Views.MainDisplay.Adapters;
 using ClusterizerLib;
 using PRF.WPFCore;
@@ -48,10 +49,15 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
 
         AlgorithmsAvailable = ObservableCollectionSource.GetDefaultView(new[]
         {
-            new AlgorithmAvailableAdapter("DBSCAN", () =>
+            new AlgorithmAvailableAdapter("DBSCAN - density-based spatial clustering", () =>
             {
                 var vm = new AlgorithmDbScanViewModel(executor);
                 return new AlgorithmDbScanView(vm);
+            }),
+            new AlgorithmAvailableAdapter("Grid-Based Subspace Clustering (CLIQUE/STING)", () =>
+            {
+                var vm = new AlgorithmGridBaseViewModel(executor);
+                return new AlgorithmGridBaseView(vm);
             })
         }, out var algorithmsAvailable);
 
@@ -131,7 +137,10 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
             var points = new List<PointAdapter>(pointsNumber);
             for (var i = 0; i < pointsNumber; i++)
             {
-                points.Add(RandomPointCreator.CreateNew(xMax: 2000, yMax: 1000, zMax: 100));
+                points.Add(RandomPointCreator.CreateNew(
+                    xMax: ClusterizerGuiConstants.IMAGE_MAX_X, 
+                    yMax: ClusterizerGuiConstants.IMAGE_MAX_Y, 
+                    zMax: ClusterizerGuiConstants.IMAGE_MAX_Z));
             }
 
             Points.AddRange(points);
