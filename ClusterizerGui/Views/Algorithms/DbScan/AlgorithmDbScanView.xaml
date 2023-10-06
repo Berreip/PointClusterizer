@@ -70,8 +70,7 @@
                         Width="100"
                         AcceptsReturn="True"
                         TextWrapping="Wrap"
-                        VerticalScrollBarVisibility="Auto"
-                        IsEnabled="{Binding Path=IsChecked, ElementName=MaterialDesignOutlinedTextBoxEnabledComboBox}">
+                        VerticalScrollBarVisibility="Auto">
                         <TextBox.Text>
                             <Binding Path="EpsilonDbScan" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
@@ -111,8 +110,7 @@
                         Margin="10"
                         AcceptsReturn="True"
                         TextWrapping="Wrap"
-                        VerticalScrollBarVisibility="Auto"
-                        IsEnabled="{Binding Path=IsChecked, ElementName=MaterialDesignOutlinedTextBoxEnabledComboBox}">
+                        VerticalScrollBarVisibility="Auto">
                         <TextBox.Text>
                             <Binding Path="MinimumPointsPerCluster" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
