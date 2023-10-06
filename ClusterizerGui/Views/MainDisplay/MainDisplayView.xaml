@@ -29,7 +29,10 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- EARTH IMAGE -->
-                <Canvas Margin="2" x:Name="CanvasEarth" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Canvas Margin="2" x:Name="CanvasEarth"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        MouseLeftButtonUp="CanvasEarth_OnMouseLeftButtonUp">
                     <Image Source="/Ressources/earth.jpg" Stretch="Fill"
                            Width="{Binding Path=ActualWidth, ElementName=CanvasEarth}"
                            Height="{Binding Path=ActualHeight, ElementName=CanvasEarth}" />
@@ -61,13 +64,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
-                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <Label FontSize="16"
                                Margin="10, 4"
@@ -76,141 +73,132 @@
                                HorizontalAlignment="Center" />
                         <Separator Grid.Row="1" Margin="10" />
 
-                        <!-- Nb column -->
+                        <!-- CONFIG BODY CONTENT -->
                         <Grid Grid.Row="2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="100" />
-                            </Grid.ColumnDefinitions>
-                            <Label Margin="10, 4" Content="Nb Columns:" VerticalAlignment="Center" />
-
-                            <ComboBox Grid.Column="1" Margin="10" MinWidth="200"
-                                      VerticalAlignment="Center"
-                                      ItemsSource="{Binding AvailableNbColumns}"
-                                      SelectedItem="{Binding SelectedNbColumn}">
-                                <ComboBox.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <VirtualizingStackPanel />
-                                    </ItemsPanelTemplate>
-                                </ComboBox.ItemsPanel>
-                            </ComboBox>
-                        </Grid>
-
-                        <!-- Nb Rows -->
-                        <Grid Grid.Row="3">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="100" />
-                            </Grid.ColumnDefinitions>
-                            <Label Margin="10, 4" Content="Nb Rows:" VerticalAlignment="Center" />
-
-                            <ComboBox Grid.Column="1" Margin="10" MinWidth="200"
-                                      VerticalAlignment="Center"
-                                      ItemsSource="{Binding AvailableNbRows}"
-                                      SelectedItem="{Binding SelectedNbRows}">
-                                <ComboBox.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <VirtualizingStackPanel />
-                                    </ItemsPanelTemplate>
-                                </ComboBox.ItemsPanel>
-                            </ComboBox>
-                        </Grid>
-
-                        <Grid Grid.Row="4">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="100" />
-                            </Grid.ColumnDefinitions>
-                            <Label Margin="10, 4" Content="Nb Points to add:" VerticalAlignment="Center" />
-
-                            <ComboBox Grid.Column="1" Margin="10"
-                                      MinWidth="200"
-                                      VerticalAlignment="Center"
-                                      HorizontalAlignment="Left"
-                                      ItemsSource="{Binding AvailableNbPoints}"
-                                      SelectedItem="{Binding SelectedNbPoints}">
-                                <ComboBox.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <VirtualizingStackPanel />
-                                    </ItemsPanelTemplate>
-                                </ComboBox.ItemsPanel>
-                            </ComboBox>
-                        </Grid>
-
-                        <!-- SELECT ALGORITHM -->
-
-                        <Grid Grid.Row="5">
                             <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            <Label Margin="10, 4" Content="Algorithm" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" />
-
-                            <ComboBox Grid.Row="1" Margin="10"
+                            <!-- SELECT ALGORITHM -->
+                            <ComboBox Margin="10"
                                       VerticalAlignment="Center"
                                       HorizontalAlignment="Stretch"
                                       ItemsSource="{Binding AlgorithmsAvailable}"
                                       SelectedItem="{Binding SelectedAlgorithm}" />
-                        </Grid>
+                            
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="120" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Label Margin="10, 4" Content="Click dispersion:"
+                                       ToolTip="The distribution factor when adding points from a click"
+                                       VerticalAlignment="Center" />
 
+                                <ComboBox Grid.Column="1" Margin="10"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Stretch"
+                                          HorizontalContentAlignment="Right"
+                                          ItemsSource="{Binding AvailableClickDispersion}"
+                                          SelectedItem="{Binding SelectedClickDispersion}">
+                                    <ComboBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <VirtualizingStackPanel />
+                                        </ItemsPanelTemplate>
+                                    </ComboBox.ItemsPanel>
+                                </ComboBox>
+                                <CheckBox Grid.Column="2" IsChecked="{Binding AddPointOnClick}" Content="Add point on click"/>
+                            </Grid>
+                            
+                            <Grid Grid.Row="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="120" />
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Margin="10, 4" Content="Nb Points to add:" VerticalAlignment="Center" />
 
-                        <Button Grid.Row="6"
-                                Margin="6"
-                                Content="Add Points"
-                                Command="{Binding AddPointsCommand}" />
+                                <ComboBox Grid.Column="1" Margin="10"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Stretch"
+                                          HorizontalContentAlignment="Right"
+                                          ItemsSource="{Binding AvailableNbPoints}"
+                                          SelectedItem="{Binding SelectedNbPoints}">
+                                    <ComboBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <VirtualizingStackPanel />
+                                        </ItemsPanelTemplate>
+                                    </ComboBox.ItemsPanel>
+                                </ComboBox>
+                                
+                                <Button Grid.Column="2"
+                                        Margin="6"
+                                        Content="Add Points"
+                                        Command="{Binding AddPointsCommand}" />
+                            </Grid>
 
-                        <!-- POINTS TABLE -->
-                        <DataGrid Grid.Row="7"
-                                  MinHeight="100"
-                                  ItemsSource="{Binding Points}"
-                                  CanUserAddRows="False"
-                                  AutoGenerateColumns="False">
-                            <DataGrid.Columns>
-                                <DataGridTemplateColumn Header="X">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate DataType="{x:Type adapters:PointAdapter}">
-                                            <Label Content="{Binding X}" 
-                                                   ContentStringFormat="{}{0:0.##}"
-                                                   HorizontalAlignment="Center" />
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
+                           
 
-                                <DataGridTemplateColumn Header="Y">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate DataType="{x:Type adapters:PointAdapter}">
-                                            <Label Content="{Binding Y}"
-                                                   ContentStringFormat="{}{0:0.##}"
-                                                   HorizontalAlignment="Center" />
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
+                            <!-- POINTS TABLE -->
+                            <DataGrid Grid.Row="3"
+                                      MinHeight="100"
+                                      ItemsSource="{Binding Points}"
+                                      CanUserAddRows="False"
+                                      AutoGenerateColumns="False">
+                                <DataGrid.Columns>
+                                    <DataGridTemplateColumn Header="X">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate DataType="{x:Type adapters:PointAdapter}">
+                                                <Label Content="{Binding X}"
+                                                       ContentStringFormat="{}{0:0.##}"
+                                                       HorizontalAlignment="Center" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
 
-                                <DataGridTemplateColumn Header="Z">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate DataType="{x:Type adapters:PointAdapter}">
-                                            <Label Content="{Binding Z}"
-                                                   ContentStringFormat="{}{0:0.##}"
-                                                   HorizontalAlignment="Center" />
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                            </DataGrid.Columns>
-                        </DataGrid>
+                                    <DataGridTemplateColumn Header="Y">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate DataType="{x:Type adapters:PointAdapter}">
+                                                <Label Content="{Binding Y}"
+                                                       ContentStringFormat="{}{0:0.##}"
+                                                       HorizontalAlignment="Center" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
 
-                        <Grid Grid.Row="8">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="150" />
-                            </Grid.ColumnDefinitions>
-                            <Label Margin="4" Content="{Binding Points.Count}" VerticalAlignment="Center" />
-                            <Label Grid.Column="1" Margin="4" Content="points" VerticalAlignment="Center" />
-                            <Button Grid.Column="2" HorizontalAlignment="Stretch"
-                                    Margin="6"
-                                    Content="Clear Points"
-                                    Command="{Binding ClearPointsCommand}" />
+                                    <DataGridTemplateColumn Header="Z">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate DataType="{x:Type adapters:PointAdapter}">
+                                                <Label Content="{Binding Z}"
+                                                       ContentStringFormat="{}{0:0.##}"
+                                                       HorizontalAlignment="Center" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
 
+                            <Grid Grid.Row="4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="150" />
+                                </Grid.ColumnDefinitions>
+                                <Label Margin="4" Content="{Binding Points.Count}"
+                                       FontSize="16"
+                                       VerticalAlignment="Center" />
+                                <Label Grid.Column="1" Margin="4" Content="points"
+                                       FontSize="16" VerticalAlignment="Center" />
+                                <Button Grid.Column="2" HorizontalAlignment="Stretch"
+                                        Margin="6"
+                                        Content="Clear Points"
+                                        Command="{Binding ClearPointsCommand}" />
+
+                            </Grid>
                         </Grid>
                     </Grid>
                 </materialDesign:ColorZone>

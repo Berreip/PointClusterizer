@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -20,25 +21,29 @@ namespace ClusterizerGui.Views.MainDisplay;
 
 internal interface IMainDisplayViewModel
 {
+    /// <summary>
+    /// Generate a bunch of points on click position
+    /// </summary>
+    void GeneratePointsOnClick(Point mousePosition);
 }
 
 internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewModel
 {
     private AlgorithmAvailableAdapter? _selectedAlgorithm;
     private IAlgorithmView? _selectedAlgorithmView;
-    private int _selectedNbRows;
-    private int _selectedNbColumn;
     private int _selectedNbPoints;
     private bool _isIdle = true;
     private BitmapImage? _currentImage;
+    private int _selectedClickDispersion;
+    private bool _addPointOnClick = true;
+    private readonly PointRange _defaultRange;
 
     public IObservableCollectionRanged<PointAdapter> Points { get; }
     public IDelegateCommandLight AddPointsCommand { get; }
     public IDelegateCommandLight ClearPointsCommand { get; }
     public ICollectionView AlgorithmsAvailable { get; }
 
-    public IReadOnlyList<int> AvailableNbColumns { get; } = Enumerable.Range(1, 100).ToArray();
-    public IReadOnlyList<int> AvailableNbRows { get; } = Enumerable.Range(1, 100).ToArray();
+    public IReadOnlyList<int> AvailableClickDispersion { get; } = new[] { 5, 10, 20, 40, 50, 100 };
     public IReadOnlyList<int> AvailableNbPoints { get; } = new[] { 1, 5, 10, 100, 1_000, 10_000, 50_000, 100_000, 500_000, 1_000_000 };
 
     public MainDisplayViewModel()
@@ -46,6 +51,8 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
         AddPointsCommand = new DelegateCommandLight(ExecuteAddPointsCommand);
         ClearPointsCommand = new DelegateCommandLight(ExecuteClearPointsCommand);
         Points = new ObservableCollectionRanged<PointAdapter>();
+
+        _defaultRange = new PointRange(xMin: 0, xMax: ClusterizerGuiConstants.DATA_MAX_X, yMin: 0, yMax: ClusterizerGuiConstants.DATA_MAX_Y, zMin: 0, zMax: ClusterizerGuiConstants.DATA_MAX_Z);
 
         // create an executor that will be provided to every algorithm
         var executor = new AlgorithmExecutor(() => Points.ToArray<IPoint>(), o => IsIdle = o);
@@ -64,11 +71,9 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
             })
         }, out var algorithmsAvailable);
 
-
         SelectedAlgorithm = algorithmsAvailable.FirstOrDefault();
-        _selectedNbRows = AvailableNbRows[0];
-        _selectedNbColumn = AvailableNbColumns[0];
-        _selectedNbPoints = AvailableNbPoints[0];
+        _selectedNbPoints = AvailableNbPoints[3];
+        _selectedClickDispersion = AvailableClickDispersion[2];
     }
 
     private sealed class AlgorithmExecutor : IAlgorithmExecutor
@@ -113,17 +118,6 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
         private set => SetProperty(ref _selectedAlgorithmView, value);
     }
 
-    public int SelectedNbRows
-    {
-        get => _selectedNbRows;
-        set => SetProperty(ref _selectedNbRows, value);
-    }
-
-    public int SelectedNbColumn
-    {
-        get => _selectedNbColumn;
-        set => SetProperty(ref _selectedNbColumn, value);
-    }
 
     public int SelectedNbPoints
     {
@@ -131,7 +125,12 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
         set => SetProperty(ref _selectedNbPoints, value);
     }
 
-    private async void ExecuteAddPointsCommand()
+    private void ExecuteAddPointsCommand()
+    {
+        AddPointInternalFireAndForget(_defaultRange);
+    }
+
+    private async void AddPointInternalFireAndForget(PointRange range)
     {
         IsIdle = false;
         var pointsNumber = _selectedNbPoints;
@@ -140,10 +139,7 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
             var points = new List<PointAdapter>(pointsNumber);
             for (var i = 0; i < pointsNumber; i++)
             {
-                points.Add(RandomPointCreator.CreateNew(
-                    xMax: ClusterizerGuiConstants.DATA_MAX_X,
-                    yMax: ClusterizerGuiConstants.DATA_MAX_Y,
-                    zMax: ClusterizerGuiConstants.DATA_MAX_Z));
+                points.Add(RandomPointCreator.CreateNew(range));
             }
 
             Points.AddRange(points);
@@ -172,5 +168,33 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
     {
         Points.Clear();
         CurrentImage = null;
+    }
+
+    public void GeneratePointsOnClick(Point mousePosition)
+    {
+        if (_addPointOnClick)
+        {
+            var dispersion = _selectedClickDispersion;
+            var rangeFromMousePositionAndDispersion = new PointRange(
+                xMin: Math.Max(0, mousePosition.X - dispersion),
+                xMax: Math.Min(ClusterizerGuiConstants.DATA_MAX_X, mousePosition.X + dispersion),
+                yMin: Math.Max(0, mousePosition.Y - dispersion),
+                yMax: Math.Min(ClusterizerGuiConstants.DATA_MAX_Y, mousePosition.Y + dispersion),
+                zMin: 0,
+                zMax: ClusterizerGuiConstants.DATA_MAX_Z);
+            AddPointInternalFireAndForget(rangeFromMousePositionAndDispersion);
+        }
+    }
+
+    public int SelectedClickDispersion
+    {
+        get => _selectedClickDispersion;
+        set => SetProperty(ref _selectedClickDispersion, value);
+    }
+
+    public bool AddPointOnClick
+    {
+        get => _addPointOnClick;
+        set => SetProperty(ref _addPointOnClick, value);
     }
 }

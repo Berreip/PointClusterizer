@@ -40,6 +40,47 @@
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center" />
                 <Separator Grid.Row="1" Margin="10" />
+                
+                 <!-- Nb column -->
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="100" />
+                            </Grid.ColumnDefinitions>
+                            <Label Margin="10, 4" Content="Nb Columns:" VerticalAlignment="Center" />
+
+                            <ComboBox Grid.Column="1" Margin="10" MinWidth="200"
+                                      VerticalAlignment="Center"
+                                      ItemsSource="{Binding AvailableNbColumns}"
+                                      SelectedItem="{Binding SelectedNbColumn}">
+                                <ComboBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel />
+                                    </ItemsPanelTemplate>
+                                </ComboBox.ItemsPanel>
+                            </ComboBox>
+                        </Grid>
+
+                        <!-- Nb Rows -->
+                        <Grid Grid.Row="3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="100" />
+                            </Grid.ColumnDefinitions>
+                            <Label Margin="10, 4" Content="Nb Rows:" VerticalAlignment="Center" />
+
+                            <ComboBox Grid.Column="1" Margin="10" MinWidth="200"
+                                      VerticalAlignment="Center"
+                                      ItemsSource="{Binding AvailableNbRows}"
+                                      SelectedItem="{Binding SelectedNbRows}">
+                                <ComboBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel />
+                                    </ItemsPanelTemplate>
+                                </ComboBox.ItemsPanel>
+                            </ComboBox>
+                        </Grid>
+
 
                 <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button Margin="20, 4"
