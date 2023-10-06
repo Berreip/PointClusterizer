@@ -24,7 +24,12 @@
     </ItemGroup>
 
     <ItemGroup>
+<!--      <ProjectReference Include="..\ClusterizerGui\ClusterizerGui.csproj" />-->
       <ProjectReference Include="..\ClusterizerLib\ClusterizerLib.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="GuiTests\" />
     </ItemGroup>
 
 </Project>
