@@ -85,7 +85,7 @@
                 <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button Margin="20, 4"
                             Content="Run Grid-based Clustering"
-                            Command="{Binding RunGridBasedCommand}" />
+                            Command="{Binding RunAlgorithmCommand}" />
 
                     <Button Margin="20, 4"
                             Content="Clear History"
@@ -106,7 +106,7 @@
                 <!-- RESULTS -->
         <DataGrid Grid.Column="2"
                   MinHeight="100"
-                  ItemsSource="{Binding GridBasedHistory}"
+                  ItemsSource="{Binding History}"
                   CanUserAddRows="False"
                   CanUserSortColumns="True"
                   AutoGenerateColumns="False">

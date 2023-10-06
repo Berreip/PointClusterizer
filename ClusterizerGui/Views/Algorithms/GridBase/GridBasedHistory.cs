@@ -1,31 +1,27 @@
 ﻿using System;
+using System.Windows.Media.Imaging;
+using ClusterizerGui.Views.MainDisplay;
 using ClusterizerLib;
 using ClusterizerLib.Results;
 using PRF.WPFCore;
 
 namespace ClusterizerGui.Views.Algorithms.GridBase;
 
-internal sealed class GridBasedHistory : ViewModelBase
+internal sealed class GridBasedHistory : HistoryBase
 {
-    public int RunNumber { get; }
-    public TimeSpan Duration { get; }
-    public int NbInitialPoints { get; }
-    public int NbClusters { get; }
-    public int UnClusteredPoint { get; }
-    public string DurationInSecond { get; }
-
     public GridBasedHistory(
-        int runNumber, 
-        TimeSpan duration, 
+        IDisplayImageAndClusterController displayImageAndClusterController,
+        int runNumber,
+        TimeSpan duration,
         int nbInitialPoints,
-        ClusterGlobalResult<IPoint> clusterResults)
+        ClusterGlobalResult<IPoint> clusterResults, BitmapImage? sourceImage)
+        : base(
+            displayImageAndClusterController,
+            runNumber,
+            duration,
+            nbInitialPoints,
+            clusterResults,
+            sourceImage)
     {
-        RunNumber = runNumber;
-        Duration = duration;
-        DurationInSecond = $"{duration.TotalSeconds:0.##}";
-        NbInitialPoints = nbInitialPoints;
-        NbClusters = clusterResults.ClusterResults.Count;
-        UnClusteredPoint = clusterResults.UnClusteredPoint.Count;
     }
-
 }

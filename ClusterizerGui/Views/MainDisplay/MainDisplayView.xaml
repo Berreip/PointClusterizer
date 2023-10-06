@@ -37,10 +37,23 @@
                            Width="{Binding Path=ActualWidth, ElementName=CanvasEarth}"
                            Height="{Binding Path=ActualHeight, ElementName=CanvasEarth}" />
 
-                    <!-- SHOW the current image of points-->
-                    <Image Source="{Binding CurrentImage}" Stretch="Fill"
-                           Width="{Binding Path=ActualWidth, ElementName=CanvasEarth}"
-                           Height="{Binding Path=ActualHeight, ElementName=CanvasEarth}" />
+                    <ItemsControl ItemsSource="{Binding DisplayController.AllPointsImages}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <!-- all superposed inside the same grid -->
+                                <Grid /> 
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type adapters:PointImageAdapter}">
+                                <!-- SHOW the current image of points-->
+                                <Image Source="{Binding .BitmapImage}" Stretch="Fill"
+                                       Width="{Binding Path=ActualWidth, ElementName=CanvasEarth}"
+                                       Height="{Binding Path=ActualHeight, ElementName=CanvasEarth}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </Canvas>
 
                 <!-- VERTICAL SEPARATOR -->

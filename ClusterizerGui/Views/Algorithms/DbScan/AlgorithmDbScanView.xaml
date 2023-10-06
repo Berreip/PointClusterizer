@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:ClusterizerGui.Views.Algorithms.DbScan"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:validationRules="clr-namespace:PRF.WPFCore.ValidationRules;assembly=PRF.WPFCore"
-             xmlns:gridBase="clr-namespace:ClusterizerGui.Views.Algorithms.GridBase"
              Background="{DynamicResource MaterialDesignPaper}"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="1200" x:ClassModifier="internal"
@@ -129,7 +128,7 @@
                 <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button Margin="20, 4"
                             Content="Run DBSCAN Clustering"
-                            Command="{Binding RunDbScanCommand}" />
+                            Command="{Binding RunAlgorithmCommand}" />
 
                     <Button Margin="20, 4"
                             Content="Clear History"
@@ -150,7 +149,7 @@
         <!-- RESULTS -->
         <DataGrid Grid.Column="2"
                   MinHeight="100"
-                  ItemsSource="{Binding DbScanHistory}"
+                  ItemsSource="{Binding History}"
                   CanUserAddRows="False"
                   CanUserSortColumns="True"
                   AutoGenerateColumns="False">
@@ -186,7 +185,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                
+
                 <DataGridTemplateColumn Header="Nb. Un-Clustered Points" SortMemberPath="UnClusteredPoint">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type local:DbScanHistory}">
@@ -194,7 +193,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                
+
                 <DataGridTemplateColumn Header="Epsilon" SortMemberPath="Epsilon">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type local:DbScanHistory}">
@@ -202,11 +201,31 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                
+
                 <DataGridTemplateColumn Header="MinPointByCluster" SortMemberPath="MinPointByCluster">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type local:DbScanHistory}">
                             <Label Content="{Binding MinPointByCluster}" HorizontalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Points Img" CanUserSort="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type local:DbScanHistory}">
+                            <ToggleButton
+                                Style="{StaticResource MaterialDesignSwitchDarkToggleButton}"
+                                IsChecked="{Binding ShowPointsImageRef}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Show Clusters" CanUserSort="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type local:DbScanHistory}">
+                            <ToggleButton
+                                Style="{StaticResource MaterialDesignSwitchLightToggleButton}"
+                                IsChecked="{Binding ShowClusters}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

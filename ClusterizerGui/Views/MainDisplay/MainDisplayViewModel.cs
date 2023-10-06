@@ -13,6 +13,7 @@ using ClusterizerGui.Views.Algorithms.DbScan;
 using ClusterizerGui.Views.Algorithms.GridBase;
 using ClusterizerGui.Views.MainDisplay.Adapters;
 using ClusterizerLib;
+using ClusterizerLib.Results;
 using PRF.WPFCore;
 using PRF.WPFCore.Commands;
 using PRF.WPFCore.CustomCollections;
@@ -33,7 +34,6 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
     private IAlgorithmView? _selectedAlgorithmView;
     private int _selectedNbPoints;
     private bool _isIdle = true;
-    private BitmapImage? _currentImage;
     private int _selectedClickDispersion;
     private bool _addPointOnClick = true;
     private readonly PointRange _defaultRange;
@@ -42,6 +42,7 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
     public IDelegateCommandLight AddPointsCommand { get; }
     public IDelegateCommandLight ClearPointsCommand { get; }
     public ICollectionView AlgorithmsAvailable { get; }
+    public IDisplayImageAndClusterController DisplayController { get; }
 
     public IReadOnlyList<int> AvailableClickDispersion { get; } = new[] { 5, 10, 20, 40, 50, 100 };
     public IReadOnlyList<int> AvailableNbPoints { get; } = new[] { 1, 5, 10, 100, 1_000, 10_000, 50_000, 100_000, 500_000, 1_000_000 };
@@ -56,17 +57,18 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
 
         // create an executor that will be provided to every algorithm
         var executor = new AlgorithmExecutor(() => Points.ToArray<IPoint>(), o => IsIdle = o);
-
+        DisplayController = new DisplayImageAndClusterController();
+        
         AlgorithmsAvailable = ObservableCollectionSource.GetDefaultView(new[]
         {
             new AlgorithmAvailableAdapter("DBSCAN - density-based spatial clustering", () =>
             {
-                var vm = new AlgorithmDbScanViewModel(executor);
+                var vm = new AlgorithmDbScanViewModel(executor, DisplayController);
                 return new AlgorithmDbScanView(vm);
             }),
             new AlgorithmAvailableAdapter("Grid-Based Subspace Clustering (CLIQUE/STING)", () =>
             {
-                var vm = new AlgorithmGridBaseViewModel(executor);
+                var vm = new AlgorithmGridBaseViewModel(executor, DisplayController);
                 return new AlgorithmGridBaseView(vm);
             })
         }, out var algorithmsAvailable);
@@ -76,29 +78,7 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
         _selectedClickDispersion = AvailableClickDispersion[2];
     }
 
-    private sealed class AlgorithmExecutor : IAlgorithmExecutor
-    {
-        private readonly Func<IPoint[]> _pointsProviderCallback;
-        private readonly Action<bool> _isIdleCallback;
-
-        public AlgorithmExecutor(Func<IPoint[]> pointsProviderCallback, Action<bool> isIdleCallback)
-        {
-            _pointsProviderCallback = pointsProviderCallback;
-            _isIdleCallback = isIdleCallback;
-        }
-
-        public async Task ExecuteAsync(Action<IPoint[]> action)
-        {
-            _isIdleCallback(false);
-            await AsyncWrapper.DispatchAndWrapAsync(() =>
-                {
-                    var points = _pointsProviderCallback.Invoke();
-                    action(points);
-                }, () => _isIdleCallback(true))
-                .ConfigureAwait(false);
-        }
-    }
-
+   
 
     public AlgorithmAvailableAdapter? SelectedAlgorithm
     {
@@ -147,15 +127,9 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
             // Regenerate Bitmap:
             using (var bmp = BitmapGeneratorFromPoints.GenerateBitmapFromPoint(Points))
             {
-                CurrentImage = bmp.GetBitmapImage();
+                DisplayController.SetNewCurrentImage(bmp.GetBitmapImage());
             }
         }, () => IsIdle = true).ConfigureAwait(false);
-    }
-
-    public BitmapImage? CurrentImage
-    {
-        get => _currentImage;
-        private set => SetProperty(ref _currentImage, value);
     }
 
     public bool IsIdle
@@ -167,7 +141,7 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
     private void ExecuteClearPointsCommand()
     {
         Points.Clear();
-        CurrentImage = null;
+        DisplayController.ClearCurrentImage();
     }
 
     public void GeneratePointsOnClick(Point mousePosition)
@@ -197,4 +171,84 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
         get => _addPointOnClick;
         set => SetProperty(ref _addPointOnClick, value);
     }
+    
+    private sealed class DisplayImageAndClusterController : ViewModelBase, IDisplayImageAndClusterController
+    {
+        private PointImageAdapter? _currentMainImage;
+        private readonly ObservableCollectionRanged<PointImageAdapter> _allPointImages;
+        public ICollectionView AllPointsImages { get; }
+        public BitmapImage? GetCurrentImage()
+        {
+            return _currentMainImage?.BitmapImage;
+        }
+
+        public DisplayImageAndClusterController()
+        {
+            AllPointsImages = ObservableCollectionSource.GetDefaultView(out _allPointImages);
+            AllPointsImages.SortDescriptions.Add(new SortDescription(nameof(PointImageAdapter.IsMainImage), ListSortDirection.Ascending));
+        }
+        
+        public void ShowOrHideClusters(bool value, ClusterGlobalResult<IPoint> clusterResults)
+        {
+            
+        }
+
+        public void ShowOrHideSourceImage(bool value, PointImageAdapter sourceImage)
+        {
+            if (value)
+            {
+                _allPointImages.Add(sourceImage);
+            }
+            else
+            {
+                _allPointImages.Remove(sourceImage);
+            }
+        }
+
+        public void ClearCurrentImage()
+        {
+            var img = _currentMainImage;
+            if (img != null && _allPointImages.Remove(img))
+            {
+                _currentMainImage = null;
+            }
+        }
+
+        public void SetNewCurrentImage(BitmapImage newImage)
+        {
+            var previous = _currentMainImage;
+            if (previous != null)
+            {
+                _allPointImages.Remove(previous);
+            }
+
+            var adapter = new PointImageAdapter(newImage, true);
+            _currentMainImage = adapter; 
+            _allPointImages.Add(adapter);
+        }
+    }
+
+    private sealed class AlgorithmExecutor : IAlgorithmExecutor
+    {
+        private readonly Func<IPoint[]> _pointsProviderCallback;
+        private readonly Action<bool> _isIdleCallback;
+
+        public AlgorithmExecutor(Func<IPoint[]> pointsProviderCallback, Action<bool> isIdleCallback)
+        {
+            _pointsProviderCallback = pointsProviderCallback;
+            _isIdleCallback = isIdleCallback;
+        }
+
+        public async Task ExecuteAsync(Action<IPoint[]> action)
+        {
+            _isIdleCallback(false);
+            await AsyncWrapper.DispatchAndWrapAsync(() =>
+                {
+                    var points = _pointsProviderCallback.Invoke();
+                    action(points);
+                }, () => _isIdleCallback(true))
+                .ConfigureAwait(false);
+        }
+    }
+
 }
