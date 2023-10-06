@@ -14,16 +14,16 @@ internal static class BitmapGeneratorFromPoints
         // aggregate similar point rounded to int
         var pointsAggregated = PointsRoundedAggregator.AggregateSimilarPoints(
             points,
-            ClusterizerGuiConstants.IMAGE_MAX_X,
-            ClusterizerGuiConstants.IMAGE_MAX_Y,
-            ClusterizerGuiConstants.IMAGE_MAX_Z);
+            ClusterizerGuiConstants.DATA_MAX_X, 
+            ClusterizerGuiConstants.DATA_MAX_Y,
+            ClusterizerGuiConstants.DATA_MAX_Z);
 
         var arrayPoints = PointsRoundedAggregator.CreatePointArrayFromAggregatedData(
             pointsAggregated,
-            ClusterizerGuiConstants.IMAGE_MAX_X,
-            ClusterizerGuiConstants.IMAGE_MAX_Y);
+            ClusterizerGuiConstants.IMAGE_WIDTH,
+            ClusterizerGuiConstants.IMAGE_HEIGHT);
 
-        var bmp = new Bitmap(ClusterizerGuiConstants.IMAGE_MAX_X, ClusterizerGuiConstants.IMAGE_MAX_Y, PixelFormat.Format32bppArgb);
+        var bmp = new Bitmap(ClusterizerGuiConstants.IMAGE_WIDTH, ClusterizerGuiConstants.IMAGE_HEIGHT, PixelFormat.Format32bppArgb);
         unsafe
         {
             var bitmapData = bmp.LockBits(
@@ -38,13 +38,13 @@ internal static class BitmapGeneratorFromPoints
 
                 var currentLine = (byte*)bitmapData.Scan0;
                 // set every pixel value
-                var arrayHeightRow = 0;
+                var heightCursor = 0;
                 for (var y = 0; y < heightInPixels; y++, currentLine += bitmapData.Stride)
                 {
-                    var arrayWidthColum = 0;
+                    var widthCursor = 0;
                     for (var x = 0; x < widthInBytes; x = x + bytesPerPixel)
                     {
-                        if (arrayPoints.TryGetPointAltitude(x, y, out var altitude))
+                        if (arrayPoints.TryGetPointAltitude(widthCursor, heightCursor, out var altitude))
                         {
                             var color = ColorByAltitudeProvider.GetColor(altitude);
                             currentLine[x] = color.B; //blue
@@ -60,10 +60,10 @@ internal static class BitmapGeneratorFromPoints
                             currentLine[x + 3] = 0; //transparency
                         }
 
-                        arrayWidthColum++;
+                        widthCursor++;
                     }
 
-                    arrayHeightRow++;
+                    heightCursor++;
                 }
             }
             finally

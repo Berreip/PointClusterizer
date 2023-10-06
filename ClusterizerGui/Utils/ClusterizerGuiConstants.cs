@@ -2,7 +2,11 @@
 
 internal static class ClusterizerGuiConstants
 {
-    public const int IMAGE_MAX_X = 2000;
-    public const int IMAGE_MAX_Y = 1000;
-    public const int IMAGE_MAX_Z = 100;
+    public const int IMAGE_WIDTH = 800;
+    public const int IMAGE_HEIGHT = 400;
+    
+    // for point values, cap to max less 1 as position are zero based : 0-1999 if 2000 max value
+    public const int DATA_MAX_X = IMAGE_WIDTH -1;
+    public const int DATA_MAX_Y = IMAGE_HEIGHT -1;
+    public const int DATA_MAX_Z = IMAGE_HEIGHT/20; // use a much lower altitude to 'simulate' data that are close of the ground
 }

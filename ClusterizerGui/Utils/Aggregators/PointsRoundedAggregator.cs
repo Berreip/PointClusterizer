@@ -30,14 +30,14 @@ internal static class PointsRoundedAggregator
     /// <summary>
     /// Create a 2 dimension array that contains the given aggregated points
     /// </summary>
-    public static PointAggregatedArray CreatePointArrayFromAggregatedData(IReadOnlyCollection<PointRounded> pointsAggregated, int maxX, int maxY)
+    public static PointAggregatedArray CreatePointArrayFromAggregatedData(IReadOnlyCollection<PointRounded> pointsAggregated, int arrayX, int arrayY)
     {
         var noValue = -1;
         // init 2 dimensional array with noValue 
-        var array = new int[maxX,maxY];
-        for (int i = 0; i < maxX; i++)
+        var array = new int[arrayX,arrayY];
+        for (int i = 0; i < arrayX; i++)
         {
-            for (int j = 0; j < maxY; j++)
+            for (int j = 0; j < arrayY; j++)
             {
                 array[i, j] = noValue;
             }

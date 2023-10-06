@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 using ClusterizerGui.Utils;
+using ClusterizerGui.Utils.BitmapGeneration;
 using ClusterizerGui.Views.Algorithms;
 using ClusterizerGui.Views.Algorithms.Adapters;
 using ClusterizerGui.Views.Algorithms.DbScan;
@@ -28,6 +30,7 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
     private int _selectedNbColumn;
     private int _selectedNbPoints;
     private bool _isIdle = true;
+    private BitmapImage? _currentImage;
 
     public IObservableCollectionRanged<PointAdapter> Points { get; }
     public IDelegateCommandLight AddPointsCommand { get; }
@@ -138,13 +141,25 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
             for (var i = 0; i < pointsNumber; i++)
             {
                 points.Add(RandomPointCreator.CreateNew(
-                    xMax: ClusterizerGuiConstants.IMAGE_MAX_X, 
-                    yMax: ClusterizerGuiConstants.IMAGE_MAX_Y, 
-                    zMax: ClusterizerGuiConstants.IMAGE_MAX_Z));
+                    xMax: ClusterizerGuiConstants.DATA_MAX_X,
+                    yMax: ClusterizerGuiConstants.DATA_MAX_Y,
+                    zMax: ClusterizerGuiConstants.DATA_MAX_Z));
             }
 
             Points.AddRange(points);
+
+            // Regenerate Bitmap:
+            using (var bmp = BitmapGeneratorFromPoints.GenerateBitmapFromPoint(Points))
+            {
+                CurrentImage = bmp.GetBitmapImage();
+            }
         }, () => IsIdle = true).ConfigureAwait(false);
+    }
+
+    public BitmapImage? CurrentImage
+    {
+        get => _currentImage;
+        private set => SetProperty(ref _currentImage, value);
     }
 
     public bool IsIdle
@@ -156,5 +171,6 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
     private void ExecuteClearPointsCommand()
     {
         Points.Clear();
+        CurrentImage = null;
     }
 }

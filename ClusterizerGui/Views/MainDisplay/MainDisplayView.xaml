@@ -33,6 +33,11 @@
                     <Image Source="/Ressources/earth.jpg" Stretch="Fill"
                            Width="{Binding Path=ActualWidth, ElementName=CanvasEarth}"
                            Height="{Binding Path=ActualHeight, ElementName=CanvasEarth}" />
+
+                    <!-- SHOW the current image of points-->
+                    <Image Source="{Binding CurrentImage}" Stretch="Fill"
+                           Width="{Binding Path=ActualWidth, ElementName=CanvasEarth}"
+                           Height="{Binding Path=ActualHeight, ElementName=CanvasEarth}" />
                 </Canvas>
 
                 <!-- VERTICAL SEPARATOR -->
@@ -54,7 +59,6 @@
                                           HorizontalAlignment="Stretch">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
@@ -140,7 +144,7 @@
                                 <RowDefinition />
                                 <RowDefinition />
                             </Grid.RowDefinitions>
-                            <Label Margin="10, 4" Content="Algorithm" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <Label Margin="10, 4" Content="Algorithm" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" />
 
                             <ComboBox Grid.Row="1" Margin="10"
                                       VerticalAlignment="Center"
@@ -155,14 +159,8 @@
                                 Content="Add Points"
                                 Command="{Binding AddPointsCommand}" />
 
-                        <StackPanel Grid.Row="7" Orientation="Horizontal">
-                            <Label Margin="4" Content="Current point nb:" VerticalAlignment="Center" />
-                            <Label Margin="4" Content="{Binding Points.Count}" VerticalAlignment="Center" />
-
-                        </StackPanel>
-
                         <!-- POINTS TABLE -->
-                        <DataGrid Grid.Row="8"
+                        <DataGrid Grid.Row="7"
                                   MinHeight="100"
                                   ItemsSource="{Binding Points}"
                                   CanUserAddRows="False"
@@ -171,34 +169,49 @@
                                 <DataGridTemplateColumn Header="X">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate DataType="{x:Type adapters:PointAdapter}">
-                                            <Label Content="{Binding X}" HorizontalAlignment="Center"/>
+                                            <Label Content="{Binding X}" 
+                                                   ContentStringFormat="{}{0:0.##}"
+                                                   HorizontalAlignment="Center" />
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-                                
+
                                 <DataGridTemplateColumn Header="Y">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate DataType="{x:Type adapters:PointAdapter}">
-                                            <Label Content="{Binding Y}" HorizontalAlignment="Center"/>
+                                            <Label Content="{Binding Y}"
+                                                   ContentStringFormat="{}{0:0.##}"
+                                                   HorizontalAlignment="Center" />
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-                                
+
                                 <DataGridTemplateColumn Header="Z">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate DataType="{x:Type adapters:PointAdapter}">
-                                            <Label Content="{Binding Z}" HorizontalAlignment="Center"/>
+                                            <Label Content="{Binding Z}"
+                                                   ContentStringFormat="{}{0:0.##}"
+                                                   HorizontalAlignment="Center" />
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
                             </DataGrid.Columns>
                         </DataGrid>
 
+                        <Grid Grid.Row="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="150" />
+                            </Grid.ColumnDefinitions>
+                            <Label Margin="4" Content="{Binding Points.Count}" VerticalAlignment="Center" />
+                            <Label Grid.Column="1" Margin="4" Content="points" VerticalAlignment="Center" />
+                            <Button Grid.Column="2" HorizontalAlignment="Stretch"
+                                    Margin="6"
+                                    Content="Clear Points"
+                                    Command="{Binding ClearPointsCommand}" />
 
-                        <Button Grid.Row="9"
-                                Margin="6"
-                                Content="Clear Points"
-                                Command="{Binding ClearPointsCommand}" />
+                        </Grid>
                     </Grid>
                 </materialDesign:ColorZone>
             </Grid>

@@ -7,10 +7,11 @@ internal static class ColorByAltitudeProvider
 {
     private const int ATTENUATION_FACTOR = 4;
     private static readonly Color _pointColor = Color.GreenYellow;
-    private static readonly int _attenuator = ClusterizerGuiConstants.IMAGE_MAX_Z * ATTENUATION_FACTOR;
+    private static readonly int _attenuator = ClusterizerGuiConstants.DATA_MAX_Z * ATTENUATION_FACTOR;
 
     public static Color GetColor(int altitude)
     {
+        return _pointColor;
         if (altitude == 0)
         {
             return _pointColor;
