@@ -208,22 +208,24 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Points Img" CanUserSort="False">
+                <DataGridTemplateColumn Header="Points Img">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type local:DbScanHistory}">
+                            <!-- WATCH OUT => UpdateSourceTrigger=PropertyChanged DUE TO YET ANOTHER ISSUE IN WPF framework (if we could call this piece of shit a framework) -->
                             <ToggleButton
                                 Style="{StaticResource MaterialDesignSwitchDarkToggleButton}"
-                                IsChecked="{Binding ShowPointsImageRef}" />
+                                IsChecked="{Binding ShowPointsImageRef, UpdateSourceTrigger=PropertyChanged}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Show Clusters" CanUserSort="False">
+                <DataGridTemplateColumn Header="Show Clusters">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type local:DbScanHistory}">
+                            <!-- WATCH OUT => UpdateSourceTrigger=PropertyChanged DUE TO YET ANOTHER ISSUE IN WPF framework (if we could call this piece of shit a framework) -->
                             <ToggleButton
                                 Style="{StaticResource MaterialDesignSwitchLightToggleButton}"
-                                IsChecked="{Binding ShowClusters}" />
+                                IsChecked="{Binding ShowClusters, UpdateSourceTrigger=PropertyChanged}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
