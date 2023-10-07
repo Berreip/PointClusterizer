@@ -16,7 +16,7 @@ internal sealed class AlgorithmDbScanViewModel : AlgorithmViewModelBase<DbScanHi
     public AlgorithmDbScanViewModel(IAlgorithmExecutor algorithmExecutor, IDisplayImageAndClusterController displayImageAndClusterController)
         : base(algorithmExecutor, displayImageAndClusterController)
     {
-        _epsilonDbScan = 20;
+        _epsilonDbScan = 5;
         _minimumPointsPerCluster = 4;
     }
 

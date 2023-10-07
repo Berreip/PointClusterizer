@@ -16,5 +16,7 @@ internal interface IDisplayImageAndClusterController
     void ClearCurrentImage();
     void SetNewCurrentImage(BitmapImage newImage);
     ICollectionView AllPointsImages { get; }
+    ICollectionView AllClusters { get; }
+    bool ShowPointsOnMap { get; set; }
     BitmapImage? GetCurrentImage();
 }

@@ -38,11 +38,11 @@ internal abstract class HistoryBase : ViewModelBase, IDisposable
         NbInitialPoints = nbInitialPoints;
         NbClusters = clusterResults.ClusterResults.Count;
         UnClusteredPoint = clusterResults.UnClusteredPoint.Count;
-        _showClusters = true;
         if (sourceImage != null)
         {
             _sourceImageAdapter = new PointImageAdapter(sourceImage, false);
         }
+        ShowClusters = true;
     }
 
     public bool ShowClusters
@@ -77,5 +77,6 @@ internal abstract class HistoryBase : ViewModelBase, IDisposable
         {
             _displayImageAndClusterController.ShowOrHideSourceImage(false, _sourceImageAdapter);
         }
+        _displayImageAndClusterController.ShowOrHideClusters(false, _clusterResults);
     }
 }

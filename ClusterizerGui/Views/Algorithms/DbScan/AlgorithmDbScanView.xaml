@@ -58,7 +58,7 @@
                         Grid.Column="1"
                         Value="{Binding EpsilonDbScan}"
                         Minimum="1"
-                        Maximum="300"
+                        Maximum="40"
                         Style="{StaticResource MaterialDesignDiscreteSlider}"
                         TickFrequency="1" />
 

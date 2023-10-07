@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using ClusterizerGui.Utils;
 using ClusterizerGui.Utils.BitmapGeneration;
+using ClusterizerGui.Utils.MathMisc;
 using ClusterizerGui.Views.Algorithms;
 using ClusterizerGui.Views.Algorithms.Adapters;
 using ClusterizerGui.Views.Algorithms.DbScan;
@@ -58,7 +60,7 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
         // create an executor that will be provided to every algorithm
         var executor = new AlgorithmExecutor(() => Points.ToArray<IPoint>(), o => IsIdle = o);
         DisplayController = new DisplayImageAndClusterController();
-        
+
         AlgorithmsAvailable = ObservableCollectionSource.GetDefaultView(new[]
         {
             new AlgorithmAvailableAdapter("DBSCAN - density-based spatial clustering", () =>
@@ -78,7 +80,6 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
         _selectedClickDispersion = AvailableClickDispersion[2];
     }
 
-   
 
     public AlgorithmAvailableAdapter? SelectedAlgorithm
     {
@@ -125,10 +126,7 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
             Points.AddRange(points);
 
             // Regenerate Bitmap:
-            using (var bmp = BitmapGeneratorFromPoints.GenerateBitmapFromPoint(Points))
-            {
-                DisplayController.SetNewCurrentImage(bmp.GetBitmapImage());
-            }
+            DisplayController.SetNewCurrentImage(Points.GenerateBitmapImageFromPoint(Color.GreenYellow));
         }, () => IsIdle = true).ConfigureAwait(false);
     }
 
@@ -171,26 +169,88 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
         get => _addPointOnClick;
         set => SetProperty(ref _addPointOnClick, value);
     }
-    
+
     private sealed class DisplayImageAndClusterController : ViewModelBase, IDisplayImageAndClusterController
     {
+        private class ClusterBag
+        {
+            public ClusterAdapter[] Adapter { get; }
+            public PointImageAdapter ImageUnclusterized { get; }
+            public PointImageAdapter ImageClusters { get; }
+
+            public ClusterBag(ClusterAdapter[] adapter, BitmapImage imageUnclusterized, BitmapImage imageClusters)
+            {
+                Adapter = adapter;
+                ImageUnclusterized = new PointImageAdapter(imageUnclusterized, false);
+                ImageClusters = new PointImageAdapter(imageClusters, false);
+            }
+        }
+
         private PointImageAdapter? _currentMainImage;
         private readonly ObservableCollectionRanged<PointImageAdapter> _allPointImages;
+        private readonly ObservableCollectionRanged<ClusterAdapter> _allClusters;
         public ICollectionView AllPointsImages { get; }
-        public BitmapImage? GetCurrentImage()
-        {
-            return _currentMainImage?.BitmapImage;
-        }
+        public ICollectionView AllClusters { get; }
+        private readonly ConcurrentDictionary<ClusterGlobalResult<IPoint>, ClusterBag> _clusterAdapterByResult = new ConcurrentDictionary<ClusterGlobalResult<IPoint>, ClusterBag>();
+        private bool _showPointsOnMap = true;
 
         public DisplayImageAndClusterController()
         {
             AllPointsImages = ObservableCollectionSource.GetDefaultView(out _allPointImages);
             AllPointsImages.SortDescriptions.Add(new SortDescription(nameof(PointImageAdapter.IsMainImage), ListSortDirection.Ascending));
+
+            AllClusters = ObservableCollectionSource.GetDefaultView(out _allClusters);
+        }
+
+        public BitmapImage? GetCurrentImage()
+        {
+            return _currentMainImage?.BitmapImage;
         }
         
+        public bool ShowPointsOnMap
+        {
+            get => _showPointsOnMap;
+            set
+            {
+                if (SetProperty(ref _showPointsOnMap, value) && _currentMainImage != null)
+                {
+                    ShowOrHideSourceImage(value, _currentMainImage);
+                }
+            }
+        }
+
         public void ShowOrHideClusters(bool value, ClusterGlobalResult<IPoint> clusterResults)
         {
-            
+            if (value)
+            {
+                // generate adapter:
+                var adapters = clusterResults.ClusterResults.Select(o => new ClusterAdapter(o.Points.Count, MathHelper.Compute3dCentroid(o.Points))).ToArray();
+
+                // create both images:
+                var imageUnclusterized = clusterResults.UnClusteredPoint.GenerateBitmapImageFromPoint(Color.Cyan);
+                var imageClusters = adapters.SelectMany(o => o.GetCentroidAndPointsAround()).GenerateBitmapImageFromPoint(Color.Red);
+
+                var clusterBag = new ClusterBag(adapters, imageUnclusterized, imageClusters);
+                if (_clusterAdapterByResult.TryAdd(clusterResults, clusterBag))
+                {
+                    _allPointImages.Add(clusterBag.ImageUnclusterized);
+                    _allPointImages.Add(clusterBag.ImageClusters);
+                    _allClusters.AddRange(adapters);
+                    // plus generate image for each unclusterized points and cluster them self for now...
+                }
+            }
+            else
+            {
+                if (_clusterAdapterByResult.TryRemove(clusterResults, out var clusterBag))
+                {
+                    foreach (var clusterAdapter in clusterBag.Adapter)
+                    {
+                        _allClusters.Remove(clusterAdapter);
+                    }
+                    _allPointImages.Remove(clusterBag.ImageUnclusterized);
+                    _allPointImages.Remove(clusterBag.ImageClusters);
+                }
+            }
         }
 
         public void ShowOrHideSourceImage(bool value, PointImageAdapter sourceImage)
@@ -223,8 +283,16 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
             }
 
             var adapter = new PointImageAdapter(newImage, true);
-            _currentMainImage = adapter; 
-            _allPointImages.Add(adapter);
+            _currentMainImage = adapter;
+            if (_showPointsOnMap)
+            {
+                _allPointImages.Add(adapter);
+            }
+            else
+            {
+                // re-enable point
+                ShowPointsOnMap = true;
+            }
         }
     }
 
@@ -250,5 +318,4 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
                 .ConfigureAwait(false);
         }
     }
-
 }

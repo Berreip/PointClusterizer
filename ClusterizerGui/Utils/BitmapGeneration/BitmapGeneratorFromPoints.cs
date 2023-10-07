@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Windows.Media.Imaging;
 using ClusterizerGui.Utils.Aggregators;
 using ClusterizerLib;
 
@@ -9,7 +10,15 @@ namespace ClusterizerGui.Utils.BitmapGeneration;
 
 internal static class BitmapGeneratorFromPoints
 {
-    public static Bitmap GenerateBitmapFromPoint(IEnumerable<IPoint> points)
+    public static BitmapImage GenerateBitmapImageFromPoint(this IEnumerable<IPoint> points, Color pointColor)
+    {
+        using (var bmp = GenerateBitmapFromPoint(points, pointColor))
+        {
+            return bmp.GetBitmapImage();
+        }
+    }
+    
+    public static Bitmap GenerateBitmapFromPoint(IEnumerable<IPoint> points, Color pointColor)
     {
         // aggregate similar point rounded to int
         var pointsAggregated = PointsRoundedAggregator.AggregateSimilarPoints(
@@ -46,7 +55,7 @@ internal static class BitmapGeneratorFromPoints
                     {
                         if (arrayPoints.TryGetPointAltitude(widthCursor, heightCursor, out var altitude))
                         {
-                            var color = ColorByAltitudeProvider.GetColor(altitude);
+                            var color = ColorByAltitudeProvider.GetColor(altitude, pointColor);
                             currentLine[x] = color.B; //blue
                             currentLine[x + 1] = color.G; //green
                             currentLine[x + 2] = color.R; //red
