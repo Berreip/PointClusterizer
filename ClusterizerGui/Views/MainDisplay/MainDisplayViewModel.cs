@@ -1,21 +1,18 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 using ClusterizerGui.Utils;
 using ClusterizerGui.Utils.BitmapGeneration;
-using ClusterizerGui.Utils.MathMisc;
 using ClusterizerGui.Views.Algorithms;
 using ClusterizerGui.Views.Algorithms.Adapters;
 using ClusterizerGui.Views.Algorithms.DbScan;
 using ClusterizerGui.Views.Algorithms.GridBase;
 using ClusterizerGui.Views.MainDisplay.Adapters;
+using ClusterizerGui.Views.MainDisplay.Display;
 using ClusterizerLib;
-using ClusterizerLib.Results;
 using PRF.WPFCore;
 using PRF.WPFCore.Commands;
 using PRF.WPFCore.CustomCollections;
@@ -77,7 +74,7 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
 
         SelectedAlgorithm = algorithmsAvailable.FirstOrDefault();
         _selectedNbPoints = AvailableNbPoints[3];
-        _selectedClickDispersion = AvailableClickDispersion[2];
+        _selectedClickDispersion = AvailableClickDispersion[1];
     }
 
 
@@ -126,7 +123,7 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
             Points.AddRange(points);
 
             // Regenerate Bitmap:
-            DisplayController.SetNewCurrentImage(Points.GenerateBitmapImageFromPoint(Color.GreenYellow));
+            DisplayController.SetNewCurrentImage(Points.GenerateBitmapImageFromPoint(Color.Purple));
         }, () => IsIdle = true).ConfigureAwait(false);
     }
 
@@ -170,131 +167,6 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
         set => SetProperty(ref _addPointOnClick, value);
     }
 
-    private sealed class DisplayImageAndClusterController : ViewModelBase, IDisplayImageAndClusterController
-    {
-        private class ClusterBag
-        {
-            public ClusterAdapter[] Adapter { get; }
-            public PointImageAdapter ImageUnclusterized { get; }
-            public PointImageAdapter ImageClusters { get; }
-
-            public ClusterBag(ClusterAdapter[] adapter, BitmapImage imageUnclusterized, BitmapImage imageClusters)
-            {
-                Adapter = adapter;
-                ImageUnclusterized = new PointImageAdapter(imageUnclusterized, false);
-                ImageClusters = new PointImageAdapter(imageClusters, false);
-            }
-        }
-
-        private PointImageAdapter? _currentMainImage;
-        private readonly ObservableCollectionRanged<PointImageAdapter> _allPointImages;
-        private readonly ObservableCollectionRanged<ClusterAdapter> _allClusters;
-        public ICollectionView AllPointsImages { get; }
-        public ICollectionView AllClusters { get; }
-        private readonly ConcurrentDictionary<ClusterGlobalResult<IPoint>, ClusterBag> _clusterAdapterByResult = new ConcurrentDictionary<ClusterGlobalResult<IPoint>, ClusterBag>();
-        private bool _showPointsOnMap = true;
-
-        public DisplayImageAndClusterController()
-        {
-            AllPointsImages = ObservableCollectionSource.GetDefaultView(out _allPointImages);
-            AllPointsImages.SortDescriptions.Add(new SortDescription(nameof(PointImageAdapter.IsMainImage), ListSortDirection.Ascending));
-
-            AllClusters = ObservableCollectionSource.GetDefaultView(out _allClusters);
-        }
-
-        public BitmapImage? GetCurrentImage()
-        {
-            return _currentMainImage?.BitmapImage;
-        }
-        
-        public bool ShowPointsOnMap
-        {
-            get => _showPointsOnMap;
-            set
-            {
-                if (SetProperty(ref _showPointsOnMap, value) && _currentMainImage != null)
-                {
-                    ShowOrHideSourceImage(value, _currentMainImage);
-                }
-            }
-        }
-
-        public void ShowOrHideClusters(bool value, ClusterGlobalResult<IPoint> clusterResults)
-        {
-            if (value)
-            {
-                // generate adapter:
-                var adapters = clusterResults.ClusterResults.Select(o => new ClusterAdapter(o.Points.Count, MathHelper.Compute3dCentroid(o.Points))).ToArray();
-
-                // create both images:
-                var imageUnclusterized = clusterResults.UnClusteredPoint.GenerateBitmapImageFromPoint(Color.Cyan);
-                var imageClusters = adapters.SelectMany(o => o.GetCentroidAndPointsAround()).GenerateBitmapImageFromPoint(Color.Red);
-
-                var clusterBag = new ClusterBag(adapters, imageUnclusterized, imageClusters);
-                if (_clusterAdapterByResult.TryAdd(clusterResults, clusterBag))
-                {
-                    _allPointImages.Add(clusterBag.ImageUnclusterized);
-                    _allPointImages.Add(clusterBag.ImageClusters);
-                    _allClusters.AddRange(adapters);
-                    // plus generate image for each unclusterized points and cluster them self for now...
-                }
-            }
-            else
-            {
-                if (_clusterAdapterByResult.TryRemove(clusterResults, out var clusterBag))
-                {
-                    foreach (var clusterAdapter in clusterBag.Adapter)
-                    {
-                        _allClusters.Remove(clusterAdapter);
-                    }
-                    _allPointImages.Remove(clusterBag.ImageUnclusterized);
-                    _allPointImages.Remove(clusterBag.ImageClusters);
-                }
-            }
-        }
-
-        public void ShowOrHideSourceImage(bool value, PointImageAdapter sourceImage)
-        {
-            if (value)
-            {
-                _allPointImages.Add(sourceImage);
-            }
-            else
-            {
-                _allPointImages.Remove(sourceImage);
-            }
-        }
-
-        public void ClearCurrentImage()
-        {
-            var img = _currentMainImage;
-            if (img != null && _allPointImages.Remove(img))
-            {
-                _currentMainImage = null;
-            }
-        }
-
-        public void SetNewCurrentImage(BitmapImage newImage)
-        {
-            var previous = _currentMainImage;
-            if (previous != null)
-            {
-                _allPointImages.Remove(previous);
-            }
-
-            var adapter = new PointImageAdapter(newImage, true);
-            _currentMainImage = adapter;
-            if (_showPointsOnMap)
-            {
-                _allPointImages.Add(adapter);
-            }
-            else
-            {
-                // re-enable point
-                ShowPointsOnMap = true;
-            }
-        }
-    }
 
     private sealed class AlgorithmExecutor : IAlgorithmExecutor
     {
@@ -318,4 +190,6 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
                 .ConfigureAwait(false);
         }
     }
+    
+
 }

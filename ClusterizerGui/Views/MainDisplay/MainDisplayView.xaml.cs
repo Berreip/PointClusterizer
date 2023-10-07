@@ -29,11 +29,11 @@ internal partial class MainDisplayView : INavigeablePanel
 
     private void CanvasEarth_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
     {
-        var mousePosition = Mouse.GetPosition(CanvasEarth);
+        var mousePosition = Mouse.GetPosition(GridImage);
         // Compute the position of the mouse relatively to the current display size of the earth:
         var absoluteMousePositionFromImageReference = new Point(
-            Math.Clamp((int)((mousePosition.X/CanvasEarth.ActualWidth) * ClusterizerGuiConstants.IMAGE_WIDTH), 0, ClusterizerGuiConstants.IMAGE_WIDTH),
-            Math.Clamp((int)((mousePosition.Y/CanvasEarth.ActualHeight) * ClusterizerGuiConstants.IMAGE_HEIGHT), 0, ClusterizerGuiConstants.IMAGE_HEIGHT));
+            Math.Clamp((int)((mousePosition.X/GridImage.ActualWidth) * ClusterizerGuiConstants.IMAGE_WIDTH), 0, ClusterizerGuiConstants.IMAGE_WIDTH),
+            Math.Clamp((int)((mousePosition.Y/GridImage.ActualHeight) * ClusterizerGuiConstants.IMAGE_HEIGHT), 0, ClusterizerGuiConstants.IMAGE_HEIGHT));
         _vm.GeneratePointsOnClick(absoluteMousePositionFromImageReference);
     }
 }

@@ -34,6 +34,8 @@ internal abstract class AlgorithmViewModelBase<T>: ViewModelBase where T : Histo
         await _algorithmExecutor.ExecuteAsync(points =>
         {
             _history.Add(ExecuteAlgorithmImplementation(img, points));
+            // hide initial data points
+            _displayImageAndClusterController.ShowPointsOnMap = false;
         }).ConfigureAwait(false);
     }
 

@@ -6,6 +6,8 @@
              xmlns:local="clr-namespace:ClusterizerGui.Views.MainDisplay"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:adapters="clr-namespace:ClusterizerGui.Views.MainDisplay.Adapters"
+             xmlns:display="clr-namespace:ClusterizerGui.Views.MainDisplay.Display"
+             xmlns:System="clr-namespace:System;assembly=System.Runtime"
              Background="{DynamicResource MaterialDesignPaper}"
              mc:Ignorable="d"
              d:DesignHeight="1000" d:DesignWidth="1600" x:ClassModifier="internal"
@@ -28,65 +30,98 @@
                     <ColumnDefinition Width="Auto" MinWidth="300" />
                 </Grid.ColumnDefinitions>
 
-                <!-- EARTH IMAGE -->
-                <Canvas Margin="2" x:Name="CanvasEarth"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
-                        MouseLeftButtonUp="CanvasEarth_OnMouseLeftButtonUp">
-                    <Image Source="/Ressources/earth.jpg" Stretch="Fill"
-                           Width="{Binding Path=ActualWidth, ElementName=CanvasEarth}"
-                           Height="{Binding Path=ActualHeight, ElementName=CanvasEarth}" />
-
-                    <!-- IMAGES OF POINTS -->
-                    <ItemsControl ItemsSource="{Binding DisplayController.AllPointsImages}">
+                <Grid x:Name="GridImage"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      MouseLeftButtonUp="CanvasEarth_OnMouseLeftButtonUp">
+                    <!-- EARTH IMAGE AND OTHER DATA TO DISPLAY -->
+                    <ItemsControl ItemsSource="{Binding DisplayController.AllCanvasItems}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <!-- all superposed inside the same grid -->
-                                <Grid />
+                                <Canvas Margin="2" x:Name="CanvasEarth" />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
 
-                        <ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="ContentPresenter" d:DataContext="{d:DesignInstance display:ICanvasItemAdapter}">
+                                <!-- Canvas.Left="{Binding Converter={StaticResource RelativePositionConverter}, -->
+                                <!--  ElementName=CanvasEarth, -->
+                                <!--  Path=ActualWidth, -->
+                                <!--  ConverterParameter={Binding WidthPercentage}}" -->
+
+                                <!-- Canvas.Top="{Binding Converter={StaticResource RelativePositionConverter}, -->
+                                <!-- ElementName=CanvasEarth,  -->
+                                <!-- Path=ActualHeight,  -->
+                                <!-- ConverterParameter={Binding HeightPercentage}}" -->
+
+                                <!-- <Setter Property="Canvas.Left" Value="{Binding Path=XPos}" /> -->
+                                <Setter Property="Canvas.Left">
+                                    <Setter.Value>
+                                        <MultiBinding Converter="{StaticResource RelativePositionConverter}">
+                                            <MultiBinding.Bindings>
+                                                <Binding ElementName="CanvasEarth" Path="ActualWidth" />
+                                                <Binding Path="WidthPercentage" />
+                                            </MultiBinding.Bindings>
+                                        </MultiBinding>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Canvas.Top">
+                                    <Setter.Value>
+                                        <MultiBinding Converter="{StaticResource RelativePositionConverter}">
+                                            <MultiBinding.Bindings>
+                                                <Binding ElementName="CanvasEarth" Path="ActualHeight" />
+                                                <Binding Path="HeightPercentage" />
+                                            </MultiBinding.Bindings>
+                                        </MultiBinding>
+                                    </Setter.Value>
+                                </Setter>
+
+                                <!-- <Setter Property="Canvas.Top" -->
+                                <!--         Value="{Binding  -->
+                                <!--             Converter={StaticResource RelativePositionConverter}, -->
+                                <!--             ElementName=CanvasEarth, -->
+                                <!--             Path=ActualHeight, -->
+                                <!--             ConverterParameter=0}" /> -->
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+
+                        <ItemsControl.Resources>
+                            <!-- IMAGES OF THE EARTH -->
+                            <DataTemplate DataType="{x:Type adapters:EarthImageAdapter}">
+                                <Image Source="/Ressources/earth.jpg" Stretch="Fill"
+                                       Width="{Binding Path=ActualWidth, ElementName=CanvasEarth}"
+                                       Height="{Binding Path=ActualHeight, ElementName=CanvasEarth}" />
+                            </DataTemplate>
+
+                            <!-- IMAGES OF POINTS -->
                             <DataTemplate DataType="{x:Type adapters:PointImageAdapter}">
                                 <!-- SHOW the current image of points-->
                                 <Image Source="{Binding .BitmapImage}" Stretch="Fill"
                                        Width="{Binding Path=ActualWidth, ElementName=CanvasEarth}"
                                        Height="{Binding Path=ActualHeight, ElementName=CanvasEarth}" />
                             </DataTemplate>
-                        </ItemsControl.ItemTemplate>
+
+                            <DataTemplate DataType="{x:Type adapters:ClusterAdapter}">
+                                <Path Stroke="Black"
+                                      StrokeThickness="1"
+                                      Fill="Orange"
+                                      Opacity="0.6">
+                                    <Path.ToolTip>
+                                        <ToolTip StaysOpen="True" Placement="Top" HorizontalOffset="10"
+                                                 ToolTipService.InitialShowDelay="0" ToolTipService.BetweenShowDelay="0"
+                                                 ToolTipService.ShowDuration="{x:Static Member=System:Int32.MaxValue}"
+                                                 Content="{Binding TooltipText}"/>
+                                    </Path.ToolTip>
+                                    <Path.Data>
+                                        <EllipseGeometry
+                                            RadiusX="{Binding Radius}"
+                                            RadiusY="{Binding Radius}" />
+                                    </Path.Data>
+                                </Path>
+                            </DataTemplate>
+                        </ItemsControl.Resources>
                     </ItemsControl>
-                    
-                    <!-- TODO: display cluster as circle -->
-                    <!-- <ItemsControl ItemsSource="{Binding DisplayController.AllClusters}"> -->
-                    <!--     <ItemsControl.ItemsPanel> -->
-                    <!--         <ItemsPanelTemplate> -->
-                    <!--             ~1~ all superposed inside the same grid @1@ -->
-                    <!--             <Grid /> -->
-                    <!--         </ItemsPanelTemplate> -->
-                    <!--     </ItemsControl.ItemsPanel> -->
-                    <!-- -->
-                    <!--     <ItemsControl.ItemTemplate> -->
-                    <!--         <DataTemplate DataType="{x:Type adapters:ClusterAdapter}"> -->
-                    <!--             ~1~ Canvas.Left="{Binding Converter={StaticResource RelativePositionConverter}, @1@ -->
-                    <!--             ~1~  ElementName=CanvasEarth,  @1@ -->
-                    <!--             ~1~  Path=ActualWidth,  @1@ -->
-                    <!--             ~1~  ConverterParameter={Binding WidthPercentage}}" @1@ -->
-                    <!--             ~1~ @1@ -->
-                    <!--             ~1~ Canvas.Top="{Binding Converter={StaticResource RelativePositionConverter}, @1@ -->
-                    <!--             ~1~ ElementName=CanvasEarth,  @1@ -->
-                    <!--             ~1~ Path=ActualHeight,  @1@ -->
-                    <!--             ~1~ ConverterParameter={Binding HeightPercentage}}" @1@ -->
-                    <!--             <Ellipse -->
-                    <!--                 Width="{Binding Radius}" -->
-                    <!--                 Height="{Binding Radius}" -->
-                    <!--                 Fill="LightGreen" -->
-                    <!--                 Opacity="0.4" -->
-                    <!--                 Canvas.Left="100" -->
-                    <!--                 Canvas.Top="250" /> -->
-                    <!--         </DataTemplate> -->
-                    <!--     </ItemsControl.ItemTemplate> -->
-                    <!-- </ItemsControl> -->
-                </Canvas>
+                </Grid>
 
                 <!-- VERTICAL SEPARATOR -->
                 <GridSplitter Grid.Column="1"
@@ -146,7 +181,7 @@
                                        IsEnabled="{Binding AddPointOnClick}"
                                        Content="Dispersion:"
                                        ToolTip="The distribution factor when adding points from a click"
-                                       VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                                       VerticalAlignment="Center" HorizontalAlignment="Right" />
 
                                 <ComboBox Grid.Column="2" Margin="10"
                                           IsEnabled="{Binding AddPointOnClick}"

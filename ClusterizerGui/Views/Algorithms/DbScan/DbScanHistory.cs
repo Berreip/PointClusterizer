@@ -3,7 +3,6 @@ using System.Windows.Media.Imaging;
 using ClusterizerGui.Views.MainDisplay;
 using ClusterizerLib;
 using ClusterizerLib.Results;
-using PRF.WPFCore;
 
 namespace ClusterizerGui.Views.Algorithms.DbScan;
 

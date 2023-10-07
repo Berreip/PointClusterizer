@@ -19,4 +19,9 @@ internal sealed class PointAdapter : ViewModelBaseUnchecked, IPoint
     }
 
     public Point Point { get; }
+
+    public override string ToString()
+    {
+        return $"X={X:0.##} Y={Y:0.##} Z={Z:0.##}";
+    }
 }

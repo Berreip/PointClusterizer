@@ -15,8 +15,7 @@ internal interface IDisplayImageAndClusterController
     void ShowOrHideSourceImage(bool value, PointImageAdapter sourceImage);
     void ClearCurrentImage();
     void SetNewCurrentImage(BitmapImage newImage);
-    ICollectionView AllPointsImages { get; }
-    ICollectionView AllClusters { get; }
     bool ShowPointsOnMap { get; set; }
+    public ICollectionView AllCanvasItems { get; }
     BitmapImage? GetCurrentImage();
 }

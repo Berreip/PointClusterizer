@@ -48,7 +48,7 @@ internal sealed class PointRoundedTests
         //Assert
         Assert.AreEqual(2, hash.Count);
     }
-
+    
     [Test]
     public void Check_That_Not_Equals_point_are_filtered_in_a_hashset_for_Z_not_equals()
     {
