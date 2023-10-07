@@ -12,7 +12,7 @@
              d:DataContext="{d:DesignInstance local:AlgorithmDbScanViewModel, IsDesignTimeCreatable=False}">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="3*" MaxWidth="400" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="7*" />
         </Grid.ColumnDefinitions>
@@ -168,7 +168,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Nb. Total Points" SortMemberPath="NbInitialPoints">
+                <DataGridTemplateColumn Header="Total Points" SortMemberPath="NbInitialPoints">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type local:DbScanHistory}">
                             <Label Content="{Binding NbInitialPoints}" HorizontalAlignment="Center" />

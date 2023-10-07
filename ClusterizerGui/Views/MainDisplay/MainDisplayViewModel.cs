@@ -57,19 +57,15 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
         // create an executor that will be provided to every algorithm
         var executor = new AlgorithmExecutor(() => Points.ToArray<IPoint>(), o => IsIdle = o);
         DisplayController = new DisplayImageAndClusterController();
-
+        
+        // hold vm to hold results
+        var vmDbScan = new AlgorithmDbScanViewModel(executor, DisplayController);
+        var vmGridBase = new AlgorithmGridBaseViewModel(executor, DisplayController);
+        
         AlgorithmsAvailable = ObservableCollectionSource.GetDefaultView(new[]
         {
-            new AlgorithmAvailableAdapter("DBSCAN - density-based spatial clustering", () =>
-            {
-                var vm = new AlgorithmDbScanViewModel(executor, DisplayController);
-                return new AlgorithmDbScanView(vm);
-            }),
-            new AlgorithmAvailableAdapter("Grid-Based Subspace Clustering (CLIQUE/STING)", () =>
-            {
-                var vm = new AlgorithmGridBaseViewModel(executor, DisplayController);
-                return new AlgorithmGridBaseView(vm);
-            })
+            new AlgorithmAvailableAdapter("DBSCAN - density-based spatial clustering", () => new AlgorithmDbScanView(vmDbScan)),
+            new AlgorithmAvailableAdapter("Grid-Based Subspace Clustering (CLIQUE/STING)", () => new AlgorithmGridBaseView(vmGridBase))
         }, out var algorithmsAvailable);
 
         SelectedAlgorithm = algorithmsAvailable.FirstOrDefault();

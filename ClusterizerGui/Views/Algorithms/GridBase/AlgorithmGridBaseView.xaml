@@ -5,13 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:ClusterizerGui.Views.Algorithms.GridBase"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:validationRules="clr-namespace:ClusterizerGui.Utils.ValidationRules"
              Background="{DynamicResource MaterialDesignPaper}"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="1200" x:ClassModifier="internal"
              d:DataContext="{d:DesignInstance local:AlgorithmGridBaseViewModel, IsDesignTimeCreatable=False}">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="3*" MaxWidth="400" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="7*" />
         </Grid.ColumnDefinitions>
@@ -33,6 +34,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Label FontSize="16"
                        Margin="10, 4"
@@ -40,49 +42,108 @@
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center" />
                 <Separator Grid.Row="1" Margin="10" />
+
+                <!-- Nb column -->
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="100" />
+                    </Grid.ColumnDefinitions>
+                    <Label Margin="10, 4" Content="Nb Columns:" VerticalAlignment="Center" />
+
+                    <ComboBox Grid.Column="1" Margin="10" MinWidth="200"
+                              VerticalAlignment="Center"
+                              ItemsSource="{Binding AvailableNbColumns}"
+                              SelectedItem="{Binding SelectedNbColumn}">
+                        <ComboBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel />
+                            </ItemsPanelTemplate>
+                        </ComboBox.ItemsPanel>
+                    </ComboBox>
+                </Grid>
+
+                <!-- Nb Rows -->
+                <Grid Grid.Row="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="100" />
+                    </Grid.ColumnDefinitions>
+                    <Label Margin="10, 4" Content="Nb Rows:" VerticalAlignment="Center" />
+
+                    <ComboBox Grid.Column="1" Margin="10" MinWidth="200"
+                              VerticalAlignment="Center"
+                              ItemsSource="{Binding AvailableNbRows}"
+                              SelectedItem="{Binding SelectedNbRows}">
+                        <ComboBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel />
+                            </ItemsPanelTemplate>
+                        </ComboBox.ItemsPanel>
+                    </ComboBox>
+                </Grid>
                 
-                 <!-- Nb column -->
-                        <Grid Grid.Row="2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="100" />
-                            </Grid.ColumnDefinitions>
-                            <Label Margin="10, 4" Content="Nb Columns:" VerticalAlignment="Center" />
+                <Grid Grid.Row="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label Margin="10, 4" Content="Density Threshold"
+                           ToolTip="The clustering density threshold required into a cell to create a cluster"
+                           VerticalAlignment="Center" />
 
-                            <ComboBox Grid.Column="1" Margin="10" MinWidth="200"
-                                      VerticalAlignment="Center"
-                                      ItemsSource="{Binding AvailableNbColumns}"
-                                      SelectedItem="{Binding SelectedNbColumn}">
-                                <ComboBox.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <VirtualizingStackPanel />
-                                    </ItemsPanelTemplate>
-                                </ComboBox.ItemsPanel>
-                            </ComboBox>
-                        </Grid>
+                    <Slider
+                        VerticalAlignment="Center"
+                        ToolTip="The minimum number of points required to create a cluster or to add additional points to the cluster."
+                        Margin="5"
+                        Grid.Column="1"
+                        Value="{Binding MinimumDensity}"
+                        Minimum="5"
+                        Maximum="200"
+                        Style="{StaticResource MaterialDesignDiscreteSlider}"
+                        TickFrequency="1" />
 
-                        <!-- Nb Rows -->
-                        <Grid Grid.Row="3">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="100" />
-                            </Grid.ColumnDefinitions>
-                            <Label Margin="10, 4" Content="Nb Rows:" VerticalAlignment="Center" />
+                    <TextBox
+                        Grid.Column="2"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        VerticalAlignment="Center"
+                        Width="100"
+                        Margin="10"
+                        AcceptsReturn="True"
+                        TextWrapping="Wrap"
+                        VerticalScrollBarVisibility="Auto">
+                        <TextBox.Text>
+                            <Binding Path="MinimumDensity" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <validationRules:InRangeIntegerValidationRule MinValue="1" MaxValue="50" />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                </Grid>
 
-                            <ComboBox Grid.Column="1" Margin="10" MinWidth="200"
-                                      VerticalAlignment="Center"
-                                      ItemsSource="{Binding AvailableNbRows}"
-                                      SelectedItem="{Binding SelectedNbRows}">
-                                <ComboBox.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <VirtualizingStackPanel />
-                                    </ItemsPanelTemplate>
-                                </ComboBox.ItemsPanel>
-                            </ComboBox>
-                        </Grid>
+                <!-- Nb passes -->
+                <Grid Grid.Row="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="100" />
+                    </Grid.ColumnDefinitions>
+                    <Label Margin="10, 4" Content="Nb passes:" VerticalAlignment="Center" />
 
+                    <ComboBox Grid.Column="1" Margin="10" MinWidth="200"
+                              VerticalAlignment="Center"
+                              ItemsSource="{Binding AvailablePassesNumber}"
+                              SelectedItem="{Binding SelectedPassesNumber}">
+                        <ComboBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel />
+                            </ItemsPanelTemplate>
+                        </ComboBox.ItemsPanel>
+                    </ComboBox>
+                </Grid>
 
-                <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center">
+                <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button Margin="20, 4"
                             Content="Run Grid-based Clustering"
                             Command="{Binding RunAlgorithmCommand}" />
@@ -93,7 +154,7 @@
                 </StackPanel>
             </Grid>
         </materialDesign:ColorZone>
-        
+
         <!-- VERTICAL SEPARATOR -->
         <GridSplitter Grid.Column="1"
                       Margin="1"
@@ -102,8 +163,8 @@
                       Background="Transparent"
                       ShowsPreview="True"
                       Width="4" />
-        
-                <!-- RESULTS -->
+
+        <!-- RESULTS -->
         <DataGrid Grid.Column="2"
                   MinHeight="100"
                   ItemsSource="{Binding History}"
@@ -121,13 +182,13 @@
 
                 <DataGridTemplateColumn Header="Duration (s)" SortMemberPath="Duration">
                     <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate DataType="{x:Type local:GridBasedHistory}" >
+                        <DataTemplate DataType="{x:Type local:GridBasedHistory}">
                             <Label Content="{Binding DurationInSecond}" HorizontalAlignment="Center" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Nb. Total Points" SortMemberPath="NbInitialPoints">
+                <DataGridTemplateColumn Header="Total Points" SortMemberPath="NbInitialPoints">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type local:GridBasedHistory}">
                             <Label Content="{Binding NbInitialPoints}" HorizontalAlignment="Center" />
@@ -142,7 +203,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                
+
                 <DataGridTemplateColumn Header="Nb. Un-Clustered Points" SortMemberPath="UnClusteredPoint">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type local:GridBasedHistory}">
@@ -150,10 +211,64 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
+                
+                <DataGridTemplateColumn Header="Passes" SortMemberPath="SelectedPassesNumber">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type local:GridBasedHistory}">
+                            <Label Content="{Binding SelectedPassesNumber}" HorizontalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Min. density" SortMemberPath="MinimumDensity">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type local:GridBasedHistory}">
+                            <Label Content="{Binding MinimumDensity}" HorizontalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Columns" SortMemberPath="Columns">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type local:GridBasedHistory}">
+                            <Label Content="{Binding Columns}" HorizontalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Rows" SortMemberPath="Rows">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type local:GridBasedHistory}">
+                            <Label Content="{Binding Rows}" HorizontalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Points Img">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type local:GridBasedHistory}">
+                            <!-- WATCH OUT => UpdateSourceTrigger=PropertyChanged DUE TO YET ANOTHER ISSUE IN WPF framework (if we could call this piece of shit a framework) -->
+                            <ToggleButton
+                                Style="{StaticResource MaterialDesignSwitchDarkToggleButton}"
+                                IsChecked="{Binding ShowPointsImageRef, UpdateSourceTrigger=PropertyChanged}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Show Clusters">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type local:GridBasedHistory}">
+                            <!-- WATCH OUT => UpdateSourceTrigger=PropertyChanged DUE TO YET ANOTHER ISSUE IN WPF framework (if we could call this piece of shit a framework) -->
+                            <ToggleButton
+                                Style="{StaticResource MaterialDesignSwitchLightToggleButton}"
+                                IsChecked="{Binding ShowClusters, UpdateSourceTrigger=PropertyChanged}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
 
     </Grid>
-    
-    
+
+
 </UserControl>
