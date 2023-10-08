@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ClusterizerGui.Views.MainDisplay;
 using ClusterizerLib;
 using ClusterizerLib.Results;
+using Color = System.Drawing.Color;
 
 namespace ClusterizerGui.Views.Algorithms.GridBase;
 
@@ -25,7 +27,7 @@ internal sealed class GridBasedHistory : HistoryBase
             duration,
             nbInitialPoints,
             clusterResults,
-            sourceImage)
+            sourceImage, Brushes.Orange, Color.Red)
     {
         MinimumDensity = minimumDensity;
         SelectedPassesNumber = selectedPassesNumber;

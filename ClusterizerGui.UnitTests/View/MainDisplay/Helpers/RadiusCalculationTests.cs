@@ -1,4 +1,5 @@
-﻿using ClusterizerGui.Views.MainDisplay.Helpers;
+﻿using System.Drawing;
+using ClusterizerGui.Views.MainDisplay.Helpers;
 
 namespace ClusterizerGui.UnitTests.View.MainDisplay.Helpers;
 
@@ -16,7 +17,7 @@ public class RadiusCalculationTests
         //Arrange
 
         //Act
-        var res = RadiusCalculation.ComputeRadiusFromPointCounts(pointsCount);
+        var res = RadiusCalculation.ComputeRadiusFromPointCountsLogBased(pointsCount, new Rectangle(0, 0, 10, 10));
 
         //Assert
         Assert.AreEqual(expectedRadius, res);

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ClusterizerGui.Utils.BitmapGeneration;
 using ClusterizerGui.Utils.MathMisc;
@@ -10,6 +10,8 @@ using ClusterizerLib;
 using ClusterizerLib.Results;
 using PRF.WPFCore;
 using PRF.WPFCore.CustomCollections;
+using Brushes = System.Windows.Media.Brushes;
+using Color = System.Drawing.Color;
 
 namespace ClusterizerGui.Views.MainDisplay.Display;
 
@@ -57,15 +59,15 @@ internal sealed class DisplayImageAndClusterController : ViewModelBase, IDisplay
         }
     }
 
-    public void ShowOrHideClusters(bool value, ClusterGlobalResult<IPoint> clusterResults)
+    public void ShowOrHideClusters(bool value, ClusterGlobalResult<IPoint> clusterResults, SolidColorBrush clusterColor, Color unclusteredPointsColor)
     {
         if (value)
         {
             // generate adapter:
-            var adapters = clusterResults.ClusterResults.Select(o => new ClusterAdapter(o.Points.Count, MathHelper.Compute3dCentroid(o.Points))).ToArray();
+            var adapters = clusterResults.ClusterResults.Select(o => new ClusterAdapter(clusterColor, o.Points.Count, MathHelper.ComputeClusterInfo(o.Points))).ToArray();
 
             // create both images:
-            var imageUnclusterized = clusterResults.UnClusteredPoint.GenerateBitmapImageFromPoint(Color.Red);
+            var imageUnclusterized = clusterResults.UnClusteredPoint.GenerateBitmapImageFromPoint(unclusteredPointsColor);
 
             var clusterBag = new ClusterBag(adapters, imageUnclusterized);
             if (_clusterAdapterByResult.TryAdd(clusterResults, clusterBag))

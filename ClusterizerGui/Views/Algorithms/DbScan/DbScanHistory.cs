@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ClusterizerGui.Views.MainDisplay;
 using ClusterizerLib;
 using ClusterizerLib.Results;
+using Color = System.Drawing.Color;
 
 namespace ClusterizerGui.Views.Algorithms.DbScan;
 
@@ -26,7 +28,7 @@ internal sealed class DbScanHistory : HistoryBase
             duration,
             nbInitialPoints,
             clusterResults,
-            sourceImage)
+            sourceImage, Brushes.Green, Color.DarkGreen)
     {
         Epsilon = epsilon;
         MinPointByCluster = minPointByCluster;

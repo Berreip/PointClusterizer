@@ -113,7 +113,7 @@
                             <DataTemplate DataType="{x:Type adapters:ClusterAdapter}">
                                 <Path Stroke="Black"
                                       StrokeThickness="1"
-                                      Fill="Orange"
+                                      Fill="{Binding ClusterColor}"
                                       Opacity="0.6">
                                     <Path.ToolTip>
                                         <ToolTip StaysOpen="True" Placement="Top" HorizontalOffset="10"
