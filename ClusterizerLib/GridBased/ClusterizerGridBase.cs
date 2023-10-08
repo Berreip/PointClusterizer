@@ -21,28 +21,28 @@ public static class ClusterizerGridBase
     /// <param name="nbRowTargeted">the grid rows number</param>
     /// <param name="nbColumnTargeted">the grid columns number</param>
     /// <param name="clusteringDensityThreshold">the density above which elements are clusterized </param>
-    /// <param name="numberOfPasses">the number of execution passes that will be done to check if another neighbour cell should be merged</param>
+    /// <param name="neighbouringMergingDistance">the number of execution passes that will be done to check if another neighbour cell should be merged</param>
     public static ClusterGlobalResult<T> Run<T>(IEnumerable<T> points,
         Rectangle aoi,
         int nbRowTargeted,
         int nbColumnTargeted,
         int clusteringDensityThreshold,
-        int numberOfPasses) where T : IPoint
+        int neighbouringMergingDistance) where T : IPoint
     {
-        if (numberOfPasses < 1 || nbRowTargeted < 1 || nbColumnTargeted < 1 || clusteringDensityThreshold < 1)
+        if (neighbouringMergingDistance < 1 || nbRowTargeted < 1 || nbColumnTargeted < 1 || clusteringDensityThreshold < 1)
         {
             throw new ArgumentException("numberOfPasses, nbRowTargeted, clusteringDensityThreshold and nbColumnTargeted should all be greater than zero");
         }
 
-        if (numberOfPasses > NUMBER_PASSSES_LIMIT)
+        if (neighbouringMergingDistance > NUMBER_PASSSES_LIMIT)
         {
-            throw new ArgumentException($"A numberOfPasses greater than {NUMBER_PASSSES_LIMIT} will be slow, may be less accurate and will not lead to better result (asked numberOfPasses = {numberOfPasses})");
+            throw new ArgumentException($"A numberOfPasses greater than {NUMBER_PASSSES_LIMIT} will be slow, may be less accurate and will not lead to better result (asked numberOfPasses = {neighbouringMergingDistance})");
         }
 
         var grid = new ResultGrid<T>(nbRowTargeted, nbColumnTargeted, aoi);
         grid.AddPoints(points);
 
-        return grid.ComputeClusters(clusteringDensityThreshold, numberOfPasses);
+        return grid.ComputeClusters(clusteringDensityThreshold, neighbouringMergingDistance);
     }
 
 
@@ -120,7 +120,8 @@ public static class ClusterizerGridBase
                 }
             }
 
-            if (numberOfPasses > 1)
+            var neighbouringDistance = numberOfPasses -1;
+            if (neighbouringDistance != 0)
             {
                 // then merge closest cells the expected number of times
                 for (var i = 0; i < _nbColumnTargeted; i++)
@@ -128,17 +129,20 @@ public static class ClusterizerGridBase
                     for (var j = 0; j < _nbRowTargeted; j++)
                     {
                         var potentialCluster = superClusterGrid[i, j];
-                        if (potentialCluster != null)
+                        // do not touch null or already merged cluster
+                        if (potentialCluster is { HasBeenMerged: false })
                         {
                             // try to merge with cluster around
-                            for (int ii = -numberOfPasses; ii <= numberOfPasses; ii++)
+                            for (int ii = -neighbouringDistance; ii <= neighbouringDistance; ii++)
                             {
-                                for (int jj = -numberOfPasses; jj < numberOfPasses; jj++)
+                                for (int jj = -neighbouringDistance; jj <= neighbouringDistance; jj++)
                                 {
+                                    var xIndex = i + ii;
+                                    var yIndex = j + jj;
                                     // search neighbours for cluster that are within bounds
-                                    if (ii >= 0 && jj >= 0 && ii < _nbColumnTargeted && jj < _nbRowTargeted)
+                                    if (xIndex >= 0 && yIndex >= 0 && xIndex < _nbColumnTargeted && yIndex < _nbRowTargeted)
                                     {
-                                        var neighbour = superClusterGrid[ii, jj];
+                                        var neighbour = superClusterGrid[xIndex, yIndex];
                                         // if there is a neighbour 
                                         if (neighbour != null
                                             // AND it is not already itself (after a merge)
@@ -149,7 +153,7 @@ public static class ClusterizerGridBase
                                             // merge them:
                                             potentialCluster.Merge(neighbour);
                                             // and use the potential cluster as the neighbour itself
-                                            superClusterGrid[ii, jj] = potentialCluster;
+                                            superClusterGrid[xIndex, yIndex] = potentialCluster;
                                         }
                                     }
                                 }

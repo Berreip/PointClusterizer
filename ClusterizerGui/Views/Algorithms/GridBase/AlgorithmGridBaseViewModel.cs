@@ -100,7 +100,7 @@ internal sealed class AlgorithmGridBaseViewModel : AlgorithmViewModelBase<GridBa
             nbRowTargeted: rows,
             nbColumnTargeted: columns,
             clusteringDensityThreshold: density,
-            numberOfPasses: numberOfPasses);
+            neighbouringMergingDistance: numberOfPasses);
 
         watch.Stop();
         return new GridBasedHistory(

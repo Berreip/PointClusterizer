@@ -50,5 +50,7 @@ internal abstract class AlgorithmViewModelBase<T>: ViewModelBase where T : Histo
         {
             data.Dispose();
         }
+        // show initial data points
+        _displayImageAndClusterController.ShowPointsOnMap = true;
     }
 }
