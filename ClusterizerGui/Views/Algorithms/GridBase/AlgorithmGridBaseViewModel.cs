@@ -31,9 +31,9 @@ internal sealed class AlgorithmGridBaseViewModel : AlgorithmViewModelBase<GridBa
     public AlgorithmGridBaseViewModel(IAlgorithmExecutor algorithmExecutor, IDisplayImageAndClusterController displayImageAndClusterController)
         : base(algorithmExecutor, displayImageAndClusterController)
     {
-        _selectedNbRows = AvailableNbRows[9];
-        _selectedNbColumn = AvailableNbColumns[19];
-        _selectedPassesNumber = AvailablePassesNumber[1];
+        _selectedNbRows = 15;
+        _selectedNbColumn = 30;
+        _selectedPassesNumber = 2;
         _minimumDensity = 20;
         _gridImageAdapter = new GridImageAdapter(BitmapImageHelpers.ComputeGridBitmapFromRowsAndColumns(_selectedNbRows, _selectedNbColumn));
     }
