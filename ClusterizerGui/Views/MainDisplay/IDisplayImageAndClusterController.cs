@@ -12,7 +12,7 @@ namespace ClusterizerGui.Views.MainDisplay;
 internal interface IDisplayImageAndClusterController
 {
     void ShowOrHideClusters(bool value, ClusterGlobalResult<IPoint> clusterResults);
-    void ShowOrHideSourceImage(bool value, PointImageAdapter sourceImage);
+    void ShowOrHideSourceImage(bool value, IPointImageAdapter sourceImage);
     void ClearCurrentImage();
     void SetNewCurrentImage(BitmapImage newImage);
     bool ShowPointsOnMap { get; set; }

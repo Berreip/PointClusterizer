@@ -11,15 +11,17 @@ namespace ClusterizerLib.GridBased;
 /// </summary>
 public static class ClusterizerGridBase
 {
+    public const int NUMBER_PASSSES_LIMIT = 6;
+
     /// <summary>
     /// Run the cluster on given points
     /// </summary>
     /// <param name="points">all points to cluster</param>
     /// <param name="aoi">the targeted Aoi</param>
-    /// <param name="nbRowTargeted">the final wanted row number</param>
-    /// <param name="nbColumnTargeted">the final wanted colum</param>
-    /// <param name="clusteringDensityThreshold">the density (for final cell) above which elements are clusterized </param>
-    /// <param name="numberOfPasses">the number of execution passes that will be done (each passes use a cell twice smaller than the previous one)</param>
+    /// <param name="nbRowTargeted">the grid rows number</param>
+    /// <param name="nbColumnTargeted">the grid columns number</param>
+    /// <param name="clusteringDensityThreshold">the density above which elements are clusterized </param>
+    /// <param name="numberOfPasses">the number of execution passes that will be done to check if another neighbour cell should be merged</param>
     public static ClusterGlobalResult<T> Run<T>(IEnumerable<T> points,
         Rectangle aoi,
         int nbRowTargeted,
@@ -31,17 +33,19 @@ public static class ClusterizerGridBase
         {
             throw new ArgumentException("numberOfPasses, nbRowTargeted, clusteringDensityThreshold and nbColumnTargeted should all be greater than zero");
         }
-        
-        // Grid bases algorithm calculate the density of grid cells with a resulting target of nbRowTargeted x nbColumnTargeted
-        // so depending on the number of passes, the cells will be smaller
+
+        if (numberOfPasses > NUMBER_PASSSES_LIMIT)
+        {
+            throw new ArgumentException($"A numberOfPasses greater than {NUMBER_PASSSES_LIMIT} will be slow, may be less accurate and will not lead to better result (asked numberOfPasses = {numberOfPasses})");
+        }
 
         var grid = new ResultGrid<T>(nbRowTargeted, nbColumnTargeted, aoi);
         grid.AddPoints(points);
 
-        return grid.ComputeClusters(clusteringDensityThreshold);
+        return grid.ComputeClusters(clusteringDensityThreshold, numberOfPasses);
     }
 
-    
+
     private sealed class ResultGrid<T> where T : IPoint
     {
         private readonly int _nbRowTargeted;
@@ -72,6 +76,7 @@ public static class ClusterizerGridBase
                     grid[i, j] = new DensityCell<T>();
                 }
             }
+
             return grid;
         }
 
@@ -91,10 +96,13 @@ public static class ClusterizerGridBase
             }
         }
 
-        public ClusterGlobalResult<T> ComputeClusters(int clusteringDensityThreshold)
+        public ClusterGlobalResult<T> ComputeClusters(int clusteringDensityThreshold, int numberOfPasses)
         {
-            var clusters = new List<ClusterResult<T>>();
+            var superClusterGrid = new DensityCell<T>[_nbColumnTargeted, _nbRowTargeted];
+
+            // first compute cluster with clusteringDensityThreshold
             var unClusteredPoint = new List<T>();
+
             for (var i = 0; i < _nbColumnTargeted; i++)
             {
                 for (var j = 0; j < _nbRowTargeted; j++)
@@ -102,7 +110,8 @@ public static class ClusterizerGridBase
                     var cell = _grid[i, j];
                     if (cell.Density >= clusteringDensityThreshold)
                     {
-                        clusters.Add(new ClusterResult<T>(cell.GetPoints()));
+                        // add it to the supperCluster grid
+                        superClusterGrid[i, j] = cell;
                     }
                     else
                     {
@@ -111,14 +120,81 @@ public static class ClusterizerGridBase
                 }
             }
 
+            if (numberOfPasses > 1)
+            {
+                // then merge closest cells the expected number of times
+                for (var i = 0; i < _nbColumnTargeted; i++)
+                {
+                    for (var j = 0; j < _nbRowTargeted; j++)
+                    {
+                        var potentialCluster = superClusterGrid[i, j];
+                        if (potentialCluster != null)
+                        {
+                            // try to merge with cluster around
+                            for (int ii = -numberOfPasses; ii <= numberOfPasses; ii++)
+                            {
+                                for (int jj = -numberOfPasses; jj < numberOfPasses; jj++)
+                                {
+                                    // search neighbours for cluster that are within bounds
+                                    if (ii >= 0 && jj >= 0 && ii < _nbColumnTargeted && jj < _nbRowTargeted)
+                                    {
+                                        var neighbour = superClusterGrid[ii, jj];
+                                        // if there is a neighbour 
+                                        if (neighbour != null
+                                            // AND it is not already itself (after a merge)
+                                            && !ReferenceEquals(neighbour, potentialCluster)
+                                            // AND it has no been merged already (IMPORTANT: this is done to avoid that chains of clusters are merged together with a reach of more than numberOfPasses => once a cluster has been merged, we do not allow a neighbour to merge with it again)
+                                            && !neighbour.HasBeenMerged)
+                                        {
+                                            // merge them:
+                                            potentialCluster.Merge(neighbour);
+                                            // and use the potential cluster as the neighbour itself
+                                            superClusterGrid[ii, jj] = potentialCluster;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // after merging neighbours, retrieve all remaining clusters
+            var clusters = ExtractRemainingCluster(superClusterGrid);
             return new ClusterGlobalResult<T>(clusters, unClusteredPoint);
         }
+
+        private IReadOnlyList<ClusterResult<T>> ExtractRemainingCluster(DensityCell<T>[,] superClusterGrid)
+        {
+            // use a hashset for filtering clusters (there is duplicates after fusing
+            var remainingClusters = new HashSet<DensityCell<T>>();
+            for (var i = 0; i < _nbColumnTargeted; i++)
+            {
+                for (var j = 0; j < _nbRowTargeted; j++)
+                {
+                    var cluster = superClusterGrid[i, j];
+                    if (cluster != null)
+                    {
+                        remainingClusters.Add(cluster);
+                    }
+                }
+            }
+
+            return remainingClusters.Select(c => new ClusterResult<T>(c.GetPoints())).ToArray();
+        }
     }
-    
+
     private sealed class DensityCell<T> where T : IPoint
     {
         private readonly List<T> _points = new List<T>();
         public int Density => _points.Count;
+        public bool HasBeenMerged { get; private set; }
+
+        public void Merge(DensityCell<T> neighbour)
+        {
+            _points.AddRange(neighbour.GetPoints());
+            HasBeenMerged = true;
+        }
 
         public void AddPoint(T point)
         {
@@ -129,7 +205,7 @@ public static class ClusterizerGridBase
         {
             return _points.ToArray();
         }
-        
+
         public override string ToString()
         {
             return $"{_points.Count} points";

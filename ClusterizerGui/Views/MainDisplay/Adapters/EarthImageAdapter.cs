@@ -5,7 +5,7 @@ namespace ClusterizerGui.Views.MainDisplay.Adapters;
 
 internal sealed class EarthImageAdapter : ICanvasItemAdapter
 {
-    public int DisplayIndex { get; } = DisplayIndexContant.IMAGE_EARTH;
+    public int DisplayIndex { get; } = DisplayIndexConstant.IMAGE_EARTH;
     public double WidthPercentage { get; } = 0;
     public double HeightPercentage { get; } = 0;
 }

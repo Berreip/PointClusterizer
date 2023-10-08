@@ -90,7 +90,7 @@ internal sealed class DisplayImageAndClusterController : ViewModelBase, IDisplay
         }
     }
 
-    public void ShowOrHideSourceImage(bool value, PointImageAdapter sourceImage)
+    public void ShowOrHideSourceImage(bool value, IPointImageAdapter sourceImage)
     {
         if (value)
         {

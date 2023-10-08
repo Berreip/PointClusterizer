@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Media.Imaging;
 using ClusterizerGui.Utils;
+using ClusterizerGui.Utils.BitmapGeneration;
+using ClusterizerGui.Views.Algorithms.Adapters;
 using ClusterizerGui.Views.MainDisplay;
 using ClusterizerLib;
 using ClusterizerLib.GridBased;
@@ -19,10 +21,12 @@ internal sealed class AlgorithmGridBaseViewModel : AlgorithmViewModelBase<GridBa
     private int _selectedNbColumn;
     private int _minimumDensity;
     private int _selectedPassesNumber;
+    private bool _displayGridOnEarth;
+    private readonly GridImageAdapter _gridImageAdapter;
 
     public IReadOnlyList<int> AvailableNbColumns { get; } = Enumerable.Range(1, 100).ToArray();
     public IReadOnlyList<int> AvailableNbRows { get; } = Enumerable.Range(1, 100).ToArray();
-    public IReadOnlyList<int> AvailablePassesNumber { get; } = Enumerable.Range(1, 6).ToArray();
+    public IReadOnlyList<int> AvailablePassesNumber { get; } = Enumerable.Range(1, ClusterizerGridBase.NUMBER_PASSSES_LIMIT).ToArray();
 
     public AlgorithmGridBaseViewModel(IAlgorithmExecutor algorithmExecutor, IDisplayImageAndClusterController displayImageAndClusterController)
         : base(algorithmExecutor, displayImageAndClusterController)
@@ -31,6 +35,7 @@ internal sealed class AlgorithmGridBaseViewModel : AlgorithmViewModelBase<GridBa
         _selectedNbColumn = AvailableNbColumns[19];
         _selectedPassesNumber = AvailablePassesNumber[1];
         _minimumDensity = 20;
+        _gridImageAdapter = new GridImageAdapter(BitmapImageHelpers.ComputeGridBitmapFromRowsAndColumns(_selectedNbRows, _selectedNbColumn));
     }
 
     public int MinimumDensity
@@ -48,13 +53,37 @@ internal sealed class AlgorithmGridBaseViewModel : AlgorithmViewModelBase<GridBa
     public int SelectedNbRows
     {
         get => _selectedNbRows;
-        set => SetProperty(ref _selectedNbRows, value);
+        set
+        {
+            if (SetProperty(ref _selectedNbRows, value))
+            {
+                _gridImageAdapter.UpdateImage(BitmapImageHelpers.ComputeGridBitmapFromRowsAndColumns(value, _selectedNbColumn));
+            }
+        }
     }
 
     public int SelectedNbColumn
     {
         get => _selectedNbColumn;
-        set => SetProperty(ref _selectedNbColumn, value);
+        set
+        {
+            if (SetProperty(ref _selectedNbColumn, value))
+            {
+                _gridImageAdapter.UpdateImage(BitmapImageHelpers.ComputeGridBitmapFromRowsAndColumns(_selectedNbRows, value));
+            }
+        }
+    }
+
+    public bool DisplayGridOnEarth
+    {
+        get => _displayGridOnEarth;
+        set
+        {
+            if (SetProperty(ref _displayGridOnEarth, value))
+            {
+                _displayImageAndClusterController.ShowOrHideSourceImage(value, _gridImageAdapter);
+            }
+        }
     }
 
     protected override GridBasedHistory ExecuteAlgorithmImplementation(BitmapImage? img, IPoint[] points)

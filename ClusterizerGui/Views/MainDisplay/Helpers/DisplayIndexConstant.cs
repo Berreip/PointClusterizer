@@ -1,6 +1,6 @@
 ﻿namespace ClusterizerGui.Views.MainDisplay.Helpers;
 
-internal static class DisplayIndexContant
+internal static class DisplayIndexConstant
 
 {
     public const int IMAGE_EARTH = 1;

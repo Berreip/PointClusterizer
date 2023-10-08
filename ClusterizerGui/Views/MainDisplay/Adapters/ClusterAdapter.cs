@@ -21,7 +21,7 @@ internal sealed class ClusterAdapter : ViewModelBase, ICanvasItemAdapter
         Centroid = centroid;
         WidthPercentage = centroid.X / ClusterizerGuiConstants.IMAGE_WIDTH;
         HeightPercentage = centroid.Y / ClusterizerGuiConstants.IMAGE_HEIGHT;
-        DisplayIndex = DisplayIndexContant.IMAGE_CLUSTERS;
+        DisplayIndex = DisplayIndexConstant.IMAGE_CLUSTERS;
         TooltipText = $"{pointsCount} items";
     }
 }

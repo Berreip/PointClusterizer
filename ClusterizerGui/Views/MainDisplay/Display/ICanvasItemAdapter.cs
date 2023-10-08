@@ -1,6 +1,6 @@
 ﻿namespace ClusterizerGui.Views.MainDisplay.Display;
 
-public interface ICanvasItemAdapter
+internal interface ICanvasItemAdapter
 {
     /// <summary>
     /// The order of display for the items

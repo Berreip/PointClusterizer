@@ -8,6 +8,7 @@
              xmlns:adapters="clr-namespace:ClusterizerGui.Views.MainDisplay.Adapters"
              xmlns:display="clr-namespace:ClusterizerGui.Views.MainDisplay.Display"
              xmlns:System="clr-namespace:System;assembly=System.Runtime"
+             xmlns:adaptersGrid="clr-namespace:ClusterizerGui.Views.Algorithms.Adapters"
              Background="{DynamicResource MaterialDesignPaper}"
              mc:Ignorable="d"
              d:DesignHeight="1000" d:DesignWidth="1600" x:ClassModifier="internal"
@@ -95,6 +96,14 @@
 
                             <!-- IMAGES OF POINTS -->
                             <DataTemplate DataType="{x:Type adapters:PointImageAdapter}">
+                                <!-- SHOW the current image of points-->
+                                <Image Source="{Binding .BitmapImage}" Stretch="Fill"
+                                       Width="{Binding Path=ActualWidth, ElementName=CanvasEarth}"
+                                       Height="{Binding Path=ActualHeight, ElementName=CanvasEarth}" />
+                            </DataTemplate>
+                            
+                            <!-- GRID -->
+                            <DataTemplate DataType="{x:Type adaptersGrid:GridImageAdapter}">
                                 <!-- SHOW the current image of points-->
                                 <Image Source="{Binding .BitmapImage}" Stretch="Fill"
                                        Width="{Binding Path=ActualWidth, ElementName=CanvasEarth}"
