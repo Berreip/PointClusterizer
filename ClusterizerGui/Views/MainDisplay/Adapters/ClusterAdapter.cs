@@ -25,8 +25,8 @@ internal sealed class ClusterAdapter : ViewModelBase, ICanvasItemAdapter
     {
         ClusterColor = clusterColor;
         // Test with different radius
-        // Radius = RadiusCalculation.ComputeRadiusFromPointCountsLogBased(pointsCount, clusterInfo.aoi);
-        Radius = RadiusCalculation.ComputeRadiusFromPointCountsSurfaceBased(pointsCount, clusterInfo.aoi);
+        Radius = RadiusCalculation.ComputeRadiusFromPointCountsLogBased(pointsCount, clusterInfo.aoi);
+        // Radius = RadiusCalculation.ComputeRadiusFromPointCountsSurfaceBased(pointsCount, clusterInfo.aoi);
         Centroid = clusterInfo.centroid;
         WidthPercentage = clusterInfo.centroid.X / ClusterizerGuiConstants.IMAGE_WIDTH;
         HeightPercentage = clusterInfo.centroid.Y / ClusterizerGuiConstants.IMAGE_HEIGHT;
