@@ -10,6 +10,7 @@ using ClusterizerGui.Views.Algorithms;
 using ClusterizerGui.Views.Algorithms.Adapters;
 using ClusterizerGui.Views.Algorithms.DbScan;
 using ClusterizerGui.Views.Algorithms.GridBase;
+using ClusterizerGui.Views.Algorithms.HierarchicalGreedyClustering;
 using ClusterizerGui.Views.MainDisplay.Adapters;
 using ClusterizerGui.Views.MainDisplay.Display;
 using ClusterizerLib;
@@ -61,11 +62,13 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
         // hold vm to hold results
         var vmDbScan = new AlgorithmDbScanViewModel(executor, DisplayController);
         var vmGridBase = new AlgorithmGridBaseViewModel(executor, DisplayController);
+        var vmHGC = new HierarchicalGreedyClusteringViewModel(executor, DisplayController);
         
         AlgorithmsAvailable = ObservableCollectionSource.GetDefaultView(new[]
         {
             new AlgorithmAvailableAdapter("DBSCAN - density-based spatial clustering", () => new AlgorithmDbScanView(vmDbScan)),
-            new AlgorithmAvailableAdapter("Grid-Based Subspace Clustering (CLIQUE/STING)", () => new AlgorithmGridBaseView(vmGridBase))
+            new AlgorithmAvailableAdapter("Grid-Based Subspace Clustering (CLIQUE/STING)", () => new AlgorithmGridBaseView(vmGridBase)),
+            new AlgorithmAvailableAdapter("Hierarchical Greedy Clustering", () => new HierarchicalGreedyClusteringView(vmHGC)),
         }, out var algorithmsAvailable);
 
         SelectedAlgorithm = algorithmsAvailable.FirstOrDefault();
