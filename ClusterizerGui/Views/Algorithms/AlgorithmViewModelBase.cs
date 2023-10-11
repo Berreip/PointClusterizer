@@ -9,7 +9,7 @@ using PRF.WPFCore.CustomCollections;
 
 namespace ClusterizerGui.Views.Algorithms;
 
-internal abstract class AlgorithmViewModelBase<T>: ViewModelBase where T : HistoryBase
+internal abstract class AlgorithmViewModelBase<T> : ViewModelBase where T : HistoryBase
 {
     private readonly IAlgorithmExecutor _algorithmExecutor;
     protected readonly IDisplayImageAndClusterController _displayImageAndClusterController;
@@ -18,7 +18,8 @@ internal abstract class AlgorithmViewModelBase<T>: ViewModelBase where T : Histo
 
     public IDelegateCommandLight RunAlgorithmCommand { get; }
     public IDelegateCommandLight ClearHistoryCommand { get; }
-    
+    public IDelegateCommandLight<T> DeleteSingleHistoryCommand { get; }
+
     protected AlgorithmViewModelBase(IAlgorithmExecutor algorithmExecutor, IDisplayImageAndClusterController displayImageAndClusterController)
     {
         History = ObservableCollectionSource.GetDefaultView(out _history);
@@ -26,6 +27,7 @@ internal abstract class AlgorithmViewModelBase<T>: ViewModelBase where T : Histo
         _displayImageAndClusterController = displayImageAndClusterController;
         RunAlgorithmCommand = new DelegateCommandLight(ExecuteRunAlgorithmCommand);
         ClearHistoryCommand = new DelegateCommandLight(ExecuteClearHistoryCommand);
+        DeleteSingleHistoryCommand = new DelegateCommandLight<T>(ExecuteDeleteSingleHistoryCommand);
     }
 
     private async void ExecuteRunAlgorithmCommand()
@@ -41,6 +43,19 @@ internal abstract class AlgorithmViewModelBase<T>: ViewModelBase where T : Histo
 
     protected abstract T ExecuteAlgorithmImplementation(BitmapImage? img, IPoint[] points);
 
+    private void ExecuteDeleteSingleHistoryCommand(T elementToRemove)
+    {
+        if (_history.Remove(elementToRemove))
+        {
+            elementToRemove.Dispose();
+        }
+        
+        // show initial data points if no more history
+        if (_history.Count == 0)
+        {
+            _displayImageAndClusterController.ShowPointsOnMap = true;
+        }
+    }
 
     private void ExecuteClearHistoryCommand()
     {
@@ -50,6 +65,7 @@ internal abstract class AlgorithmViewModelBase<T>: ViewModelBase where T : Histo
         {
             data.Dispose();
         }
+
         // show initial data points
         _displayImageAndClusterController.ShowPointsOnMap = true;
     }

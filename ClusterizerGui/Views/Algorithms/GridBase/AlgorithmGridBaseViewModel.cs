@@ -11,6 +11,7 @@ using ClusterizerGui.Views.Algorithms.Adapters;
 using ClusterizerGui.Views.MainDisplay;
 using ClusterizerLib;
 using ClusterizerLib.GridBased;
+using PRF.WPFCore.Commands;
 
 namespace ClusterizerGui.Views.Algorithms.GridBase;
 

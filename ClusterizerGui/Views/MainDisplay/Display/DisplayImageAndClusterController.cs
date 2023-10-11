@@ -107,9 +107,10 @@ internal sealed class DisplayImageAndClusterController : ViewModelBase, IDisplay
     public void ClearCurrentImage()
     {
         var img = _currentMainImage;
-        if (img != null && _allCanvasItems.Remove(img))
+        _currentMainImage = null;
+        if (img != null)
         {
-            _currentMainImage = null;
+            _allCanvasItems.Remove(img);
         }
     }
 

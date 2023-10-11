@@ -7,6 +7,7 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:validationRules="clr-namespace:PRF.WPFCore.ValidationRules;assembly=PRF.WPFCore"
              Background="{DynamicResource MaterialDesignPaper}"
+             x:Name="AlgorithmDbScanUserControl"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="1200" x:ClassModifier="internal"
              d:DataContext="{d:DesignInstance local:AlgorithmDbScanViewModel, IsDesignTimeCreatable=False}">
@@ -226,6 +227,18 @@
                             <ToggleButton
                                 Style="{StaticResource MaterialDesignSwitchLightToggleButton}"
                                 IsChecked="{Binding ShowClusters, UpdateSourceTrigger=PropertyChanged}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
+                <DataGridTemplateColumn Header="">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type local:DbScanHistory}">
+                            <Button
+                                Style="{StaticResource MaterialDesignFlatButton}"
+                                Content="{materialDesign:PackIcon Close}"
+                                Command="{Binding ElementName=AlgorithmDbScanUserControl, Path=DataContext.DeleteSingleHistoryCommand}"
+                                CommandParameter="{Binding .}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

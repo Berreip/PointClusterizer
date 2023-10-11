@@ -7,6 +7,7 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:validationRules="clr-namespace:ClusterizerGui.Utils.ValidationRules"
              Background="{DynamicResource MaterialDesignPaper}"
+             x:Name="AlgorithmGridBaseUserControl"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="1200" x:ClassModifier="internal"
              d:DataContext="{d:DesignInstance local:AlgorithmGridBaseViewModel, IsDesignTimeCreatable=False}">
@@ -83,7 +84,7 @@
                         </ComboBox.ItemsPanel>
                     </ComboBox>
                 </Grid>
-                
+
                 <!-- display grid -->
                 <Grid Grid.Row="4">
                     <Grid.ColumnDefinitions>
@@ -97,7 +98,7 @@
                         Style="{StaticResource MaterialDesignSwitchDarkToggleButton}"
                         IsChecked="{Binding DisplayGridOnEarth}" />
                 </Grid>
-                
+
                 <Grid Grid.Row="5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -226,7 +227,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                
+
                 <DataGridTemplateColumn Header="Passes" SortMemberPath="SelectedPassesNumber">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type local:GridBasedHistory}">
@@ -277,6 +278,18 @@
                             <ToggleButton
                                 Style="{StaticResource MaterialDesignSwitchLightToggleButton}"
                                 IsChecked="{Binding ShowClusters, UpdateSourceTrigger=PropertyChanged}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type local:GridBasedHistory}">
+                            <Button
+                                Style="{StaticResource MaterialDesignFlatButton}"
+                                Content="{materialDesign:PackIcon Close}"
+                                Command="{Binding ElementName=AlgorithmGridBaseUserControl, Path=DataContext.DeleteSingleHistoryCommand}"
+                                CommandParameter="{Binding .}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
