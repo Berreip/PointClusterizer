@@ -26,9 +26,9 @@ internal sealed class PointsRoundedAggregatorTests
         //Arrange
         var points = new[]
         {
-            new PointAdapter(1.1, 2.2, 3.3),
-            new PointAdapter(1.1, 2.2, 3.3),
-            new PointAdapter(0.9, 1.9, 2.9),
+            new PointWrapper(1.1, 2.2, 3.3),
+            new PointWrapper(1.1, 2.2, 3.3),
+            new PointWrapper(0.9, 1.9, 2.9),
         };
 
         //Act
@@ -45,9 +45,9 @@ internal sealed class PointsRoundedAggregatorTests
         //Arrange
         var points = new[]
         {
-            new PointAdapter(1.1, 2.2, 3.3),
-            new PointAdapter(1.1, 2.2, 4.9),
-            new PointAdapter(0.9, 1.9, 2.9),
+            new PointWrapper(1.1, 2.2, 3.3),
+            new PointWrapper(1.1, 2.2, 4.9),
+            new PointWrapper(0.9, 1.9, 2.9),
         };
 
         //Act
@@ -65,8 +65,8 @@ internal sealed class PointsRoundedAggregatorTests
         //Arrange
         var points = new[]
         {
-            new PointAdapter(100, 100, 100),
-            new PointAdapter(-1, -1, -1),
+            new PointWrapper(100, 100, 100),
+            new PointWrapper(-1, -1, -1),
         };
 
         //Act

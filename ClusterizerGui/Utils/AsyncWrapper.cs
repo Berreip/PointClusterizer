@@ -11,23 +11,7 @@ namespace ClusterizerGui.Utils;
 
 internal static class AsyncWrapper
 {
-    public static async Task DispatchAndWrapAsync(Action callback, Action onFinally)
-    {
-        try
-        {
-            await Task.Run(callback.Invoke).ConfigureAwait(false);
-        }
-        catch (Exception e)
-        {
-            Debug.Fail($"unhandled error: {e}");
-        }
-        finally
-        {
-            onFinally();
-        }
-    }
-
-    public static async Task DispatchAndWrapAsync(Func<Task> callback, Action onFinally)
+    public static async void DispatchInFireAndForgetAndWrapAsync(Func<Task> callback, Action? onFinally = null)
     {
         try
         {
@@ -39,7 +23,55 @@ internal static class AsyncWrapper
         }
         finally
         {
-            onFinally();
+            onFinally?.Invoke();
+        }
+    } 
+    
+    public static async void DispatchInFireAndForgetAndWrapAsync(Action callback, Action? onFinally = null)
+    {
+        try
+        {
+            await Task.Run(callback.Invoke).ConfigureAwait(false);
+        }
+        catch (Exception e)
+        {
+            Debug.Fail($"unhandled error: {e}");
+        }
+        finally
+        {
+            onFinally?.Invoke();
+        }
+    }
+    
+    public static async Task DispatchAndWrapAsync(Action callback, Action? onFinally= null)
+    {
+        try
+        {
+            await Task.Run(callback.Invoke).ConfigureAwait(false);
+        }
+        catch (Exception e)
+        {
+            Debug.Fail($"unhandled error: {e}");
+        }
+        finally
+        {
+            onFinally?.Invoke();
+        }
+    }
+
+    public static async Task DispatchAndWrapAsync(Func<Task> callback, Action? onFinally = null)
+    {
+        try
+        {
+            await Task.Run(async () => await callback.Invoke().ConfigureAwait(false)).ConfigureAwait(false);
+        }
+        catch (Exception e)
+        {
+            Debug.Fail($"unhandled error: {e}");
+        }
+        finally
+        {
+            onFinally?.Invoke();
         }
     }
 
@@ -72,7 +104,7 @@ internal static class AsyncWrapper
     {
         try
         {
-            await callback.Invoke();
+            await callback.Invoke().ConfigureAwait(false);
         }
         catch (Exception e)
         {
@@ -84,7 +116,7 @@ internal static class AsyncWrapper
     {
         try
         {
-            return await callback.Invoke();
+            return await callback.Invoke().ConfigureAwait(false);
         }
         catch (Exception e)
         {

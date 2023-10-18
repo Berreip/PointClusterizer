@@ -10,7 +10,6 @@ using ClusterizerLib;
 using ClusterizerLib.Results;
 using PRF.WPFCore;
 using PRF.WPFCore.CustomCollections;
-using Brushes = System.Windows.Media.Brushes;
 using Color = System.Drawing.Color;
 
 namespace ClusterizerGui.Views.MainDisplay.Display;

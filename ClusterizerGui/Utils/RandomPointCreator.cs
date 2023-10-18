@@ -5,9 +5,9 @@ namespace ClusterizerGui.Utils;
 
 internal static class RandomPointCreator
 {
-    public static PointAdapter CreateNew(PointRange range)
+    public static PointWrapper CreateNew(PointRange range)
     {
-        return new PointAdapter(
+        return new PointWrapper(
             range.GetRandomX(),
             range.GetRandomY(),
             range.GetRandomZ());

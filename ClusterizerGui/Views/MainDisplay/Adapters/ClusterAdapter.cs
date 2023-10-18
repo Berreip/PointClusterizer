@@ -5,9 +5,6 @@ using ClusterizerGui.Views.MainDisplay.Display;
 using ClusterizerGui.Views.MainDisplay.Helpers;
 using ClusterizerLib;
 using PRF.WPFCore;
-using Brush = System.Drawing.Brush;
-using Brushes = System.Windows.Media.Brushes;
-using Color = System.Drawing.Color;
 
 namespace ClusterizerGui.Views.MainDisplay.Adapters;
 

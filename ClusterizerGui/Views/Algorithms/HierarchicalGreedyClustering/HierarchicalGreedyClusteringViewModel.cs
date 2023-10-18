@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ClusterizerGui.Views.MainDisplay;
 using ClusterizerLib;
-using ClusterizerLib.DbScanAlgorithm;
-using ClusterizerLib.GridBased;
 using ClusterizerLib.HierarchicalGreedy;
-using ClusterizerLib.Results;
-using Color = System.Drawing.Color;
 
 namespace ClusterizerGui.Views.Algorithms.HierarchicalGreedyClustering;
 

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using ClusterizerGui.Views.ImportDatasets;
 using ClusterizerGui.Views.MainDisplay;
 using PRF.Utils.Injection.Containers;
 using PRF.WPFCore;
@@ -37,6 +38,7 @@ internal sealed class MenuNavigator : ViewModelBase, IMenuNavigator
         AvailableMenuCommands = new INavigationCommand[]
         {
             new NavigationCommand("Main", () => MainPanel = container.Resolve<MainDisplayView>()),
+            new NavigationCommand("Import", () => MainPanel = container.Resolve<ImportDatasetsView>()),
         };
     }
 

@@ -1,5 +1,4 @@
-﻿using System.Windows.Controls;
-using ClusterizerGui.Views.Algorithms.Adapters;
+﻿using ClusterizerGui.Views.Algorithms.Adapters;
 
 namespace ClusterizerGui.Views.Algorithms.HierarchicalGreedyClustering;
 

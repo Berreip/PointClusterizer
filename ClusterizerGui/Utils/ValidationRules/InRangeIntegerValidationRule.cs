@@ -5,7 +5,6 @@ using System.Windows.Controls;
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
-// ReSharper disable InheritdocConsiderUsage
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
 
 namespace ClusterizerGui.Utils.ValidationRules
@@ -28,7 +27,7 @@ namespace ClusterizerGui.Utils.ValidationRules
         /// <summary>
         /// Valide la donnée si elle est comprise entre la valeur min et la valeur max
         /// </summary>
-        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        public override ValidationResult Validate(object? value, CultureInfo cultureInfo)
         {
             if (!int.TryParse(value as string, out var i))
             {

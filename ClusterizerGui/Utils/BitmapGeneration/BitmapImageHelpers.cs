@@ -1,9 +1,7 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Media.Imaging;
-using System.Drawing;
 
 namespace ClusterizerGui.Utils.BitmapGeneration;
 

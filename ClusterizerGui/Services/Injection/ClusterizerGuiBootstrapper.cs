@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using ClusterizerGui.Main;
 using ClusterizerGui.Services.Navigation;
+using ClusterizerGui.Views.ImportDatasets;
 using ClusterizerGui.Views.MainDisplay;
 using PRF.Utils.Injection.Containers;
 using PRF.Utils.Injection.Utils;
@@ -28,10 +29,16 @@ public class ClusterizerGuiBootstrapper
         _internalContainer.RegisterType<MainWindowView>(LifeTime.Singleton);
         _internalContainer.Register<IMainWindowViewModel, MainWindowViewModel>(LifeTime.Singleton);
         _internalContainer.Register<IMenuNavigator, MenuNavigator>(LifeTime.Singleton);
+        _internalContainer.Register<IDatasetManager, DatasetManager>(LifeTime.Singleton);
         
         // main display:
         _internalContainer.RegisterType<MainDisplayView>(LifeTime.Singleton);
         _internalContainer.Register<IMainDisplayViewModel, MainDisplayViewModel>(LifeTime.Singleton);
+        
+        // import datasets:
+        _internalContainer.RegisterType<ImportDatasetsView>(LifeTime.Singleton);
+        _internalContainer.Register<IImportDatasetsViewModel, ImportDatasetsViewModel>(LifeTime.Singleton);
+
     }
 
     private void Initialize()

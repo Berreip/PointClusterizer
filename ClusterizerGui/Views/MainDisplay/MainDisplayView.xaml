@@ -7,7 +7,7 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:adapters="clr-namespace:ClusterizerGui.Views.MainDisplay.Adapters"
              xmlns:display="clr-namespace:ClusterizerGui.Views.MainDisplay.Display"
-             xmlns:System="clr-namespace:System;assembly=System.Runtime"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:adaptersGrid="clr-namespace:ClusterizerGui.Views.Algorithms.Adapters"
              Background="{DynamicResource MaterialDesignPaper}"
              mc:Ignorable="d"
@@ -45,17 +45,6 @@
 
                         <ItemsControl.ItemContainerStyle>
                             <Style TargetType="ContentPresenter" d:DataContext="{d:DesignInstance display:ICanvasItemAdapter}">
-                                <!-- Canvas.Left="{Binding Converter={StaticResource RelativePositionConverter}, -->
-                                <!--  ElementName=CanvasEarth, -->
-                                <!--  Path=ActualWidth, -->
-                                <!--  ConverterParameter={Binding WidthPercentage}}" -->
-
-                                <!-- Canvas.Top="{Binding Converter={StaticResource RelativePositionConverter}, -->
-                                <!-- ElementName=CanvasEarth,  -->
-                                <!-- Path=ActualHeight,  -->
-                                <!-- ConverterParameter={Binding HeightPercentage}}" -->
-
-                                <!-- <Setter Property="Canvas.Left" Value="{Binding Path=XPos}" /> -->
                                 <Setter Property="Canvas.Left">
                                     <Setter.Value>
                                         <MultiBinding Converter="{StaticResource RelativePositionConverter}">
@@ -76,13 +65,6 @@
                                         </MultiBinding>
                                     </Setter.Value>
                                 </Setter>
-
-                                <!-- <Setter Property="Canvas.Top" -->
-                                <!--         Value="{Binding  -->
-                                <!--             Converter={StaticResource RelativePositionConverter}, -->
-                                <!--             ElementName=CanvasEarth, -->
-                                <!--             Path=ActualHeight, -->
-                                <!--             ConverterParameter=0}" /> -->
                             </Style>
                         </ItemsControl.ItemContainerStyle>
 
@@ -118,7 +100,7 @@
                                     <Path.ToolTip>
                                         <ToolTip StaysOpen="True" Placement="Top" HorizontalOffset="10"
                                                  ToolTipService.InitialShowDelay="0" ToolTipService.BetweenShowDelay="0"
-                                                 ToolTipService.ShowDuration="{x:Static Member=System:Int32.MaxValue}"
+                                                 ToolTipService.ShowDuration="{x:Static Member=system:Int32.MaxValue}"
                                                  Content="{Binding TooltipText}"/>
                                     </Path.ToolTip>
                                     <Path.Data>
@@ -169,7 +151,6 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <!-- SELECT ALGORITHM -->
@@ -243,52 +224,13 @@
                                         Command="{Binding AddPointsCommand}" />
                             </Grid>
 
-                            <!-- POINTS TABLE -->
-                            <DataGrid Grid.Row="4"
-                                      MinHeight="100"
-                                      ItemsSource="{Binding Points}"
-                                      CanUserAddRows="False"
-                                      AutoGenerateColumns="False">
-                                <DataGrid.Columns>
-                                    <DataGridTemplateColumn Header="X">
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate DataType="{x:Type adapters:PointAdapter}">
-                                                <Label Content="{Binding X}"
-                                                       ContentStringFormat="{}{0:0.##}"
-                                                       HorizontalAlignment="Center" />
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
-
-                                    <DataGridTemplateColumn Header="Y">
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate DataType="{x:Type adapters:PointAdapter}">
-                                                <Label Content="{Binding Y}"
-                                                       ContentStringFormat="{}{0:0.##}"
-                                                       HorizontalAlignment="Center" />
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
-
-                                    <DataGridTemplateColumn Header="Z">
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate DataType="{x:Type adapters:PointAdapter}">
-                                                <Label Content="{Binding Z}"
-                                                       ContentStringFormat="{}{0:0.##}"
-                                                       HorizontalAlignment="Center" />
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
-                                </DataGrid.Columns>
-                            </DataGrid>
-
-                            <Grid Grid.Row="5">
+                            <Grid Grid.Row="4">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="150" />
                                 </Grid.ColumnDefinitions>
-                                <Label Margin="4" Content="{Binding Points.Count}"
+                                <Label Margin="4" Content="{Binding PointsCount}"
                                        FontSize="16"
                                        VerticalAlignment="Center" />
                                 <Label Grid.Column="1" Margin="4" Content="points"

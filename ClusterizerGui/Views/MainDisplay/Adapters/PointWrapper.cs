@@ -1,16 +1,15 @@
 ﻿using ClusterizerLib;
 using Dbscan;
-using PRF.WPFCore;
 
 namespace ClusterizerGui.Views.MainDisplay.Adapters;
 
-internal sealed class PointAdapter : ViewModelBaseUnchecked, IPoint
+internal sealed class PointWrapper : IPoint
 {
     public double X { get; }
     public double Y { get; }
     public double Z { get; }
 
-    public PointAdapter(double x, double y, double z)
+    public PointWrapper(double x, double y, double z)
     {
         X = x;
         Y = y;

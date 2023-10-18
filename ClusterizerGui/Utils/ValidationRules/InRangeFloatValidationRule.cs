@@ -27,7 +27,7 @@ namespace ClusterizerGui.Utils.ValidationRules
         /// <summary>
         /// Valide la donnée si elle est comprise entre la valeur min et la valeur max
         /// </summary>
-        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        public override ValidationResult Validate(object? value, CultureInfo cultureInfo)
         {
             if (!float.TryParse(value as string, NumberStyles.Any, CultureInfo.InvariantCulture, out var d))
             {

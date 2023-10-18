@@ -38,7 +38,8 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
     private bool _addPointOnClick = true;
     private readonly PointRange _defaultRange;
 
-    public IObservableCollectionRanged<PointAdapter> Points { get; }
+    private readonly List<PointWrapper> _points = new List<PointWrapper>();
+    private int _pointsCount;
     public IDelegateCommandLight AddPointsCommand { get; }
     public IDelegateCommandLight ClearPointsCommand { get; }
     public ICollectionView AlgorithmsAvailable { get; }
@@ -51,19 +52,22 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
     {
         AddPointsCommand = new DelegateCommandLight(ExecuteAddPointsCommand);
         ClearPointsCommand = new DelegateCommandLight(ExecuteClearPointsCommand);
-        Points = new ObservableCollectionRanged<PointAdapter>();
-
         _defaultRange = new PointRange(xMin: 0, xMax: ClusterizerGuiConstants.DATA_MAX_X, yMin: 0, yMax: ClusterizerGuiConstants.DATA_MAX_Y, zMin: 0, zMax: ClusterizerGuiConstants.DATA_MAX_Z);
 
         // create an executor that will be provided to every algorithm
-        var executor = new AlgorithmExecutor(() => Points.ToArray<IPoint>(), o => IsIdle = o);
+        var executor = new AlgorithmExecutor(() =>
+        {
+            var array = new PointWrapper[_points.Count];
+            _points.CopyTo(array);
+            return array;
+        }, o => IsIdle = o);
         DisplayController = new DisplayImageAndClusterController();
-        
+
         // hold vm to hold results
         var vmDbScan = new AlgorithmDbScanViewModel(executor, DisplayController);
         var vmGridBase = new AlgorithmGridBaseViewModel(executor, DisplayController);
         var vmHGC = new HierarchicalGreedyClusteringViewModel(executor, DisplayController);
-        
+
         AlgorithmsAvailable = ObservableCollectionSource.GetDefaultView(new[]
         {
             new AlgorithmAvailableAdapter("DBSCAN - density-based spatial clustering", () => new AlgorithmDbScanView(vmDbScan)),
@@ -113,16 +117,17 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
         var pointsNumber = _selectedNbPoints;
         await AsyncWrapper.DispatchAndWrapAsync(() =>
         {
-            var points = new List<PointAdapter>(pointsNumber);
+            var points = new List<PointWrapper>(pointsNumber);
             for (var i = 0; i < pointsNumber; i++)
             {
                 points.Add(RandomPointCreator.CreateNew(range));
             }
 
-            Points.AddRange(points);
+            _points.AddRange(points);
+            PointsCount = _points.Count;
 
             // Regenerate Bitmap:
-            DisplayController.SetNewCurrentImage(Points.GenerateBitmapImageFromPoint(Color.Purple));
+            DisplayController.SetNewCurrentImage(_points.GenerateBitmapImageFromPoint(Color.Purple));
         }, () => IsIdle = true).ConfigureAwait(false);
     }
 
@@ -134,7 +139,8 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
 
     private void ExecuteClearPointsCommand()
     {
-        Points.Clear();
+        _points.Clear();
+        PointsCount = 0;
         DisplayController.ClearCurrentImage();
     }
 
@@ -166,13 +172,18 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
         set => SetProperty(ref _addPointOnClick, value);
     }
 
+    public int PointsCount
+    {
+        get => _pointsCount;
+        private set => SetProperty(ref _pointsCount, value);
+    }
 
     private sealed class AlgorithmExecutor : IAlgorithmExecutor
     {
         private readonly Func<IPoint[]> _pointsProviderCallback;
         private readonly Action<bool> _isIdleCallback;
 
-        public AlgorithmExecutor(Func<IPoint[]> pointsProviderCallback, Action<bool> isIdleCallback)
+        public AlgorithmExecutor(Func<PointWrapper[]> pointsProviderCallback, Action<bool> isIdleCallback)
         {
             _pointsProviderCallback = pointsProviderCallback;
             _isIdleCallback = isIdleCallback;
@@ -189,6 +200,4 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
                 .ConfigureAwait(false);
         }
     }
-    
-
 }

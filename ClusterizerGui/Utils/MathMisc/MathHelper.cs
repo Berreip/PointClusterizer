@@ -49,7 +49,7 @@ internal static class MathHelper
             maxY = Math.Max(maxY, (int)point.Y);
         }
 
-        return (new PointAdapter(x / points.Count, y / points.Count, z / points.Count), new Rectangle(minX, minY, maxX - minX, maxY - minY));
+        return (new PointWrapper(x / points.Count, y / points.Count, z / points.Count), new Rectangle(minX, minY, maxX - minX, maxY - minY));
     }
 }
 
