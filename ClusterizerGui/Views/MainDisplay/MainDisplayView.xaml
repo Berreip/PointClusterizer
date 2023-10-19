@@ -10,6 +10,7 @@
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:adaptersGrid="clr-namespace:ClusterizerGui.Views.Algorithms.Adapters"
              Background="{DynamicResource MaterialDesignPaper}"
+             x:Name="MainDisplayViewUserControlName"
              mc:Ignorable="d"
              d:DesignHeight="1000" d:DesignWidth="1600" x:ClassModifier="internal"
              d:DataContext="{d:DesignInstance local:MainDisplayViewModel, IsDesignTimeCreatable=False}">
@@ -83,7 +84,7 @@
                                        Width="{Binding Path=ActualWidth, ElementName=CanvasEarth}"
                                        Height="{Binding Path=ActualHeight, ElementName=CanvasEarth}" />
                             </DataTemplate>
-                            
+
                             <!-- GRID -->
                             <DataTemplate DataType="{x:Type adaptersGrid:GridImageAdapter}">
                                 <!-- SHOW the current image of points-->
@@ -101,7 +102,7 @@
                                         <ToolTip StaysOpen="True" Placement="Top" HorizontalOffset="10"
                                                  ToolTipService.InitialShowDelay="0" ToolTipService.BetweenShowDelay="0"
                                                  ToolTipService.ShowDuration="{x:Static Member=system:Int32.MaxValue}"
-                                                 Content="{Binding TooltipText}"/>
+                                                 Content="{Binding TooltipText}" />
                                     </Path.ToolTip>
                                     <Path.Data>
                                         <EllipseGeometry
@@ -152,6 +153,7 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition />
                             </Grid.RowDefinitions>
                             <!-- SELECT ALGORITHM -->
                             <ComboBox Margin="10"
@@ -239,7 +241,49 @@
                                         Margin="6"
                                         Content="Clear Points"
                                         Command="{Binding ClearPointsCommand}" />
+                            </Grid>
 
+                            <Grid Grid.Row="5">
+                                <ListBox ItemsSource="{Binding AvailableDatasets}">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type adapters:DatasetAvailableAdapters}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <Label Grid.Column="0" Margin="2" Content="{Binding DatasetName}"
+                                                       ToolTip="{Binding DatasetFileFulName}"
+                                                       FontSize="16" VerticalAlignment="Center" />
+
+                                                <Label Grid.Column="1" Margin="6, 2" Content="{Binding FeaturesCount, StringFormat='{}{0} pts'}"
+                                                       FontSize="16" VerticalAlignment="Center" />
+
+                                                <Button
+                                                    Grid.Column="2"
+                                                    ToolTip="Add points from this dataset"
+                                                    Margin="2" Padding="0"
+                                                    Height="35" Width="35"
+                                                    HorizontalContentAlignment="Center"
+                                                    VerticalContentAlignment="Center"
+                                                    Style="{StaticResource MaterialDesignFlatButton}"
+                                                    Command="{Binding DataContext.AddDataSetContentCommand, ElementName=MainDisplayViewUserControlName}"
+                                                    CommandParameter="{Binding .}">
+                                                    <materialDesign:PackIcon Kind="Plus" Height="25" Width="25" />
+                                                </Button>
+                                            </Grid>
+
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+
+                                </ListBox>
                             </Grid>
                         </Grid>
                     </Grid>

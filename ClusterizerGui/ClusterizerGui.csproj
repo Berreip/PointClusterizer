@@ -43,6 +43,22 @@
       <Content Include="Ressources\group.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
+      <None Remove="Ressources\blue.png" />
+      <Resource Include="Ressources\blue.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="Ressources\green.png" />
+      <Resource Include="Ressources\green.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="Ressources\red.png" />
+      <Resource Include="Ressources\red.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="Ressources\yellow.png" />
+      <Resource Include="Ressources\yellow.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
     </ItemGroup>
 
 </Project>

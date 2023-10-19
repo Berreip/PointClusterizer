@@ -20,7 +20,7 @@ internal interface IImportDatasetsViewModel
 
 internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsViewModel
 {
-    private const string SEPARATOR_TAB_ALLIAS = "TAB";
+    private const string SEPARATOR_TAB_ALIAS = "TAB";
     private string? _selectedFilePath;
     public IDelegateCommandLight SelectFileCommand { get; }
     public IDelegateCommandLight<DataSetAdapter> RemoveDatasetCommand { get; }
@@ -28,7 +28,8 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
     public IDelegateCommandLight RefreshCurrentDataCommand { get; }
     public int[] AvailableStartingPosition { get; } = Enumerable.Range(0, 100).ToArray();
     public int[] AvailableColumnPositions { get; } = Enumerable.Range(DatasetLoader.GUESS_COLUMN_POSITION, 20).ToArray();
-    public string[] AvailableSeparators { get; } = { ";", ",", "|", SEPARATOR_TAB_ALLIAS };
+    public string[] AvailableSeparators { get; } = { ";", ",", "|", SEPARATOR_TAB_ALIAS };
+    public ICollectionView AvailableCategories { get; }
 
     private readonly IDatasetManager _datasetManager;
 
@@ -45,9 +46,14 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
     private int _distinctCategoriesCount;
     private int _dataCount;
     private IFileInfo? _validFile;
-    private string _miscContent;
+    private string? _miscContent;
     private int _validDataCount;
     private bool _isIdle = true;
+    private readonly ObservableCollectionRanged<string> _categories;
+    private string? _greenCategoryMapping;
+    private string? _yellowCategoryMapping;
+    private string? _redCategoryMapping;
+    private string? _blueCategoryMapping;
 
     public ICollectionView CurrentFileContent { get; }
 
@@ -59,6 +65,8 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
         CurrentFileContent = ObservableCollectionSource.GetDefaultView(out _currentFileContent);
 
         CurrentFileContent.Filter = FilterSkippedData;
+
+        AvailableCategories = ObservableCollectionSource.GetDefaultView(out _categories);
 
         SelectFileCommand = new DelegateCommandLight(ExecuteSelectFileCommand);
         ValidateImportCommand = new DelegateCommandLight(ExecuteValidateImportCommand);
@@ -83,8 +91,12 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
         var file = _validFile;
         await AsyncWrapper.DispatchAndWrapAsync(() =>
             {
-                var convertedPoints = _currentFileContent.Select(PointExtractor.ConvertToPoint).ToArray();
-                _datasetManager.AddNewDataset(new Dataset(file ?? throw new InvalidOperationException(), convertedPoints));
+                var categoryMapper = CategoryMapperFactory.Create(_blueCategoryMapping, _yellowCategoryMapping, _redCategoryMapping, _greenCategoryMapping);
+                var convertedPoints = _currentFileContent
+                    .Where(o => o.IsValid)
+                    .Select(PointExtractor.ConvertToPoint)
+                    .ToArray();
+                _datasetManager.AddNewDataset(new Dataset(file ?? throw new InvalidOperationException(), convertedPoints, categoryMapper));
             },
             () => IsIdle = true).ConfigureAwait(false);
     }
@@ -180,7 +192,7 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
         private set => SetProperty(ref _distinctCategoriesCount, value);
     }
 
-    public string MiscContent
+    public string? MiscContent
     {
         get => _miscContent;
         private set => SetProperty(ref _miscContent, value);
@@ -208,7 +220,7 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
     private void ReLoadDataset(IFileInfo validFile)
     {
         // handle tab specifically:
-        var separator = _selectedSeparator == SEPARATOR_TAB_ALLIAS ? "\t" : _selectedSeparator;
+        var separator = _selectedSeparator == SEPARATOR_TAB_ALIAS ? "\t" : _selectedSeparator;
 
         var loadDatasetResult = DatasetLoader.LoadDataset(validFile, separator, _dataStartingPosition, _nameHeaderPosition, _longitudeHeaderPosition, _latitudeHeaderPosition, _categoryHeaderPosition);
         // refresh guessed position if needed
@@ -228,15 +240,65 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
             if (line.IsValid)
             {
                 validDataCount++;
-                categories.Add(line.Category);
+                if (!string.IsNullOrWhiteSpace(line.Category))
+                {
+                    categories.Add(line.Category);
+                }
             }
         }
 
-
+        RecomputeCategories(categories);
         DataCount = dataCount;
         ValidDataCount = validDataCount;
         DistinctCategoriesCount = categories.Count;
         MiscContent = loadDatasetResult.GuessedPositions.MiscHeaders;
+    }
+
+    public string? BlueCategoryMapping
+    {
+        get => _blueCategoryMapping;
+        set => SetProperty(ref _blueCategoryMapping, value);
+    }
+
+    public string? RedCategoryMapping
+    {
+        get => _redCategoryMapping;
+        set => SetProperty(ref _redCategoryMapping, value);
+    }
+
+    public string? YellowCategoryMapping
+    {
+        get => _yellowCategoryMapping;
+        set => SetProperty(ref _yellowCategoryMapping, value);
+    }
+
+    public string? GreenCategoryMapping
+    {
+        get => _greenCategoryMapping;
+        set => SetProperty(ref _greenCategoryMapping, value);
+    }
+
+    private void RecomputeCategories(IReadOnlyCollection<string> categories)
+    {
+        var categoriesSorted = new List<string>(categories.Count + 1) { ClusterizerGuiConstants.ALL_REMAINING_ALIAS_CATEGORY };
+        categoriesSorted.AddRange(categories.OrderBy(o => o));
+        _categories.Reset(categoriesSorted);
+
+        YellowCategoryMapping = categoriesSorted[0];
+        if (categories.Count > 1)
+        {
+            GreenCategoryMapping = categoriesSorted[1];
+        }
+
+        if (categories.Count > 2)
+        {
+            BlueCategoryMapping = categoriesSorted[2];
+        }
+
+        if (categories.Count > 3)
+        {
+            RedCategoryMapping = categoriesSorted[3];
+        }
     }
 
     private static bool FilterSkippedData(object obj)

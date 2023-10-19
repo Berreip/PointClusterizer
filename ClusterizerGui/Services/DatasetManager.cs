@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ClusterizerLib;
+using ClusterizerGui.Views.ImportDatasets.Extraction;
+using ClusterizerGui.Views.MainDisplay.Adapters;
 using PRF.Utils.CoreComponents.IO;
 
 namespace ClusterizerGui.Services;
@@ -21,6 +22,7 @@ internal interface IDataset
 {
     IFileInfo File { get; }
     int NbFeatures { get; }
+    IReadOnlyCollection<PointWrapper> GetDatasetContent();
 }
 
 internal sealed class DatasetManager : IDatasetManager
@@ -72,10 +74,12 @@ internal sealed class DatasetManager : IDatasetManager
 
 internal sealed class Dataset : IDataset
 {
-    private readonly IPoint[] _datasetPoints;
+    private readonly CategoryMapper _categoryMapper;
+    private readonly PointWrapper[] _datasetPoints;
 
-    public Dataset(IFileInfo file, IEnumerable<IPoint> datasetPoints)
+    public Dataset(IFileInfo file, IEnumerable<PointWrapper> datasetPoints, CategoryMapper categoryMapper)
     {
+        _categoryMapper = categoryMapper;
         _datasetPoints = datasetPoints.ToArray();
         File = file;
         NbFeatures = _datasetPoints.Length;
@@ -83,4 +87,8 @@ internal sealed class Dataset : IDataset
 
     public IFileInfo File { get; }
     public int NbFeatures { get; }
+    public IReadOnlyCollection<PointWrapper> GetDatasetContent()
+    {
+        return _datasetPoints;
+    }
 }

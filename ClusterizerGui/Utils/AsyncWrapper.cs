@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -19,7 +18,7 @@ internal static class AsyncWrapper
         }
         catch (Exception e)
         {
-            Debug.Fail($"unhandled error: {e}");
+            MessageBox.Show($"unhandled error: {e}");
         }
         finally
         {
@@ -35,7 +34,7 @@ internal static class AsyncWrapper
         }
         catch (Exception e)
         {
-            Debug.Fail($"unhandled error: {e}");
+            MessageBox.Show($"unhandled error: {e}");
         }
         finally
         {
@@ -51,7 +50,7 @@ internal static class AsyncWrapper
         }
         catch (Exception e)
         {
-            Debug.Fail($"unhandled error: {e}");
+            MessageBox.Show($"unhandled error: {e}");
         }
         finally
         {
@@ -67,7 +66,7 @@ internal static class AsyncWrapper
         }
         catch (Exception e)
         {
-            Debug.Fail($"unhandled error: {e}");
+            MessageBox.Show($"unhandled error: {e}");
         }
         finally
         {
@@ -83,11 +82,11 @@ internal static class AsyncWrapper
         }
         catch (Exception e)
         {
-            Debug.Fail($"unhandled error: {e}");
+            MessageBox.Show($"unhandled error: {e}");
         }
     }
 
-    public static T Wrap<T>(Func<T> callback)
+    public static T? Wrap<T>(Func<T?> callback)
     {
         try
         {
@@ -95,7 +94,7 @@ internal static class AsyncWrapper
         }
         catch (Exception e)
         {
-            Debug.Fail($"unhandled error: {e}");
+            MessageBox.Show($"unhandled error: {e}");
             return default;
         }
     }
@@ -108,11 +107,11 @@ internal static class AsyncWrapper
         }
         catch (Exception e)
         {
-            Debug.Fail($"unhandled error: {e}");
+            MessageBox.Show($"unhandled error: {e}");
         }
     }
 
-    public static async Task<T> Wrap<T>(Func<Task<T>> callback)
+    public static async Task<T?> Wrap<T>(Func<Task<T>> callback)
     {
         try
         {
@@ -120,7 +119,7 @@ internal static class AsyncWrapper
         }
         catch (Exception e)
         {
-            Debug.Fail($"unhandled error: {e}");
+            MessageBox.Show($"unhandled error: {e}");
             return default;
         }
     }

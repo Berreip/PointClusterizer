@@ -8,8 +8,8 @@ namespace ClusterizerGui.UnitTests.View.ImportDatasets;
 [TestFixture]
 internal sealed class ImportDatasetsViewModelTests
 {
-    private ImportDatasetsViewModel _sut;
-    private Mock<IDatasetManager> _datasetManager;
+    private ImportDatasetsViewModel _sut = null!;
+    private Mock<IDatasetManager> _datasetManager = null!;
 
     [SetUp]
     public void TestInitialize()

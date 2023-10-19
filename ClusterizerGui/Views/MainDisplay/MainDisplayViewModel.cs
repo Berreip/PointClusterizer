@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using ClusterizerGui.Services;
 using ClusterizerGui.Utils;
 using ClusterizerGui.Utils.BitmapGeneration;
 using ClusterizerGui.Views.Algorithms;
@@ -30,6 +31,7 @@ internal interface IMainDisplayViewModel
 
 internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewModel
 {
+    private readonly IDatasetManager _datasetManager;
     private AlgorithmAvailableAdapter? _selectedAlgorithm;
     private IAlgorithmView? _selectedAlgorithmView;
     private int _selectedNbPoints;
@@ -40,18 +42,24 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
 
     private readonly List<PointWrapper> _points = new List<PointWrapper>();
     private int _pointsCount;
+    private readonly ObservableCollectionRanged<DatasetAvailableAdapters> _availableDatasets;
     public IDelegateCommandLight AddPointsCommand { get; }
     public IDelegateCommandLight ClearPointsCommand { get; }
+    public IDelegateCommandLight<DatasetAvailableAdapters> AddDataSetContentCommand { get; }
     public ICollectionView AlgorithmsAvailable { get; }
     public IDisplayImageAndClusterController DisplayController { get; }
 
     public IReadOnlyList<int> AvailableClickDispersion { get; } = new[] { 5, 10, 20, 40, 50, 100 };
     public IReadOnlyList<int> AvailableNbPoints { get; } = new[] { 1, 5, 10, 100, 1_000, 10_000, 50_000, 100_000, 500_000, 1_000_000 };
 
-    public MainDisplayViewModel()
+    public ICollectionView AvailableDatasets { get; }
+
+    public MainDisplayViewModel(IDatasetManager datasetManager)
     {
+        _datasetManager = datasetManager;
         AddPointsCommand = new DelegateCommandLight(ExecuteAddPointsCommand);
         ClearPointsCommand = new DelegateCommandLight(ExecuteClearPointsCommand);
+        AddDataSetContentCommand = new DelegateCommandLight<DatasetAvailableAdapters>(ExecuteAddDataSetContentCommand);
         _defaultRange = new PointRange(xMin: 0, xMax: ClusterizerGuiConstants.DATA_MAX_X, yMin: 0, yMax: ClusterizerGuiConstants.DATA_MAX_Y, zMin: 0, zMax: ClusterizerGuiConstants.DATA_MAX_Z);
 
         // create an executor that will be provided to every algorithm
@@ -68,6 +76,10 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
         var vmGridBase = new AlgorithmGridBaseViewModel(executor, DisplayController);
         var vmHGC = new HierarchicalGreedyClusteringViewModel(executor, DisplayController);
 
+        AvailableDatasets = ObservableCollectionSource.GetDefaultView(out _availableDatasets);
+        datasetManager.OnDatasetUpdated += ReloadDataSet;
+        ReloadDataSet();
+        
         AlgorithmsAvailable = ObservableCollectionSource.GetDefaultView(new[]
         {
             new AlgorithmAvailableAdapter("DBSCAN - density-based spatial clustering", () => new AlgorithmDbScanView(vmDbScan)),
@@ -80,6 +92,10 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
         _selectedClickDispersion = AvailableClickDispersion[1];
     }
 
+    private void ReloadDataSet()
+    {
+        _availableDatasets.Reset(_datasetManager.GetAllDatasets().Select(o => new DatasetAvailableAdapters(o)));
+    }
 
     public AlgorithmAvailableAdapter? SelectedAlgorithm
     {
@@ -111,6 +127,15 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
         AddPointInternalFireAndForget(_defaultRange);
     }
 
+    private async void ExecuteAddDataSetContentCommand(DatasetAvailableAdapters dataset)
+    {
+        await AsyncWrapper.DispatchAndWrapAsync(() =>
+        {
+            AddPointAndRegenerateBitmapAccordingly(dataset.GetDatasetContent());
+        }).ConfigureAwait(false);
+
+    }
+
     private async void AddPointInternalFireAndForget(PointRange range)
     {
         IsIdle = false;
@@ -123,12 +148,17 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
                 points.Add(RandomPointCreator.CreateNew(range));
             }
 
-            _points.AddRange(points);
-            PointsCount = _points.Count;
-
-            // Regenerate Bitmap:
-            DisplayController.SetNewCurrentImage(_points.GenerateBitmapImageFromPoint(Color.Purple));
+            AddPointAndRegenerateBitmapAccordingly(points);
         }, () => IsIdle = true).ConfigureAwait(false);
+    }
+
+    private void AddPointAndRegenerateBitmapAccordingly(IEnumerable<PointWrapper> points)
+    {
+        _points.AddRange(points);
+        PointsCount = _points.Count;
+
+        // Regenerate Bitmap:
+        DisplayController.SetNewCurrentImage(_points.GenerateBitmapImageFromPoint(Color.Purple));
     }
 
     public bool IsIdle

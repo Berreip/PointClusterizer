@@ -286,35 +286,29 @@
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <Label FontSize="16"
-                               Margin="10, 4"
-                               Content="Datasets"
-                               VerticalAlignment="Center"
-                               HorizontalAlignment="Center" />
-                        <Separator Grid.Row="1" Margin="10" />
-                        <ItemsControl
-                            Grid.Row="2" ItemsSource="{Binding Datasets}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <VirtualizingStackPanel IsVirtualizing="True"
-                                                            VirtualizationMode="Recycling" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.Template>
-                                <ControlTemplate TargetType="ItemsControl">
-                                    <ScrollViewer CanContentScroll="True"
-                                                  VerticalScrollBarVisibility="Auto"
-                                                  HorizontalScrollBarVisibility="Hidden"
-                                                  Padding="{TemplateBinding Padding}"
-                                                  Focusable="False">
-                                        <ItemsPresenter />
-                                    </ScrollViewer>
-                                </ControlTemplate>
-                            </ItemsControl.Template>
-                            <ItemsControl.ItemTemplate>
+                        <!-- HEADER DATASET -->
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Label FontSize="16"
+                                   Margin="10, 4"
+                                   Content="Datasets"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center" />
+                            <Separator Grid.Row="1" Margin="10, 2" />
+                        </Grid>
+                        
+                        <!-- DATASETS CONTENT -->
+                        <ListBox
+                            Grid.Row="1" ItemsSource="{Binding Datasets}">
+                            <ListBox.ItemTemplate>
                                 <DataTemplate DataType="{x:Type dataSetAdapter:DataSetAdapter}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
@@ -352,11 +346,141 @@
                                         </Button>
                                     </Grid>
                                 </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        
+                        <!-- HEADER CATEGORY -->
+                        <Grid Grid.Row="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Label FontSize="16"
+                                   Margin="10, 4"
+                                   Content="CATEGORIES"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center" />
+                            <Separator Grid.Row="1" Margin="10, 2" />
+                        </Grid>
+                        
+                        <!-- CATEGORY -->
+                        <StackPanel Grid.Row="3">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Image Source="../../Ressources/yellow.png" 
+                                       Margin="10"
+                                       VerticalAlignment="Center"
+                                       Stretch="Fill"
+                                       Width="50"
+                                       Height="50" />
+                                
+                                <Label Grid.Column="1"
+                                       VerticalAlignment="Center"
+                                       Content=" mapped with : "></Label>
+                                
+                                <ComboBox Grid.Column="2" Margin="2" MinWidth="70"
+                                          VerticalAlignment="Center"
+                                          ItemsSource="{Binding AvailableCategories}"
+                                          SelectedItem="{Binding YellowCategoryMapping}">
+                                    <ComboBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <VirtualizingStackPanel />
+                                        </ItemsPanelTemplate>
+                                    </ComboBox.ItemsPanel>
+                                </ComboBox>
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Image Source="../../Ressources/green.png" 
+                                       Margin="10"
+                                       VerticalAlignment="Center"
+                                       Stretch="Fill"
+                                       Width="50"
+                                       Height="50" />
+                                
+                                <Label Grid.Column="1"
+                                       VerticalAlignment="Center"
+                                       Content=" mapped with : "></Label>
+                                
+                                <ComboBox Grid.Column="2" Margin="2" MinWidth="70"
+                                          VerticalAlignment="Center"
+                                          ItemsSource="{Binding AvailableCategories}"
+                                          SelectedItem="{Binding GreenCategoryMapping}">
+                                    <ComboBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <VirtualizingStackPanel />
+                                        </ItemsPanelTemplate>
+                                    </ComboBox.ItemsPanel>
+                                </ComboBox>
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Image Source="../../Ressources/blue.png" 
+                                       Margin="10"
+                                       VerticalAlignment="Center"
+                                       Stretch="Fill"
+                                       Width="50"
+                                       Height="50" />
+                                
+                                <Label Grid.Column="1"
+                                       VerticalAlignment="Center"
+                                       Content=" mapped with : "></Label>
+                                
+                                <ComboBox Grid.Column="2" Margin="2" MinWidth="70"
+                                          VerticalAlignment="Center"
+                                          ItemsSource="{Binding AvailableCategories}"
+                                          SelectedItem="{Binding BlueCategoryMapping}">
+                                    <ComboBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <VirtualizingStackPanel />
+                                        </ItemsPanelTemplate>
+                                    </ComboBox.ItemsPanel>
+                                </ComboBox>
+                            </Grid>
 
-                    </Grid>
-
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Image Source="../../Ressources/red.png" 
+                                       Margin="10"
+                                       VerticalAlignment="Center"
+                                       Stretch="Fill"
+                                       Width="50"
+                                       Height="50" />
+                                
+                                <Label Grid.Column="1"
+                                       VerticalAlignment="Center"
+                                       Content=" mapped with : "></Label>
+                                
+                                <ComboBox Grid.Column="2" Margin="2" MinWidth="70"
+                                          VerticalAlignment="Center"
+                                          ItemsSource="{Binding AvailableCategories}"
+                                          SelectedItem="{Binding RedCategoryMapping}">
+                                    <ComboBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <VirtualizingStackPanel />
+                                        </ItemsPanelTemplate>
+                                    </ComboBox.ItemsPanel>
+                                </ComboBox>
+                            </Grid>
+                        </StackPanel>
+                       </Grid>
                 </materialDesign:ColorZone>
 
             </Grid>

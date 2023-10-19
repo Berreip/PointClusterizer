@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ClusterizerGui.Views.ImportDatasets.Extraction;
+﻿namespace ClusterizerGui.Views.ImportDatasets.Extraction;
 
 /// <summary>
 /// Position guessed
