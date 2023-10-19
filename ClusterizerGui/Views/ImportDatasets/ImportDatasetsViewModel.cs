@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using ClusterizerGui.Services;
 using ClusterizerGui.Utils;
@@ -44,6 +46,8 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
     private int _dataCount;
     private IFileInfo? _validFile;
     private string _miscContent;
+    private int _validDataCount;
+    private bool _isIdle = true;
 
     public ICollectionView CurrentFileContent { get; }
 
@@ -73,9 +77,16 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
         LongitudeHeaderPosition = DatasetLoader.GUESS_COLUMN_POSITION;
     }
 
-    private void ExecuteValidateImportCommand()
+    private async void ExecuteValidateImportCommand()
     {
-        // TODO PBO
+        IsIdle = false;
+        var file = _validFile;
+        await AsyncWrapper.DispatchAndWrapAsync(() =>
+            {
+                var convertedPoints = _currentFileContent.Select(PointExtractor.ConvertToPoint).ToArray();
+                _datasetManager.AddNewDataset(new Dataset(file ?? throw new InvalidOperationException(), convertedPoints));
+            },
+            () => IsIdle = true).ConfigureAwait(false);
     }
 
     private void ReloadDatasets()
@@ -108,7 +119,8 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
                 {
                     ResetPosition(); // guess again
                     _validFile = validFile;
-                    AsyncWrapper.DispatchInFireAndForgetAndWrapAsync(() => ReLoadDataset(validFile));
+                    IsIdle = false;
+                    AsyncWrapper.DispatchInFireAndForgetAndWrapAsync(() => ReLoadDataset(validFile), () => IsIdle = true);
                 }
             }
         }
@@ -156,6 +168,12 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
         private set => SetProperty(ref _dataCount, value);
     }
 
+    public int ValidDataCount
+    {
+        get => _validDataCount;
+        private set => SetProperty(ref _validDataCount, value);
+    }
+
     public int DistinctCategoriesCount
     {
         get => _distinctCategoriesCount;
@@ -168,8 +186,15 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
         private set => SetProperty(ref _miscContent, value);
     }
 
+    public bool IsIdle
+    {
+        get => _isIdle;
+        set => SetProperty(ref _isIdle, value);
+    }
+
     private async void ExecuteRefreshCurrentDataCommand()
     {
+        IsIdle = false;
         await AsyncWrapper.DispatchAndWrapAsync(() =>
         {
             var validFile = _validFile;
@@ -177,7 +202,7 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
             {
                 ReLoadDataset(validFile);
             }
-        }).ConfigureAwait(false);
+        }, () => IsIdle = true).ConfigureAwait(false);
     }
 
     private void ReLoadDataset(IFileInfo validFile)
@@ -192,8 +217,25 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
         LatitudeHeaderPosition = loadDatasetResult.GuessedPositions.GuessedLatitudePosition;
         CategoryHeaderPosition = loadDatasetResult.GuessedPositions.GuessedCategoryPosition;
         _currentFileContent.Reset(loadDatasetResult.CsvLines);
-        DataCount = loadDatasetResult.CsvLines.Count;
-        DistinctCategoriesCount = loadDatasetResult.CsvLines.Select(o => o.Category).ToHashSet().Count;
+
+        // compute statistics
+        var dataCount = 0;
+        var validDataCount = 0;
+        var categories = new HashSet<string>();
+        foreach (var line in loadDatasetResult.CsvLines)
+        {
+            dataCount++;
+            if (line.IsValid)
+            {
+                validDataCount++;
+                categories.Add(line.Category);
+            }
+        }
+
+
+        DataCount = dataCount;
+        ValidDataCount = validDataCount;
+        DistinctCategoriesCount = categories.Count;
         MiscContent = loadDatasetResult.GuessedPositions.MiscHeaders;
     }
 

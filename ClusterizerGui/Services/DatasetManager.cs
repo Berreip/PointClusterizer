@@ -14,6 +14,7 @@ internal interface IDatasetManager
     event Action OnDatasetUpdated;
     IReadOnlyCollection<IDataset> GetAllDatasets();
     void RemoveDataSet(IDataset dataset);
+    void AddNewDataset(IDataset dataset);
 }
 
 internal interface IDataset
@@ -27,7 +28,7 @@ internal sealed class DatasetManager : IDatasetManager
     public event Action? OnDatasetUpdated;
     private readonly HashSet<IDataset> _datasets = new HashSet<IDataset>();
     private readonly object _key = new object();
-    
+
     public IReadOnlyCollection<IDataset> GetAllDatasets()
     {
         lock (_key)
@@ -53,6 +54,16 @@ internal sealed class DatasetManager : IDatasetManager
         }
     }
 
+    public void AddNewDataset(IDataset dataset)
+    {
+        lock (_key)
+        {
+            _datasets.Add(dataset);
+        }
+
+        RaiseOnDatasetUpdated();
+    }
+
     private void RaiseOnDatasetUpdated()
     {
         OnDatasetUpdated?.Invoke();
@@ -63,7 +74,7 @@ internal sealed class Dataset : IDataset
 {
     private readonly IPoint[] _datasetPoints;
 
-    public Dataset(IFileInfo file,IEnumerable<IPoint> datasetPoints)
+    public Dataset(IFileInfo file, IEnumerable<IPoint> datasetPoints)
     {
         _datasetPoints = datasetPoints.ToArray();
         File = file;

@@ -12,343 +12,370 @@
              d:DesignHeight="1000" d:DesignWidth="1600"
              x:ClassModifier="internal"
              d:DataContext="{d:DesignInstance local:ImportDatasetsViewModel, IsDesignTimeCreatable=False}">
+
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+        <Grid IsEnabled="{Binding IsIdle}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-        <!-- Dataset source file -->
-        <materialDesign:ColorZone
-            Mode="PrimaryDark"
-            Margin="2"
-            Padding="2" CornerRadius="5"
-            materialDesign:ElevationAssist.Elevation="Dp3"
-            VerticalAlignment="Stretch"
-            HorizontalAlignment="Stretch">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Label Margin="5, 4" Content="Selected file to import :"
-                       VerticalAlignment="Center" />
-                <TextBox
-                    Grid.Column="1"
-                    Margin="2"
-                    Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Stretch"
-                    Foreground="{DynamicResource MaterialDesignBody }"
-                    Text="{Binding SelectedFilePath, UpdateSourceTrigger=PropertyChanged, Delay=100}"
-                    ToolTip="{Binding SelectedFilePath}" />
-
-                <Button Grid.Column="2"
-                        ToolTip="Select a file from browser"
+            <!-- Dataset source file -->
+            <materialDesign:ColorZone
+                Mode="PrimaryDark"
+                Margin="2"
+                Padding="2" CornerRadius="5"
+                materialDesign:ElevationAssist.Elevation="Dp3"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label Margin="5, 4" Content="Selected file to import :"
+                           VerticalAlignment="Center" />
+                    <TextBox
+                        Grid.Column="1"
                         Margin="2"
-                        Padding="0"
-                        Height="45" Width="45"
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Style="{StaticResource MaterialDesignOutlinedButton}"
-                        Command="{Binding SelectFileCommand}">
-                    <materialDesign:PackIcon Kind="DotsHorizontal" Height="35" Width="35" />
-                </Button>
-            </Grid>
-        </materialDesign:ColorZone>
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        Foreground="{DynamicResource MaterialDesignBody }"
+                        Text="{Binding SelectedFilePath, UpdateSourceTrigger=PropertyChanged, Delay=100}"
+                        ToolTip="{Binding SelectedFilePath}" />
 
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+                    <Button Grid.Column="2"
+                            ToolTip="Select a file from browser"
+                            Margin="2"
+                            Padding="0"
+                            Height="45" Width="45"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Style="{StaticResource MaterialDesignOutlinedButton}"
+                            Command="{Binding SelectFileCommand}">
+                        <materialDesign:PackIcon Kind="DotsHorizontal" Height="35" Width="35" />
+                    </Button>
+                </Grid>
+            </materialDesign:ColorZone>
 
-            <!-- DataSet Details -->
-            <materialDesign:ColorZone
-                Mode="PrimaryDark"
-                Margin="2"
-                Padding="2" CornerRadius="5"
-                materialDesign:ElevationAssist.Elevation="Dp3"
-                VerticalAlignment="Stretch"
-                HorizontalAlignment="Stretch">
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+                <!-- DataSet Details -->
+                <materialDesign:ColorZone
+                    Mode="PrimaryDark"
+                    Margin="2"
+                    Padding="2" CornerRadius="5"
+                    materialDesign:ElevationAssist.Elevation="Dp3"
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch">
 
-                    <!-- CONFIGURATION PANEL (csv separator, feature name column,  category column, Lat column, Long column, validateImport button)-->
                     <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Margin="5, 4" Content="Starting position :"
-                                   ToolTip="All lines before this value will be skipped "
-                                   VerticalAlignment="Center" />
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
 
-                            <ComboBox Margin="2" MinWidth="70"
-                                      VerticalAlignment="Center"
-                                      ItemsSource="{Binding AvailableStartingPosition}"
-                                      SelectedItem="{Binding DataStartingPosition}">
-                                <ComboBox.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <VirtualizingStackPanel />
-                                    </ItemsPanelTemplate>
-                                </ComboBox.ItemsPanel>
-                            </ComboBox>
-                        </StackPanel>
+                        <!-- CONFIGURATION PANEL (csv separator, feature name column,  category column, Lat column, Long column, validateImport button)-->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Margin="5, 4" Content="Starting position :"
+                                       ToolTip="All lines before this value will be skipped "
+                                       VerticalAlignment="Center" />
 
-                        <StackPanel Grid.Column="1" Orientation="Horizontal">
-                            <Label Margin="5, 4" Content="Separator :"
-                                   ToolTip="The separator used in the file"
-                                   VerticalAlignment="Center" />
+                                <ComboBox Margin="2" MinWidth="70"
+                                          VerticalAlignment="Center"
+                                          ItemsSource="{Binding AvailableStartingPosition}"
+                                          SelectedItem="{Binding DataStartingPosition}">
+                                    <ComboBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <VirtualizingStackPanel />
+                                        </ItemsPanelTemplate>
+                                    </ComboBox.ItemsPanel>
+                                </ComboBox>
+                            </StackPanel>
 
-                            <ComboBox Margin="2" MinWidth="50"
-                                      VerticalAlignment="Center"
-                                      ItemsSource="{Binding AvailableSeparators}"
-                                      SelectedItem="{Binding SelectedCsvSeparator}" />
-                        </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <Label Margin="5, 4" Content="Separator :"
+                                       ToolTip="The separator used in the file"
+                                       VerticalAlignment="Center" />
 
-                        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Label Margin="10, 2" Content="COLUMNS HEADERS POSITIONS:"
-                                   ToolTip="the current file header used for columns mapping"
-                                   VerticalAlignment="Center" />
+                                <ComboBox Margin="2" MinWidth="50"
+                                          VerticalAlignment="Center"
+                                          ItemsSource="{Binding AvailableSeparators}"
+                                          SelectedItem="{Binding SelectedCsvSeparator}" />
+                            </StackPanel>
 
-                            <Label Margin="2" Content="Name:" VerticalAlignment="Center" />
-                            <ComboBox Margin="2" MinWidth="50"
-                                      ToolTip="-1 means guess automatically"
-                                      VerticalAlignment="Center"
-                                      ItemsSource="{Binding AvailableColumnPositions}"
-                                      SelectedItem="{Binding NameHeaderPosition}" />
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Label Margin="10, 2" Content="COLUMNS HEADERS POSITIONS:"
+                                       ToolTip="the current file header used for columns mapping"
+                                       VerticalAlignment="Center" />
 
-                            <Label Margin="2" Content="Lat:" VerticalAlignment="Center" />
-                            <ComboBox Margin="2" MinWidth="50"
-                                      ToolTip="-1 means guess automatically"
-                                      VerticalAlignment="Center"
-                                      ItemsSource="{Binding AvailableColumnPositions}"
-                                      SelectedItem="{Binding LatitudeHeaderPosition}" />
+                                <Label Margin="2" Content="Name:" VerticalAlignment="Center" />
+                                <ComboBox Margin="2" MinWidth="50"
+                                          ToolTip="-1 means guess automatically"
+                                          VerticalAlignment="Center"
+                                          ItemsSource="{Binding AvailableColumnPositions}"
+                                          SelectedItem="{Binding NameHeaderPosition}" />
 
-                            <Label Margin="2" Content="Long:" VerticalAlignment="Center" />
-                            <ComboBox Margin="2" MinWidth="50"
-                                      ToolTip="-1 means guess automatically"
-                                      VerticalAlignment="Center"
-                                      ItemsSource="{Binding AvailableColumnPositions}"
-                                      SelectedItem="{Binding LongitudeHeaderPosition}" />
+                                <Label Margin="2" Content="Lat:" VerticalAlignment="Center" />
+                                <ComboBox Margin="2" MinWidth="50"
+                                          ToolTip="-1 means guess automatically"
+                                          VerticalAlignment="Center"
+                                          ItemsSource="{Binding AvailableColumnPositions}"
+                                          SelectedItem="{Binding LatitudeHeaderPosition}" />
 
-                            <Label Margin="2" Content="Cat:" VerticalAlignment="Center" />
-                            <ComboBox Margin="2" MinWidth="50"
-                                      ToolTip="-1 means guess automatically"
-                                      VerticalAlignment="Center"
-                                      ItemsSource="{Binding AvailableColumnPositions}"
-                                      SelectedItem="{Binding CategoryHeaderPosition}" />
+                                <Label Margin="2" Content="Long:" VerticalAlignment="Center" />
+                                <ComboBox Margin="2" MinWidth="50"
+                                          ToolTip="-1 means guess automatically"
+                                          VerticalAlignment="Center"
+                                          ItemsSource="{Binding AvailableColumnPositions}"
+                                          SelectedItem="{Binding LongitudeHeaderPosition}" />
 
-                        </StackPanel>
-                        <Button Grid.Column="3" ToolTip="Select a file from browser"
-                                Margin="10, 2"
-                                Padding="0"
-                                Height="40" Width="40"
-                                Background="Gold"
-                                Foreground="Black"
-                                HorizontalContentAlignment="Center"
-                                VerticalContentAlignment="Center"
-                                Style="{StaticResource MaterialDesignOutlinedButton}"
-                                Command="{Binding RefreshCurrentDataCommand}">
-                            <materialDesign:PackIcon Kind="Refresh" Height="30" Width="30" />
-                        </Button>
+                                <Label Margin="2" Content="Cat:" VerticalAlignment="Center" />
+                                <ComboBox Margin="2" MinWidth="50"
+                                          ToolTip="-1 means guess automatically"
+                                          VerticalAlignment="Center"
+                                          ItemsSource="{Binding AvailableColumnPositions}"
+                                          SelectedItem="{Binding CategoryHeaderPosition}" />
+
+                            </StackPanel>
+                            <Button Grid.Column="3" ToolTip="Select a file from browser"
+                                    Margin="10, 2"
+                                    Padding="0"
+                                    Height="40" Width="40"
+                                    Background="Gold"
+                                    Foreground="Black"
+                                    HorizontalContentAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                                    Command="{Binding RefreshCurrentDataCommand}">
+                                <materialDesign:PackIcon Kind="Refresh" Height="30" Width="30" />
+                            </Button>
+                        </Grid>
+
+                        <!-- DISPLAY CSV DATA -->
+                        <DataGrid Grid.Row="1"
+                                  MinHeight="100"
+                                  ItemsSource="{Binding CurrentFileContent}"
+                                  CanUserAddRows="False"
+                                  CanUserSortColumns="True"
+                                  AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="Line" SortMemberPath="LineNumber" Width="70">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate DataType="{x:Type dataSetAdapter:CsvLineAdapter}">
+                                            <Label Content="{Binding LineNumber}" HorizontalAlignment="Center" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <DataGridTemplateColumn Header="Name" SortMemberPath="FeatureName" MinWidth="150" MaxWidth="300">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate DataType="{x:Type dataSetAdapter:CsvLineAdapter}">
+                                            <Label Content="{Binding FeatureName}" HorizontalAlignment="Center" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <DataGridTemplateColumn Header="Latitude" SortMemberPath="Latitude" MinWidth="100">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate DataType="{x:Type dataSetAdapter:CsvLineAdapter}">
+                                            <Label Content="{Binding Latitude}" HorizontalAlignment="Center" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <DataGridTemplateColumn Header="Longitude" SortMemberPath="Longitude" MinWidth="100">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate DataType="{x:Type dataSetAdapter:CsvLineAdapter}">
+                                            <Label Content="{Binding Longitude}" HorizontalAlignment="Center" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <DataGridTemplateColumn Header="Category" SortMemberPath="Category" MinWidth="150" MaxWidth="300">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate DataType="{x:Type dataSetAdapter:CsvLineAdapter}">
+                                            <Label Content="{Binding Category}" HorizontalAlignment="Center" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <DataGridTemplateColumn Header="Misc" SortMemberPath="OtherData" MinWidth="100">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate DataType="{x:Type dataSetAdapter:CsvLineAdapter}">
+                                            <Label Content="{Binding OtherData}" HorizontalAlignment="Center" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <!-- STATISTICS AND VALIDATE IMPORT-->
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="300" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="2"
+                                           TextTrimming="CharacterEllipsis"
+                                           Text="{Binding DataCount, StringFormat='Count = {0}'}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Style="{StaticResource MaterialDesignBody2TextBlock}" />
+
+
+                                <TextBlock Margin="2"
+                                           MaxWidth="250"
+                                           TextTrimming="CharacterEllipsis"
+                                           Text="{Binding ValidDataCount, StringFormat='Valid count = {0}'}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Style="{StaticResource MaterialDesignBody2TextBlock}" />
+
+                                <TextBlock Margin="2"
+                                           TextTrimming="CharacterEllipsis"
+                                           Text="{Binding MiscContent, StringFormat='MiscContent = [{0}]'}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Style="{StaticResource MaterialDesignBody2TextBlock}" />
+
+                                <TextBlock Margin="2"
+                                           TextTrimming="CharacterEllipsis"
+                                           Text="{Binding DistinctCategoriesCount, StringFormat='Distinct Categories = {0}'}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Style="{StaticResource MaterialDesignBody2TextBlock}" />
+                            </StackPanel>
+                            <Button Grid.Column="1"
+                                    Margin="10, 5"
+                                    Padding="4"
+                                    HorizontalContentAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Gold"
+                                    Command="{Binding ValidateImportCommand}"
+                                    Content="Validate Import" />
+                        </Grid>
                     </Grid>
 
-                    <!-- DISPLAY CSV DATA -->
-                    <DataGrid Grid.Row="1"
-                              MinHeight="100"
-                              ItemsSource="{Binding CurrentFileContent}"
-                              CanUserAddRows="False"
-                              CanUserSortColumns="True"
-                              AutoGenerateColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="Line" SortMemberPath="LineNumber" Width="70">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate DataType="{x:Type dataSetAdapter:CsvLineAdapter}">
-                                        <Label Content="{Binding LineNumber}" HorizontalAlignment="Center" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            
-                            <DataGridTemplateColumn Header="Name" SortMemberPath="FeatureName" MinWidth="150" MaxWidth="300">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate DataType="{x:Type dataSetAdapter:CsvLineAdapter}">
-                                        <Label Content="{Binding FeatureName}" HorizontalAlignment="Center" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
+                </materialDesign:ColorZone>
 
-                            <DataGridTemplateColumn Header="Latitude" SortMemberPath="Latitude" MinWidth="100">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate DataType="{x:Type dataSetAdapter:CsvLineAdapter}">
-                                        <Label Content="{Binding Latitude}" HorizontalAlignment="Center" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
+                <!-- Registered DataSet -->
+                <materialDesign:ColorZone
+                    Grid.Column="1"
+                    Mode="PrimaryDark"
+                    Margin="2"
+                    Padding="2" CornerRadius="5"
+                    materialDesign:ElevationAssist.Elevation="Dp3"
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Label FontSize="16"
+                               Margin="10, 4"
+                               Content="Datasets"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center" />
+                        <Separator Grid.Row="1" Margin="10" />
+                        <ItemsControl
+                            Grid.Row="2" ItemsSource="{Binding Datasets}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel IsVirtualizing="True"
+                                                            VirtualizationMode="Recycling" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.Template>
+                                <ControlTemplate TargetType="ItemsControl">
+                                    <ScrollViewer CanContentScroll="True"
+                                                  VerticalScrollBarVisibility="Auto"
+                                                  HorizontalScrollBarVisibility="Hidden"
+                                                  Padding="{TemplateBinding Padding}"
+                                                  Focusable="False">
+                                        <ItemsPresenter />
+                                    </ScrollViewer>
+                                </ControlTemplate>
+                            </ItemsControl.Template>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type dataSetAdapter:DataSetAdapter}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
 
-                            <DataGridTemplateColumn Header="Longitude" SortMemberPath="Longitude" MinWidth="100">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate DataType="{x:Type dataSetAdapter:CsvLineAdapter}">
-                                        <Label Content="{Binding Longitude}" HorizontalAlignment="Center" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
+                                        <TextBlock Margin="2"
+                                                   MaxWidth="250"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   ToolTip="{Binding FileFullName}"
+                                                   Text="{Binding DataSetName}"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   Style="{StaticResource MaterialDesignBody2TextBlock}" />
 
-                            <DataGridTemplateColumn Header="Category" SortMemberPath="Category" MinWidth="150" MaxWidth="300">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate DataType="{x:Type dataSetAdapter:CsvLineAdapter}">
-                                        <Label Content="{Binding Category}" HorizontalAlignment="Center" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
+                                        <TextBlock Grid.Column="1" Margin="2"
+                                                   MaxWidth="250"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Text="{Binding NbFeatures, StringFormat='Count = {0}'}"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   Style="{StaticResource MaterialDesignBody2TextBlock}" />
 
-                            <DataGridTemplateColumn Header="Misc" SortMemberPath="OtherData" MinWidth="100">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate DataType="{x:Type dataSetAdapter:CsvLineAdapter}">
-                                        <Label Content="{Binding OtherData}" HorizontalAlignment="Center" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                                        <Button
+                                            Grid.Column="2" ToolTip="remove the dataset"
+                                            Margin="2" Height="35" Width="35" Padding="0"
+                                            HorizontalContentAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            Style="{StaticResource MaterialDesignFlatButton}"
+                                            Command="{Binding DataContext.RemoveDatasetCommand, ElementName=DatasetUserControlName}"
+                                            CommandParameter="{Binding .}">
+                                            <materialDesign:PackIcon Kind="Delete" Height="25" Width="25" />
+                                        </Button>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
 
-                    <!-- STATISTICS AND VALIDATE IMPORT-->
-                    <Grid Grid.Row="2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="300" />
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Margin="2"
-                                       TextTrimming="CharacterEllipsis"
-                                       Text="{Binding DataCount, StringFormat='Count = {0}'}"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       Style="{StaticResource MaterialDesignBody2TextBlock}" />
-                            
-                            <TextBlock Margin="2"
-                                       TextTrimming="CharacterEllipsis"
-                                       Text="{Binding MiscContent, StringFormat='MiscContent = [{0}]'}"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       Style="{StaticResource MaterialDesignBody2TextBlock}" />
-
-                            <TextBlock Margin="2"
-                                       TextTrimming="CharacterEllipsis"
-                                       Text="{Binding DistinctCategoriesCount, StringFormat='Distinct Categories = {0}'}"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       Style="{StaticResource MaterialDesignBody2TextBlock}" />
-                        </StackPanel>
-                        <Button Grid.Column="1" ToolTip="Select a file from browser"
-                                Margin="10, 5"
-                                Padding="4"
-                                HorizontalContentAlignment="Center"
-                                VerticalContentAlignment="Center"
-                                Background="Gold"
-                                Command="{Binding ValidateImportCommand}"
-                                Content="Validate Import" />
                     </Grid>
-                </Grid>
 
-            </materialDesign:ColorZone>
+                </materialDesign:ColorZone>
 
-            <!-- Registered DataSet -->
-            <materialDesign:ColorZone
-                Grid.Column="1"
-                Mode="PrimaryDark"
-                Margin="2"
-                Padding="2" CornerRadius="5"
-                materialDesign:ElevationAssist.Elevation="Dp3"
-                VerticalAlignment="Stretch"
-                HorizontalAlignment="Stretch">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Label FontSize="16"
-                           Margin="10, 4"
-                           Content="Datasets"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Center" />
-                    <Separator Grid.Row="1" Margin="10" />
-                    <ItemsControl
-                        Grid.Row="2" ItemsSource="{Binding Datasets}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <VirtualizingStackPanel IsVirtualizing="True"
-                                                        VirtualizationMode="Recycling" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.Template>
-                            <ControlTemplate TargetType="ItemsControl">
-                                <ScrollViewer CanContentScroll="True"
-                                              VerticalScrollBarVisibility="Auto"
-                                              HorizontalScrollBarVisibility="Hidden"
-                                              Padding="{TemplateBinding Padding}"
-                                              Focusable="False">
-                                    <ItemsPresenter />
-                                </ScrollViewer>
-                            </ControlTemplate>
-                        </ItemsControl.Template>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="{x:Type dataSetAdapter:DataSetAdapter}">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <TextBlock Margin="2"
-                                               MaxWidth="250"
-                                               TextTrimming="CharacterEllipsis"
-                                               ToolTip="{Binding FileFullName}"
-                                               Text="{Binding DataSetName}"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Style="{StaticResource MaterialDesignBody2TextBlock}" />
-
-                                    <TextBlock Grid.Column="1" Margin="2"
-                                               MaxWidth="250"
-                                               TextTrimming="CharacterEllipsis"
-                                               Text="{Binding NbFeatures, StringFormat='Count = {0}'}"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Style="{StaticResource MaterialDesignBody2TextBlock}" />
-
-                                    <Button
-                                        Grid.Column="2" ToolTip="remove the dataset"
-                                        Margin="2" Height="35" Width="35" Padding="0"
-                                        HorizontalContentAlignment="Center"
-                                        VerticalContentAlignment="Center"
-                                        Style="{StaticResource MaterialDesignFlatButton}"
-                                        Command="{Binding DataContext.RemoveDatasetCommand, ElementName=DatasetUserControlName}"
-                                        CommandParameter="{Binding .}">
-                                        <materialDesign:PackIcon Kind="Delete" Height="25" Width="25" />
-                                    </Button>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-
-                </Grid>
-
-            </materialDesign:ColorZone>
-
+            </Grid>
         </Grid>
 
+        <!-- LOADING INDICATOR -->
+        <Grid Visibility="{Binding IsIdle, Converter={StaticResource InvertBooleanToVisibilityConverter}}">
+            <Grid
+                Background="Gray"
+                Opacity="0.6">
+            </Grid>
+            <ProgressBar
+                Foreground="Orange"
+                Opacity="1"
+                Height="100"
+                Width="100"
+                Style="{StaticResource MaterialDesignCircularProgressBar}"
+                Value="40"
+                IsIndeterminate="True" />
+        </Grid>
     </Grid>
 </UserControl>
