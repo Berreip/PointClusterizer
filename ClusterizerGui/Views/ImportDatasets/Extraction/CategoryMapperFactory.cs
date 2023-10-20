@@ -20,13 +20,14 @@ internal static class CategoryMapperFactory
 
     private static void Map(string? category, ref IconCategory allOtherCategoryDefaultToIcon, Dictionary<string, IconCategory> mapper, IconCategory icon)
     {
-        if (category != null)
+        if (!string.IsNullOrWhiteSpace(category))
         {
             if (category == ClusterizerGuiConstants.ALL_REMAINING_ALIAS_CATEGORY)
             {
                 allOtherCategoryDefaultToIcon = icon;
             }
-            else
+            // ignore duplicates
+            else if(!category.Contains(category))
             {
                 mapper.Add(category, icon);
             }

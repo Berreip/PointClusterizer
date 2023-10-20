@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using ClusterizerGui.Services;
@@ -294,14 +295,19 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
 
     private void RecomputeCategories(IReadOnlyCollection<string> categories)
     {
-        var categoriesSorted = new List<string>(categories.Count + 1) { ClusterizerGuiConstants.ALL_REMAINING_ALIAS_CATEGORY };
-        categoriesSorted.AddRange(categories.OrderBy(o => o));
+        var categoriesSorted = new List<string>(categories.Count + 2)
+        {
+            string.Empty,// no category
+            ClusterizerGuiConstants.ALL_REMAINING_ALIAS_CATEGORY,
+        };
+        var sorted = categories.OrderBy(o => o).ToArray();
+        categoriesSorted.AddRange(sorted);
         _categories.Reset(categoriesSorted);
 
-        YellowCategoryMapping = categoriesSorted[0];
-        GreenCategoryMapping = categories.Count > 1 ? categoriesSorted[1] : null;
-        BlueCategoryMapping = categories.Count > 2 ? categoriesSorted[2] : null;
-        RedCategoryMapping = categories.Count > 3 ? categoriesSorted[3] : null;
+        YellowCategoryMapping = ClusterizerGuiConstants.ALL_REMAINING_ALIAS_CATEGORY;
+        GreenCategoryMapping = sorted.Length > 0 ? sorted[0] : null;
+        BlueCategoryMapping = sorted.Length > 1 ? sorted[1] : null;
+        RedCategoryMapping = sorted.Length > 2 ? sorted[2] : null;
     }
 
     private static bool FilterSkippedData(object obj)
