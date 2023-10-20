@@ -94,22 +94,35 @@
                             </DataTemplate>
 
                             <DataTemplate DataType="{x:Type adapters:ClusterAdapter}">
-                                <Path Stroke="Black"
-                                      StrokeThickness="1"
-                                      Fill="{Binding ClusterColor}"
-                                      Opacity="0.6">
-                                    <Path.ToolTip>
-                                        <ToolTip StaysOpen="True" Placement="Top" HorizontalOffset="10"
-                                                 ToolTipService.InitialShowDelay="0" ToolTipService.BetweenShowDelay="0"
-                                                 ToolTipService.ShowDuration="{x:Static Member=system:Int32.MaxValue}"
-                                                 Content="{Binding TooltipText}" />
-                                    </Path.ToolTip>
-                                    <Path.Data>
-                                        <EllipseGeometry
-                                            RadiusX="{Binding Radius}"
-                                            RadiusY="{Binding Radius}" />
-                                    </Path.Data>
-                                </Path>
+                                <Canvas>
+                                    <Path Stroke="{Binding ClusterKindColor}"
+                                          StrokeThickness="2"
+                                          Fill="{Binding CategoryColor}"
+                                          Opacity="0.6">
+                                        <Path.ToolTip>
+                                            <ToolTip StaysOpen="True" Placement="Top" HorizontalOffset="10"
+                                                     ToolTipService.InitialShowDelay="0" ToolTipService.BetweenShowDelay="0"
+                                                     ToolTipService.ShowDuration="{x:Static Member=system:Int32.MaxValue}"
+                                                     Content="{Binding TooltipText}" />
+                                        </Path.ToolTip>
+                                        <Path.Data>
+                                            <EllipseGeometry
+                                                RadiusX="{Binding Radius}"
+                                                RadiusY="{Binding Radius}" />
+                                        </Path.Data>
+                                    </Path>
+
+                                    <!-- Source="{Binding CategoryImage}" -->
+                                    <Grid
+                                        Canvas.Top="{Binding IconCategoryHeightShift, Mode=OneTime}"
+                                        Canvas.Left="{Binding IconCategoryHeightShift, Mode=OneTime}"
+                                        Visibility="{Binding ElementName=MainDisplayViewUserControlName, Path=DataContext.DisplayIconOnCluster, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <Image
+                                            Visibility="{Binding HasCategory, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}"
+                                            Source="{Binding CategoryIcon}"
+                                            Height="{Binding IconCategoryHeight, Mode=OneTime}" />
+                                    </Grid>
+                                </Canvas>
                             </DataTemplate>
                         </ItemsControl.Resources>
                     </ItemsControl>
@@ -151,7 +164,6 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
-                                <RowDefinition />
                             </Grid.RowDefinitions>
 
                             <!-- SELECT ALGORITHM -->
@@ -170,7 +182,9 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <CheckBox Grid.Column="0" IsChecked="{Binding AddPointOnClick}" Content="Add point on click" />
+                                    <CheckBox Grid.Column="0"
+                                              Margin="2"
+                                              IsChecked="{Binding AddPointOnClick}" Content="Add point on click" />
                                     <Label Grid.Column="1" Margin="10, 4"
                                            IsEnabled="{Binding AddPointOnClick}"
                                            Content="Dispersion:"
@@ -214,17 +228,23 @@
                                     </ComboBox>
                                 </Grid>
 
+                                <!-- DISPLAY ICONS ON CLUSTERS -->
+                                <CheckBox
+                                    Margin="2"
+                                    IsChecked="{Binding DisplayIconOnCluster}"
+                                    Content="Display Icons on clusters" />
+
+                                <!-- CATEGORIES -->
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <Label Margin="10, 4"
-                                           Content="Category:"
-                                           ToolTip="The category with which point are associated "
-                                           VerticalAlignment="Center" HorizontalAlignment="Right" />
+                                    <CheckBox Grid.Column="0"
+                                              Margin="2" IsChecked="{Binding EnableCategory}" Content="Enable Category" />
 
                                     <ComboBox Grid.Column="1" Margin="10"
+                                              ToolTip="The category with which newly created points will be assigned"
                                               VerticalAlignment="Center"
                                               HorizontalAlignment="Stretch"
                                               HorizontalContentAlignment="Right"
@@ -233,7 +253,7 @@
                                         <ComboBox.ItemTemplate>
                                             <DataTemplate DataType="{x:Type adapters:CategorySelectionAdapter}">
                                                 <StackPanel Orientation="Horizontal">
-                                                  <Path
+                                                    <Path
                                                         VerticalAlignment="Center"
                                                         Margin="4, 0"
                                                         Stroke="Black"
@@ -243,7 +263,7 @@
                                                             <EllipseGeometry RadiusX="7" RadiusY="7" />
                                                         </Path.Data>
                                                     </Path>
-                                                    
+
                                                     <Label
                                                         Margin="4"
                                                         VerticalAlignment="Center"
@@ -262,7 +282,7 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <CheckBox Grid.Column="0"
-                                              Margin="5"
+                                              Margin="2"
                                               IsChecked="{Binding DisplayController.ShowPointsOnMap}" Content="Show points on map" />
 
                                     <Button Grid.Column="1"
@@ -308,10 +328,10 @@
 
                                                 <Label Grid.Column="0" Margin="2" Content="{Binding DatasetName}"
                                                        ToolTip="{Binding DatasetFileFulName}"
-                                                       FontSize="16" VerticalAlignment="Center" />
+                                                       VerticalAlignment="Center" />
 
                                                 <Label Grid.Column="1" Margin="6, 2" Content="{Binding FeaturesCount, StringFormat='{}{0} pts'}"
-                                                       FontSize="16" VerticalAlignment="Center" />
+                                                       VerticalAlignment="Center" />
 
                                                 <Button
                                                     Grid.Column="2"

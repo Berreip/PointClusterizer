@@ -25,7 +25,7 @@ public class GridImageAdapter : ViewModelBase, IPointImageAdapter
     public BitmapImage BitmapImage
     {
         get => _bitmapImage;
-        set => SetProperty(ref _bitmapImage, value);
+        private set => SetProperty(ref _bitmapImage, value);
     }
 
 }

@@ -44,6 +44,8 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
     private int _pointsCount;
     private readonly ObservableCollectionRanged<DatasetAvailableAdapters> _availableDatasets;
     private CategorySelectionAdapter _selectedCategory;
+    private bool _enableCategory = true;
+    private bool _displayIconOnCluster = true;
     public IDelegateCommandLight AddPointsCommand { get; }
     public IDelegateCommandLight ClearPointsCommand { get; }
     public IDelegateCommandLight<DatasetAvailableAdapters> AddDataSetContentCommand { get; }
@@ -68,9 +70,14 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
         // create an executor that will be provided to every algorithm
         var executor = new AlgorithmExecutor(() =>
         {
-            var array = new PointWrapper[_points.Count];
-            _points.CopyTo(array);
-            return array;
+            if (_enableCategory)
+            {
+                var array = new PointWrapper[_points.Count];
+                _points.CopyTo(array);
+                return array;
+            }
+
+            return _points.Select(o => new PointWrapper(o.X, o.Y, o.Z, IconCategory.None)).ToArray();
         }, o => IsIdle = o);
         DisplayController = new DisplayImageAndClusterController();
 
@@ -216,6 +223,18 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
     {
         get => _selectedCategory;
         set => SetProperty(ref _selectedCategory, value);
+    }
+
+    public bool EnableCategory
+    {
+        get => _enableCategory;
+        set => SetProperty(ref _enableCategory, value);
+    }
+
+    public bool DisplayIconOnCluster
+    {
+        get => _displayIconOnCluster;
+        set => SetProperty(ref _displayIconOnCluster, value);
     }
 
     private sealed class AlgorithmExecutor : IAlgorithmExecutor

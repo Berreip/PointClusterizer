@@ -299,20 +299,9 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
         _categories.Reset(categoriesSorted);
 
         YellowCategoryMapping = categoriesSorted[0];
-        if (categories.Count > 1)
-        {
-            GreenCategoryMapping = categoriesSorted[1];
-        }
-
-        if (categories.Count > 2)
-        {
-            BlueCategoryMapping = categoriesSorted[2];
-        }
-
-        if (categories.Count > 3)
-        {
-            RedCategoryMapping = categoriesSorted[3];
-        }
+        GreenCategoryMapping = categories.Count > 1 ? categoriesSorted[1] : null;
+        BlueCategoryMapping = categories.Count > 2 ? categoriesSorted[2] : null;
+        RedCategoryMapping = categories.Count > 3 ? categoriesSorted[3] : null;
     }
 
     private static bool FilterSkippedData(object obj)

@@ -19,7 +19,7 @@ internal sealed class AlgorithmDbScanViewModel : AlgorithmViewModelBase<DbScanHi
         : base(algorithmExecutor, displayImageAndClusterController)
     {
         _epsilonDbScan = 5;
-        _minimumPointsPerCluster = 4;
+        _minimumPointsPerCluster = 10;
     }
 
     public int EpsilonDbScan

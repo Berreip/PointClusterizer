@@ -1,5 +1,7 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using ClusterizerGui.Utils;
 using ClusterizerGui.Views.ImportDatasets.Extraction;
 using ClusterizerGui.Views.MainDisplay.Display;
@@ -17,13 +19,27 @@ internal sealed class ClusterAdapter : ViewModelBase, ICanvasItemAdapter
     public double WidthPercentage { get; }
     public double HeightPercentage { get; }
     public string TooltipText { get; }
-    public SolidColorBrush ClusterColor { get; }
+    public SolidColorBrush ClusterKindColor { get; }
+    public SolidColorBrush CategoryColor { get; }
     public IconCategory Category { get; }
+    public double IconCategoryHeight { get; }
+    
+    /// <summary>
+    /// Shift for centering icons
+    /// </summary>
+    public double IconCategoryHeightShift { get; }
+    public bool HasCategory { get; }
+    public BitmapImage? CategoryIcon { get; }
 
-    public ClusterAdapter(SolidColorBrush clusterColor, int pointsCount, (IPoint centroid, Rectangle aoi) clusterInfo, IconCategory category)
+    private const double MIN_IMAGE_SIZE = 10d;
+
+    public ClusterAdapter(SolidColorBrush clusterKindColor, int pointsCount, (IPoint centroid, Rectangle aoi) clusterInfo, IconCategory category)
     {
-        ClusterColor = clusterColor;
+        ClusterKindColor = clusterKindColor;
         Category = category;
+        CategoryColor = category.ToCategoryColorBrush();
+        HasCategory = category != IconCategory.None;
+        CategoryIcon = category.ToCategoryIcon();
         // Test with different radius
         Radius = RadiusCalculation.ComputeRadiusFromPointCountsLogBased(pointsCount, clusterInfo.aoi);
         // Radius = RadiusCalculation.ComputeRadiusFromPointCountsSurfaceBased(pointsCount, clusterInfo.aoi);
@@ -32,5 +48,9 @@ internal sealed class ClusterAdapter : ViewModelBase, ICanvasItemAdapter
         HeightPercentage = clusterInfo.centroid.Y / ClusterizerGuiConstants.IMAGE_HEIGHT;
         DisplayIndex = DisplayIndexConstant.IMAGE_CLUSTERS;
         TooltipText = $"{pointsCount} items";
+        
+        // have fun with icon size: make it relative to radius
+        IconCategoryHeight = Math.Max(MIN_IMAGE_SIZE, Radius * 0.8d);
+        IconCategoryHeightShift = -IconCategoryHeight / 2;
     }
 }
