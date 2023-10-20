@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ClusterizerGui.Views.ImportDatasets.Extraction;
 using ClusterizerGui.Views.MainDisplay.Adapters;
 using PRF.Utils.CoreComponents.IO;
 
@@ -75,12 +74,10 @@ internal sealed class DatasetManager : IDatasetManager
 
 internal sealed class Dataset : IDataset
 {
-    private readonly CategoryMapper _categoryMapper;
     private readonly PointWrapper[] _datasetPoints;
 
-    public Dataset(string datasetName, IFileInfo file, IEnumerable<PointWrapper> datasetPoints, CategoryMapper categoryMapper)
+    public Dataset(string datasetName, IFileInfo file, IEnumerable<PointWrapper> datasetPoints)
     {
-        _categoryMapper = categoryMapper;
         _datasetPoints = datasetPoints.ToArray();
         DatasetName = datasetName;
         File = file;

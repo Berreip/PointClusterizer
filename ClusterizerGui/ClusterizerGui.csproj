@@ -59,6 +59,7 @@
       <Resource Include="Ressources\yellow.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Resource>
+      <None Remove="Ressources\Miller_projection_SW.jpg" />
     </ItemGroup>
 
 </Project>

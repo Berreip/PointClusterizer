@@ -1,4 +1,5 @@
-﻿using ClusterizerGui.Utils.Aggregators;
+﻿using System.Drawing;
+using ClusterizerGui.Utils.Aggregators;
 
 // ReSharper disable UseObjectOrCollectionInitializer
 
@@ -14,8 +15,8 @@ internal sealed class PointRoundedTests
         var hash = new HashSet<PointRounded>();
 
         //Act
-        hash.Add(new PointRounded(1, 2, 3));
-        hash.Add(new PointRounded(1, 2, 3));
+        hash.Add(new PointRounded(1, 2, 3, Color.Azure));
+        hash.Add(new PointRounded(1, 2, 3, Color.Aquamarine));
 
         //Assert
         Assert.AreEqual(1, hash.Count);
@@ -28,8 +29,8 @@ internal sealed class PointRoundedTests
         var hash = new HashSet<PointRounded>();
 
         //Act
-        hash.Add(new PointRounded(7, 2, 3));
-        hash.Add(new PointRounded(1, 2, 3));
+        hash.Add(new PointRounded(7, 2, 3, Color.Azure));
+        hash.Add(new PointRounded(1, 2, 3, Color.Aquamarine));
 
         //Assert
         Assert.AreEqual(2, hash.Count);
@@ -42,8 +43,8 @@ internal sealed class PointRoundedTests
         var hash = new HashSet<PointRounded>();
 
         //Act
-        hash.Add(new PointRounded(1, 7, 3));
-        hash.Add(new PointRounded(1, 2, 3));
+        hash.Add(new PointRounded(1, 7, 3, Color.Azure));
+        hash.Add(new PointRounded(1, 2, 3, Color.Aquamarine));
 
         //Assert
         Assert.AreEqual(2, hash.Count);
@@ -56,8 +57,8 @@ internal sealed class PointRoundedTests
         var hash = new HashSet<PointRounded>();
 
         //Act
-        hash.Add(new PointRounded(1, 2, 7));
-        hash.Add(new PointRounded(1, 2, 3));
+        hash.Add(new PointRounded(1, 2, 7, Color.Azure));
+        hash.Add(new PointRounded(1, 2, 3, Color.Aquamarine));
 
         //Assert
         Assert.AreEqual(2, hash.Count);

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ClusterizerGui.Views.ImportDatasets.Extraction;
 using ClusterizerGui.Views.MainDisplay.Adapters;
 using ClusterizerLib;
 using ClusterizerLib.Results;
@@ -13,7 +14,7 @@ namespace ClusterizerGui.Views.MainDisplay;
 /// </summary>
 internal interface IDisplayImageAndClusterController
 {
-    void ShowOrHideClusters(bool value, ClusterGlobalResult<IPoint> clusterResults, SolidColorBrush clusterColor, Color unclusteredPointsColor);
+    void ShowOrHideClusters(bool value, ClusterGlobalResult<PointWrapper> clusterResults, SolidColorBrush clusterColor, Color unclusteredPointsColor, IconCategory category);
     void ShowOrHideSourceImage(bool value, IPointImageAdapter sourceImage);
     void ClearCurrentImage();
     void SetNewCurrentImage(BitmapImage newImage);

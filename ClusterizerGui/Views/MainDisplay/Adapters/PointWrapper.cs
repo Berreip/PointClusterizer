@@ -1,5 +1,7 @@
-﻿using ClusterizerLib;
-using Dbscan;
+﻿using System.Drawing;
+using ClusterizerGui.Views.ImportDatasets.Extraction;
+using ClusterizerLib;
+using Point = Dbscan.Point;
 
 namespace ClusterizerGui.Views.MainDisplay.Adapters;
 
@@ -8,12 +10,17 @@ internal sealed class PointWrapper : IPoint
     public double X { get; }
     public double Y { get; }
     public double Z { get; }
+    public IconCategory Category { get; }
+    public Color Color { get; }
+    
 
-    public PointWrapper(double x, double y, double z)
+    public PointWrapper(double x, double y, double z, IconCategory category)
     {
         X = x;
         Y = y;
         Z = z;
+        Category = category;
+        Color = category.ToCategoryColor();
         Point = new Point(x, y);
     }
 

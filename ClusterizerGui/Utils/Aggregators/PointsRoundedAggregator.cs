@@ -1,15 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using ClusterizerLib;
+using System.Drawing;
+using ClusterizerGui.Views.ImportDatasets.Extraction;
+using ClusterizerGui.Views.MainDisplay.Adapters;
 
 namespace ClusterizerGui.Utils.Aggregators;
 
 internal static class PointsRoundedAggregator
 {
+    public const int ALTITUDE_NO_VALUE = -1;
+    public static readonly AltitudeAndColor NoValue = new AltitudeAndColor(ALTITUDE_NO_VALUE, IconCategory.None.ToCategoryColor());
+
     /// <summary>
     /// From a list of points, Round X, Y, Z to the nearest int and cap them. Then, filtered all points of the same value
     /// </summary>
-    public static IReadOnlyCollection<PointRounded> AggregateSimilarPoints(IEnumerable<IPoint> points,
+    public static IReadOnlyCollection<PointRounded> AggregateSimilarPoints(IEnumerable<PointWrapper> points,
         int maxX,
         int maxY,
         int maxZ)
@@ -20,52 +25,61 @@ internal static class PointsRoundedAggregator
             pointGrouped.Add(new PointRounded(
                 Math.Clamp((int)Math.Round(point.X), 0, maxX),
                 Math.Clamp((int)Math.Round(point.Y), 0, maxY),
-                Math.Clamp((int)Math.Round(point.Z), 0, maxZ)
+                Math.Clamp((int)Math.Round(point.Z), 0, maxZ),
+                point.Color
             ));
         }
 
         return pointGrouped;
     }
-
+    
     /// <summary>
     /// Create a 2 dimension array that contains the given aggregated points
     /// </summary>
     public static PointAggregatedArray CreatePointArrayFromAggregatedData(IReadOnlyCollection<PointRounded> pointsAggregated, int arrayX, int arrayY)
     {
-        var noValue = -1;
         // init 2 dimensional array with noValue 
-        var array = new int[arrayX,arrayY];
-        for (int i = 0; i < arrayX; i++)
+        var array = new AltitudeAndColor[arrayX,arrayY];
+        for (var i = 0; i < arrayX; i++)
         {
-            for (int j = 0; j < arrayY; j++)
+            for (var j = 0; j < arrayY; j++)
             {
-                array[i, j] = noValue;
+                array[i, j] = NoValue;
             }
         }
         foreach (var point in pointsAggregated)
         {
-            array[point.X, point.Y] = point.Z;
+            array[point.X, point.Y] = new AltitudeAndColor(point.Z, point.Color);
         }
 
-        return new PointAggregatedArray(array, noValue);
+        return new PointAggregatedArray(array);
+    }
+}
+
+internal record struct AltitudeAndColor
+{
+    public int Altitude { get; }
+    public Color Color { get; }
+
+    public AltitudeAndColor(int altitude, Color color)
+    {
+        Altitude = altitude;
+        Color = color;
     }
 }
 
 internal sealed class PointAggregatedArray
 {
-    private readonly int[,] _array;
-    private readonly int _noValue;
+    private readonly AltitudeAndColor[,] _array;
 
-    public PointAggregatedArray(int[,] array, int noValue)
+    public PointAggregatedArray(AltitudeAndColor[,] array)
     {
         _array = array;
-        _noValue = noValue;
     }
 
-    public bool TryGetPointAltitude(int x, int y, out int altitude)
+    public AltitudeAndColor GetPointAltitude(int x, int y)
     {
-        altitude = _array[x, y];
-        return altitude != _noValue;
+        return _array[x, y];
     }
 }
 
@@ -77,12 +91,14 @@ internal sealed class PointRounded : IEquatable<PointRounded>
     public int X { get; }
     public int Y { get; }
     public int Z { get; }
+    public Color Color { get; }
 
-    public PointRounded(int x, int y, int z)
+    public PointRounded(int x, int y, int z, Color color)
     {
         X = x;
         Y = y;
         Z = z;
+        Color = color; // ignored for equality
     }
 
     public bool Equals(PointRounded? other)

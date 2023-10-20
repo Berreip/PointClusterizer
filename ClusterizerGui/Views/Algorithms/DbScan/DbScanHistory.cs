@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ClusterizerGui.Views.ImportDatasets.Extraction;
 using ClusterizerGui.Views.MainDisplay;
+using ClusterizerGui.Views.MainDisplay.Adapters;
 using ClusterizerLib;
 using ClusterizerLib.Results;
 using Color = System.Drawing.Color;
@@ -18,17 +20,21 @@ internal sealed class DbScanHistory : HistoryBase
         int runNumber,
         TimeSpan duration,
         int nbInitialPoints,
-        ClusterGlobalResult<IPoint> clusterResults,
+        ClusterGlobalResult<PointWrapper> clusterResults,
         int epsilon,
         int minPointByCluster,
-        BitmapImage? sourceImage)
+        BitmapImage? sourceImage,
+        IconCategory category)
         : base(
             displayImageAndClusterController,
             runNumber,
             duration,
             nbInitialPoints,
             clusterResults,
-            sourceImage, Brushes.Green, Color.DarkGreen)
+            sourceImage,
+            Brushes.Green,
+            Color.Green, 
+            category)
     {
         Epsilon = epsilon;
         MinPointByCluster = minPointByCluster;

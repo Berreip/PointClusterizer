@@ -32,30 +32,23 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Label Margin="5, 4" Content="Selected file to import :"
                            VerticalAlignment="Center" />
-                    <TextBox
-                        Grid.Column="1"
-                        Margin="2"
-                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Stretch"
-                        Foreground="{DynamicResource MaterialDesignBody }"
-                        Text="{Binding SelectedFilePath, UpdateSourceTrigger=PropertyChanged, Delay=100}"
-                        ToolTip="{Binding SelectedFilePath}" />
 
-                    <Button Grid.Column="2"
+                    <Button Grid.Column="1"
                             ToolTip="Select a file from browser"
                             Margin="2"
                             Padding="0"
-                            Height="45" Width="45"
-                            HorizontalContentAlignment="Center"
-                            VerticalContentAlignment="Center"
                             Style="{StaticResource MaterialDesignOutlinedButton}"
                             Command="{Binding SelectFileCommand}">
-                        <materialDesign:PackIcon Kind="DotsHorizontal" Height="35" Width="35" />
+                        <Label
+                            Margin="2"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Foreground="{DynamicResource MaterialDesignBody }"
+                            Content="{Binding SelectedFilePath}" />
                     </Button>
                 </Grid>
             </materialDesign:ColorZone>
@@ -152,7 +145,7 @@
                                           SelectedItem="{Binding CategoryHeaderPosition}" />
 
                             </StackPanel>
-                            <Button Grid.Column="3" 
+                            <Button Grid.Column="3"
                                     ToolTip="Refresh the data"
                                     Margin="10, 2"
                                     Padding="0"
@@ -229,9 +222,10 @@
                         <Grid Grid.Row="2">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="300" />
                             </Grid.ColumnDefinitions>
-                            <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                                 <TextBlock Margin="2"
                                            TextTrimming="CharacterEllipsis"
                                            Text="{Binding DataCount, StringFormat='Count = {0}'}"
@@ -250,31 +244,32 @@
 
                                 <TextBlock Margin="2"
                                            TextTrimming="CharacterEllipsis"
-                                           Text="{Binding MiscContent, StringFormat='MiscContent = [{0}]'}"
+                                           Text="{Binding MiscContent, StringFormat='[{0}]'}"
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"
                                            Style="{StaticResource MaterialDesignBody2TextBlock}" />
 
                                 <TextBlock Margin="2"
                                            TextTrimming="CharacterEllipsis"
-                                           Text="{Binding DistinctCategoriesCount, StringFormat='Distinct Categories = {0}'}"
+                                           Text="{Binding DistinctCategoriesCount, StringFormat='Cat = {0}'}"
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"
                                            Style="{StaticResource MaterialDesignBody2TextBlock}" />
-                                
-                                <StackPanel Orientation="Horizontal">
-                                    <Label Margin="5, 4" Content="Dataset name:"
-                                           VerticalAlignment="Center" />
-                                    <TextBox
-                                        Margin="2"
-                                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                                        VerticalAlignment="Center"
-                                        HorizontalAlignment="Stretch"
-                                        Foreground="{DynamicResource MaterialDesignBody }"
-                                        Text="{Binding DatasetName}"/>
-                                </StackPanel>
+
+                            
                             </StackPanel>
-                            <Button Grid.Column="1"
+                            <TextBox
+                                Grid.Column="1"
+                                MinWidth="120"
+                                Margin="2"
+                                materialDesign:HintAssist.Hint="Dataset name"
+                                Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Stretch"
+                                Foreground="{DynamicResource MaterialDesignBody }"
+                                Text="{Binding DatasetName}" />
+                            
+                            <Button Grid.Column="2"
                                     Margin="10, 5"
                                     Padding="4"
                                     HorizontalContentAlignment="Center"
@@ -317,7 +312,7 @@
                                    HorizontalAlignment="Center" />
                             <Separator Grid.Row="1" Margin="10, 2" />
                         </Grid>
-                        
+
                         <!-- DATASETS CONTENT -->
                         <ListBox
                             Grid.Row="1" ItemsSource="{Binding Datasets}">
@@ -361,7 +356,7 @@
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
-                        
+
                         <!-- HEADER CATEGORY -->
                         <Grid Grid.Row="2">
                             <Grid.RowDefinitions>
@@ -376,26 +371,27 @@
                                    HorizontalAlignment="Center" />
                             <Separator Grid.Row="1" Margin="10, 2" />
                         </Grid>
-                        
+
                         <!-- CATEGORY -->
                         <StackPanel Grid.Row="3">
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <Image Source="../../Ressources/yellow.png" 
+                                <Image Source="../../Ressources/yellow.png"
                                        Margin="10"
                                        VerticalAlignment="Center"
                                        Stretch="Fill"
                                        Width="50"
                                        Height="50" />
-                                
+
                                 <Label Grid.Column="1"
                                        VerticalAlignment="Center"
-                                       Content=" mapped with : "></Label>
-                                
+                                       Content=" mapped with : ">
+                                </Label>
+
                                 <ComboBox Grid.Column="2" Margin="2" MinWidth="70"
                                           VerticalAlignment="Center"
                                           ItemsSource="{Binding AvailableCategories}"
@@ -409,21 +405,22 @@
                             </Grid>
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <Image Source="../../Ressources/green.png" 
+                                <Image Source="../../Ressources/green.png"
                                        Margin="10"
                                        VerticalAlignment="Center"
                                        Stretch="Fill"
                                        Width="50"
                                        Height="50" />
-                                
+
                                 <Label Grid.Column="1"
                                        VerticalAlignment="Center"
-                                       Content=" mapped with : "></Label>
-                                
+                                       Content=" mapped with : ">
+                                </Label>
+
                                 <ComboBox Grid.Column="2" Margin="2" MinWidth="70"
                                           VerticalAlignment="Center"
                                           ItemsSource="{Binding AvailableCategories}"
@@ -437,21 +434,22 @@
                             </Grid>
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <Image Source="../../Ressources/blue.png" 
+                                <Image Source="../../Ressources/blue.png"
                                        Margin="10"
                                        VerticalAlignment="Center"
                                        Stretch="Fill"
                                        Width="50"
                                        Height="50" />
-                                
+
                                 <Label Grid.Column="1"
                                        VerticalAlignment="Center"
-                                       Content=" mapped with : "></Label>
-                                
+                                       Content=" mapped with : ">
+                                </Label>
+
                                 <ComboBox Grid.Column="2" Margin="2" MinWidth="70"
                                           VerticalAlignment="Center"
                                           ItemsSource="{Binding AvailableCategories}"
@@ -466,21 +464,22 @@
 
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <Image Source="../../Ressources/red.png" 
+                                <Image Source="../../Ressources/red.png"
                                        Margin="10"
                                        VerticalAlignment="Center"
                                        Stretch="Fill"
                                        Width="50"
                                        Height="50" />
-                                
+
                                 <Label Grid.Column="1"
                                        VerticalAlignment="Center"
-                                       Content=" mapped with : "></Label>
-                                
+                                       Content=" mapped with : ">
+                                </Label>
+
                                 <ComboBox Grid.Column="2" Margin="2" MinWidth="70"
                                           VerticalAlignment="Center"
                                           ItemsSource="{Binding AvailableCategories}"
@@ -493,7 +492,7 @@
                                 </ComboBox>
                             </Grid>
                         </StackPanel>
-                       </Grid>
+                    </Grid>
                 </materialDesign:ColorZone>
 
             </Grid>

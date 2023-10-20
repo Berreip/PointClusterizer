@@ -12,9 +12,9 @@ using ClusterizerGui.Views.Algorithms.Adapters;
 using ClusterizerGui.Views.Algorithms.DbScan;
 using ClusterizerGui.Views.Algorithms.GridBase;
 using ClusterizerGui.Views.Algorithms.HierarchicalGreedyClustering;
+using ClusterizerGui.Views.ImportDatasets.Extraction;
 using ClusterizerGui.Views.MainDisplay.Adapters;
 using ClusterizerGui.Views.MainDisplay.Display;
-using ClusterizerLib;
 using PRF.WPFCore;
 using PRF.WPFCore.Commands;
 using PRF.WPFCore.CustomCollections;
@@ -43,6 +43,7 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
     private readonly List<PointWrapper> _points = new List<PointWrapper>();
     private int _pointsCount;
     private readonly ObservableCollectionRanged<DatasetAvailableAdapters> _availableDatasets;
+    private CategorySelectionAdapter _selectedCategory;
     public IDelegateCommandLight AddPointsCommand { get; }
     public IDelegateCommandLight ClearPointsCommand { get; }
     public IDelegateCommandLight<DatasetAvailableAdapters> AddDataSetContentCommand { get; }
@@ -51,6 +52,8 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
 
     public IReadOnlyList<int> AvailableClickDispersion { get; } = new[] { 5, 10, 20, 40, 50, 100 };
     public IReadOnlyList<int> AvailableNbPoints { get; } = new[] { 1, 5, 10, 100, 1_000, 10_000, 50_000, 100_000, 500_000, 1_000_000 };
+
+    public CategorySelectionAdapter[] AvailableCategories { get; } = Enum.GetValues<IconCategory>().Select(o => new CategorySelectionAdapter(o)).ToArray();
 
     public ICollectionView AvailableDatasets { get; }
 
@@ -75,7 +78,8 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
         var vmDbScan = new AlgorithmDbScanViewModel(executor, DisplayController);
         var vmGridBase = new AlgorithmGridBaseViewModel(executor, DisplayController);
         var vmHGC = new HierarchicalGreedyClusteringViewModel(executor, DisplayController);
-
+        _selectedCategory = AvailableCategories.First();
+        
         AvailableDatasets = ObservableCollectionSource.GetDefaultView(out _availableDatasets);
         datasetManager.OnDatasetUpdated += ReloadDataSet;
         ReloadDataSet();
@@ -145,7 +149,7 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
             var points = new List<PointWrapper>(pointsNumber);
             for (var i = 0; i < pointsNumber; i++)
             {
-                points.Add(RandomPointCreator.CreateNew(range));
+                points.Add(RandomPointCreator.CreateNew(range, _selectedCategory.Category));
             }
 
             AddPointAndRegenerateBitmapAccordingly(points);
@@ -158,7 +162,7 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
         PointsCount = _points.Count;
 
         // Regenerate Bitmap:
-        DisplayController.SetNewCurrentImage(_points.GenerateBitmapImageFromPoint(Color.Purple));
+        DisplayController.SetNewCurrentImage(_points.GenerateBitmapImageFromPoint());
     }
 
     public bool IsIdle
@@ -208,9 +212,15 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
         private set => SetProperty(ref _pointsCount, value);
     }
 
+    public CategorySelectionAdapter SelectedCategory
+    {
+        get => _selectedCategory;
+        set => SetProperty(ref _selectedCategory, value);
+    }
+
     private sealed class AlgorithmExecutor : IAlgorithmExecutor
     {
-        private readonly Func<IPoint[]> _pointsProviderCallback;
+        private readonly Func<PointWrapper[]> _pointsProviderCallback;
         private readonly Action<bool> _isIdleCallback;
 
         public AlgorithmExecutor(Func<PointWrapper[]> pointsProviderCallback, Action<bool> isIdleCallback)
@@ -219,7 +229,7 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
             _isIdleCallback = isIdleCallback;
         }
 
-        public async Task ExecuteAsync(Action<IPoint[]> action)
+        public async Task ExecuteAsync(Action<PointWrapper[]> action)
         {
             _isIdleCallback(false);
             await AsyncWrapper.DispatchAndWrapAsync(() =>

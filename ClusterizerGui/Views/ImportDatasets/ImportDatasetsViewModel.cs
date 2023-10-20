@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using ClusterizerGui.Services;
@@ -88,17 +87,21 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
 
     private async void ExecuteValidateImportCommand()
     {
-        IsIdle = false;
         var file = _validFile;
+        if (file == null)
+        {
+            return;
+        }
+        
+        IsIdle = false;
         await AsyncWrapper.DispatchAndWrapAsync(() =>
             {
                 var categoryMapper = CategoryMapperFactory.Create(_blueCategoryMapping, _yellowCategoryMapping, _redCategoryMapping, _greenCategoryMapping);
                 var convertedPoints = _currentFileContent
                     .Where(o => o.IsValid)
-                    .Select(PointExtractor.ConvertToPoint)
+                    .Select(csvLineAdapter => PointExtractor.ConvertToPoint(csvLineAdapter, categoryMapper))
                     .ToArray();
-                var datasetFile = file ?? throw new InvalidOperationException();
-                _datasetManager.AddNewDataset(new Dataset(DatasetName ?? "Dataset_Name", datasetFile, convertedPoints, categoryMapper));
+                _datasetManager.AddNewDataset(new Dataset(DatasetName ?? "Dataset_Name", file, convertedPoints));
             },
             () => IsIdle = true).ConfigureAwait(false);
     }
@@ -125,7 +128,7 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
     public string? SelectedFilePath
     {
         get => _selectedFilePath;
-        set
+        private set
         {
             if (SetProperty(ref _selectedFilePath, value))
             {

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ClusterizerGui.Views.ImportDatasets.Extraction;
 using ClusterizerGui.Views.MainDisplay;
+using ClusterizerGui.Views.MainDisplay.Adapters;
 using ClusterizerLib;
 using ClusterizerLib.Results;
 using Color = System.Drawing.Color;
@@ -19,17 +21,21 @@ internal sealed class HierarchicalGreedyClusteringHistory : HistoryBase
         int runNumber,
         TimeSpan duration,
         int nbInitialPoints,
-        ClusterGlobalResult<IPoint> clusterResults,
+        ClusterGlobalResult<PointWrapper> clusterResults,
         BitmapImage? sourceImage,
         int searchRadius, 
-        int numberOfLevels)
+        int numberOfLevels,
+        IconCategory category)
         : base(
             displayImageAndClusterController,
             runNumber,
             duration,
             nbInitialPoints,
             clusterResults,
-            sourceImage, Brushes.LightBlue, Color.Red)
+            sourceImage, 
+            Brushes.Indigo, 
+            Color.Indigo,
+            category)
     {
         SearchRadius = searchRadius;
         NumberOfLevels = numberOfLevels;

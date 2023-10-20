@@ -3,7 +3,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Windows.Media.Imaging;
+using ClusterizerGui.Views.ImportDatasets.Extraction;
 using ClusterizerGui.Views.MainDisplay;
+using ClusterizerGui.Views.MainDisplay.Adapters;
 using ClusterizerLib;
 using ClusterizerLib.HierarchicalGreedy;
 
@@ -40,7 +42,7 @@ internal sealed class HierarchicalGreedyClusteringViewModel: AlgorithmViewModelB
     }
 
     
-    protected override HierarchicalGreedyClusteringHistory ExecuteAlgorithmImplementation(BitmapImage? img, IPoint[] points)
+    protected override HierarchicalGreedyClusteringHistory ExecuteAlgorithmImplementation(BitmapImage? img, PointWrapper[] points, IconCategory category)
     {
         var searchRadius = SearchRadius;
         var numberOfLevels = NumberOfLevels;
@@ -57,6 +59,7 @@ internal sealed class HierarchicalGreedyClusteringViewModel: AlgorithmViewModelB
             clusterResults: results,
             searchRadius: searchRadius,
             numberOfLevels: numberOfLevels,
-            sourceImage: img);
+            sourceImage: img, 
+            category: category);
     }
 }

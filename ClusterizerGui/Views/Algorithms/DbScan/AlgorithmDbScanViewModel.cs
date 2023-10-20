@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 using System.Windows.Media.Imaging;
+using ClusterizerGui.Views.ImportDatasets.Extraction;
 using ClusterizerGui.Views.MainDisplay;
+using ClusterizerGui.Views.MainDisplay.Adapters;
 using ClusterizerLib;
 using ClusterizerLib.DbScanAlgorithm;
 
@@ -32,7 +34,7 @@ internal sealed class AlgorithmDbScanViewModel : AlgorithmViewModelBase<DbScanHi
         set => SetProperty(ref _minimumPointsPerCluster, value);
     }
 
-    protected override DbScanHistory ExecuteAlgorithmImplementation(BitmapImage? img, IPoint[] points)
+    protected override DbScanHistory ExecuteAlgorithmImplementation(BitmapImage? img, PointWrapper[] points, IconCategory category)
     {
         var epsilonDbScan = EpsilonDbScan;
         var minimumPointsPerCluster = MinimumPointsPerCluster;
@@ -49,6 +51,7 @@ internal sealed class AlgorithmDbScanViewModel : AlgorithmViewModelBase<DbScanHi
             clusterResults: results,
             epsilon: epsilonDbScan,
             minPointByCluster: minimumPointsPerCluster,
-            sourceImage: img);
+            sourceImage: img,
+            category:category);
     }
 }

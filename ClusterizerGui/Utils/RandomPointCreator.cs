@@ -1,16 +1,18 @@
 ﻿using System;
+using ClusterizerGui.Views.ImportDatasets.Extraction;
 using ClusterizerGui.Views.MainDisplay.Adapters;
 
 namespace ClusterizerGui.Utils;
 
 internal static class RandomPointCreator
 {
-    public static PointWrapper CreateNew(PointRange range)
+    public static PointWrapper CreateNew(PointRange range, IconCategory category)
     {
         return new PointWrapper(
             range.GetRandomX(),
             range.GetRandomY(),
-            range.GetRandomZ());
+            range.GetRandomZ(),
+            category);
     }
 }
 

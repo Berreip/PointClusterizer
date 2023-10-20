@@ -3,21 +3,21 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Media.Imaging;
 using ClusterizerGui.Utils.Aggregators;
-using ClusterizerLib;
+using ClusterizerGui.Views.MainDisplay.Adapters;
 
 namespace ClusterizerGui.Utils.BitmapGeneration;
 
 internal static class BitmapGeneratorFromPoints
 {
-    public static BitmapImage GenerateBitmapImageFromPoint(this IEnumerable<IPoint> points, Color pointColor)
+    public static BitmapImage GenerateBitmapImageFromPoint(this IEnumerable<PointWrapper> points)
     {
-        using (var bmp = GenerateBitmapFromPoint(points, pointColor))
+        using (var bmp = GenerateBitmapFromPoint(points))
         {
             return bmp.GetBitmapImage();
         }
     }
     
-    public static Bitmap GenerateBitmapFromPoint(IEnumerable<IPoint> points, Color pointColor)
+    public static Bitmap GenerateBitmapFromPoint(IEnumerable<PointWrapper> points)
     {
         // aggregate similar point rounded to int
         var pointsAggregated = PointsRoundedAggregator.AggregateSimilarPoints(
@@ -52,9 +52,10 @@ internal static class BitmapGeneratorFromPoints
                     var widthCursor = 0;
                     for (var x = 0; x < widthInBytes; x = x + bytesPerPixel)
                     {
-                        if (arrayPoints.TryGetPointAltitude(widthCursor, heightCursor, out var altitude))
+                        var altitudeAndColor = arrayPoints.GetPointAltitude(widthCursor, heightCursor);
+                        if (altitudeAndColor.Altitude != PointsRoundedAggregator.ALTITUDE_NO_VALUE)
                         {
-                            var color = ColorByAltitudeProvider.GetColor(altitude, pointColor);
+                            var color = ColorByAltitudeProvider.GetColor(altitudeAndColor);
                             currentLine[x] = color.B; //blue
                             currentLine[x + 1] = color.G; //green
                             currentLine[x + 2] = color.R; //red

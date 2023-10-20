@@ -5,6 +5,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ClusterizerGui.Utils.BitmapGeneration;
 using ClusterizerGui.Utils.MathMisc;
+using ClusterizerGui.Views.ImportDatasets.Extraction;
 using ClusterizerGui.Views.MainDisplay.Adapters;
 using ClusterizerLib;
 using ClusterizerLib.Results;
@@ -30,7 +31,7 @@ internal sealed class DisplayImageAndClusterController : ViewModelBase, IDisplay
 
     public ICollectionView AllCanvasItems { get; }
     private PointImageAdapter? _currentMainImage;
-    private readonly ConcurrentDictionary<ClusterGlobalResult<IPoint>, ClusterBag> _clusterAdapterByResult = new ConcurrentDictionary<ClusterGlobalResult<IPoint>, ClusterBag>();
+    private readonly ConcurrentDictionary<ClusterGlobalResult<PointWrapper>, ClusterBag> _clusterAdapterByResult = new ConcurrentDictionary<ClusterGlobalResult<PointWrapper>, ClusterBag>();
     private bool _showPointsOnMap = true;
     private readonly ObservableCollectionRanged<ICanvasItemAdapter> _allCanvasItems;
 
@@ -58,15 +59,15 @@ internal sealed class DisplayImageAndClusterController : ViewModelBase, IDisplay
         }
     }
 
-    public void ShowOrHideClusters(bool value, ClusterGlobalResult<IPoint> clusterResults, SolidColorBrush clusterColor, Color unclusteredPointsColor)
+    public void ShowOrHideClusters(bool value, ClusterGlobalResult<PointWrapper> clusterResults, SolidColorBrush clusterColor, Color unclusteredPointsColor, IconCategory category)
     {
         if (value)
         {
             // generate adapter:
-            var adapters = clusterResults.ClusterResults.Select(o => new ClusterAdapter(clusterColor, o.Points.Count, MathHelper.ComputeClusterInfo(o.Points))).ToArray();
+            var adapters = clusterResults.ClusterResults.Select(o => new ClusterAdapter(clusterColor, o.Points.Count, MathHelper.ComputeClusterInfo(o.Points, category), category)).ToArray();
 
             // create both images:
-            var imageUnclusterized = clusterResults.UnClusteredPoint.GenerateBitmapImageFromPoint(unclusteredPointsColor);
+            var imageUnclusterized = clusterResults.UnClusteredPoint.GenerateBitmapImageFromPoint();
 
             var clusterBag = new ClusterBag(adapters, imageUnclusterized);
             if (_clusterAdapterByResult.TryAdd(clusterResults, clusterBag))

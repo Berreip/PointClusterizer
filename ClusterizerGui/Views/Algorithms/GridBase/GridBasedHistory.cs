@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ClusterizerGui.Views.ImportDatasets.Extraction;
 using ClusterizerGui.Views.MainDisplay;
+using ClusterizerGui.Views.MainDisplay.Adapters;
 using ClusterizerLib;
 using ClusterizerLib.Results;
 using Color = System.Drawing.Color;
@@ -15,19 +17,23 @@ internal sealed class GridBasedHistory : HistoryBase
         int runNumber,
         TimeSpan duration,
         int nbInitialPoints,
-        ClusterGlobalResult<IPoint> clusterResults,
+        ClusterGlobalResult<PointWrapper> clusterResults,
         BitmapImage? sourceImage,
         int minimumDensity, 
         int selectedPassesNumber, 
         int columns,
-        int rows)
+        int rows,
+        IconCategory category)
         : base(
             displayImageAndClusterController,
             runNumber,
             duration,
             nbInitialPoints,
             clusterResults,
-            sourceImage, Brushes.Orange, Color.Red)
+            sourceImage, 
+            Brushes.Orange, 
+            Color.Orange,
+            category)
     {
         MinimumDensity = minimumDensity;
         SelectedPassesNumber = selectedPassesNumber;

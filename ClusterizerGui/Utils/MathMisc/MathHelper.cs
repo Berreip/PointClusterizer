@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using ClusterizerGui.Views.ImportDatasets.Extraction;
 using ClusterizerGui.Views.MainDisplay.Adapters;
 using ClusterizerLib;
 
@@ -27,16 +28,16 @@ internal static class MathHelper
     /// <summary>
     /// Compute the centroid and aoi of a set of points
     /// </summary>
-    public static (IPoint centroid, Rectangle aoi) ComputeClusterInfo(IReadOnlyList<IPoint> points)
+    public static (IPoint centroid, Rectangle aoi) ComputeClusterInfo(IReadOnlyList<IPoint> points, IconCategory category)
     {
         double x = 0;
         double y = 0;
         double z = 0;
 
-        int minX = ClusterizerGuiConstants.DATA_MAX_X;
-        int minY = ClusterizerGuiConstants.DATA_MAX_Y;
-        int maxX = 0;
-        int maxY = 0;
+        var minX = ClusterizerGuiConstants.DATA_MAX_X;
+        var minY = ClusterizerGuiConstants.DATA_MAX_Y;
+        var maxX = 0;
+        var maxY = 0;
 
         foreach (var point in points)
         {
@@ -49,7 +50,7 @@ internal static class MathHelper
             maxY = Math.Max(maxY, (int)point.Y);
         }
 
-        return (new PointWrapper(x / points.Count, y / points.Count, z / points.Count), new Rectangle(minX, minY, maxX - minX, maxY - minY));
+        return (new PointWrapper(x / points.Count, y / points.Count, z / points.Count, category), new Rectangle(minX, minY, maxX - minX, maxY - minY));
     }
 }
 

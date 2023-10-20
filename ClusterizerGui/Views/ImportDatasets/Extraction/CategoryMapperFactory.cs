@@ -34,15 +34,6 @@ internal static class CategoryMapperFactory
     }
 }
 
-internal enum IconCategory
-{
-    None,
-    Blue,
-    Yellow,
-    Red,
-    Green,
-}
-
 /// <summary>
 /// A mapping between string category and global category
 /// </summary>
@@ -55,5 +46,10 @@ internal sealed class CategoryMapper
     {
         _mapper = mapper;
         _allOtherCategoryDefaultToIcon = allOtherCategoryDefaultToIcon;
+    }
+
+    public IconCategory GetCategory(string category)
+    {
+        return _mapper.TryGetValue(category, out var categoryIcon) ? categoryIcon : _allOtherCategoryDefaultToIcon;
     }
 }

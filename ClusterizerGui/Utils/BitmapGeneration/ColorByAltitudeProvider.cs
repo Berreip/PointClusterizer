@@ -1,25 +1,26 @@
 ﻿using System;
 using System.Drawing;
+using ClusterizerGui.Utils.Aggregators;
 
 namespace ClusterizerGui.Utils.BitmapGeneration;
 
 internal static class ColorByAltitudeProvider
 {
     private const int ATTENUATION_FACTOR = 4;
-    private static readonly int _attenuator = ClusterizerGuiConstants.DATA_MAX_Z * ATTENUATION_FACTOR;
+    private const int ATTENUATOR = ClusterizerGuiConstants.DATA_MAX_Z * ATTENUATION_FACTOR;
 
-    public static Color GetColor(int altitude, Color pointColor)
+    public static Color GetColor(AltitudeAndColor altitudeAndColor)
     {
-        if (altitude == 0)
+        if (altitudeAndColor.Altitude == 0)
         {
-            return pointColor;
+            return altitudeAndColor.Color;
         }
 
         // else, alter color to illustrate altitude
-        var percentageModifier = 1 - (altitude /(double)_attenuator );
-        return Color.FromArgb(pointColor.A,
-            (int)Math.Min(255, pointColor.R * percentageModifier),
-            (int)Math.Min(255, pointColor.G * percentageModifier),
-            (int)Math.Min(255, pointColor.B * percentageModifier));
+        var percentageModifier = 1 - (altitudeAndColor.Altitude /(double)ATTENUATOR );
+        return Color.FromArgb(altitudeAndColor.Color.A,
+            (int)Math.Min(255, altitudeAndColor.Color.R * percentageModifier),
+            (int)Math.Min(255, altitudeAndColor.Color.G * percentageModifier),
+            (int)Math.Min(255, altitudeAndColor.Color.B * percentageModifier));
     }
 }

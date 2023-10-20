@@ -7,7 +7,9 @@ using System.Windows.Media.Imaging;
 using ClusterizerGui.Utils;
 using ClusterizerGui.Utils.BitmapGeneration;
 using ClusterizerGui.Views.Algorithms.Adapters;
+using ClusterizerGui.Views.ImportDatasets.Extraction;
 using ClusterizerGui.Views.MainDisplay;
+using ClusterizerGui.Views.MainDisplay.Adapters;
 using ClusterizerLib;
 using ClusterizerLib.GridBased;
 
@@ -85,7 +87,7 @@ internal sealed class AlgorithmGridBaseViewModel : AlgorithmViewModelBase<GridBa
         }
     }
 
-    protected override GridBasedHistory ExecuteAlgorithmImplementation(BitmapImage? img, IPoint[] points)
+    protected override GridBasedHistory ExecuteAlgorithmImplementation(BitmapImage? img, PointWrapper[] points, IconCategory category)
     {
         var density = _minimumDensity;
         var rows = _selectedNbRows;
@@ -112,7 +114,8 @@ internal sealed class AlgorithmGridBaseViewModel : AlgorithmViewModelBase<GridBa
             minimumDensity:density,
             selectedPassesNumber:numberOfPasses,
             columns:columns,
-            rows:rows
+            rows:rows,
+            category:category
         );
     }
 }

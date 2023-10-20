@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel;
 using System.Linq;
 using System.Windows.Media.Imaging;
+using ClusterizerGui.Views.ImportDatasets.Extraction;
 using ClusterizerGui.Views.MainDisplay;
-using ClusterizerLib;
+using ClusterizerGui.Views.MainDisplay.Adapters;
 using PRF.WPFCore;
 using PRF.WPFCore.Commands;
 using PRF.WPFCore.CustomCollections;
@@ -35,13 +36,17 @@ internal abstract class AlgorithmViewModelBase<T> : ViewModelBase where T : Hist
         var img = _displayImageAndClusterController.GetCurrentImage();
         await _algorithmExecutor.ExecuteAsync(points =>
         {
-            _history.Add(ExecuteAlgorithmImplementation(img, points));
+            // Group points depending on their categories:
+            foreach (var pointByCategory in points.GroupBy(o => o.Category))
+            {
+                _history.Add(ExecuteAlgorithmImplementation(img, pointByCategory.ToArray(), pointByCategory.Key));
+            }
             // hide initial data points
             _displayImageAndClusterController.ShowPointsOnMap = false;
         }).ConfigureAwait(false);
     }
 
-    protected abstract T ExecuteAlgorithmImplementation(BitmapImage? img, IPoint[] points);
+    protected abstract T ExecuteAlgorithmImplementation(BitmapImage? img, PointWrapper[] points, IconCategory category);
 
     private void ExecuteDeleteSingleHistoryCommand(T elementToRemove)
     {

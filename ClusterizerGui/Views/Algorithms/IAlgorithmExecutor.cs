@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ClusterizerLib;
+using ClusterizerGui.Views.MainDisplay.Adapters;
 
 namespace ClusterizerGui.Views.Algorithms;
 
 /// <summary>
 /// Encapsulate an algorithm execution
 /// </summary>
-public interface IAlgorithmExecutor
+internal interface IAlgorithmExecutor
 {
-    Task ExecuteAsync(Action<IPoint[]> action);
+    Task ExecuteAsync(Action<PointWrapper[]> action);
 }
