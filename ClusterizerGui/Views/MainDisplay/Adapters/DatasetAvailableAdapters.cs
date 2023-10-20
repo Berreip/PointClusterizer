@@ -13,7 +13,7 @@ internal sealed class DatasetAvailableAdapters : ViewModelBase
         _dataset = dataset;
     }
 
-    public string DatasetName => _dataset.File.Name;
+    public string DatasetName => _dataset.DatasetName;
     public string DatasetFileFulName => _dataset.File.FullName;
     public int FeaturesCount => _dataset.NbFeatures;
 

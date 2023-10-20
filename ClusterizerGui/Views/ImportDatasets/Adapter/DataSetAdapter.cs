@@ -16,7 +16,7 @@ internal sealed class DataSetAdapter : ViewModelBase
     }
 
     public string FileFullName => _dataset.File.FullName;
-    public string DataSetName => _dataset.File.Name;
+    public string DataSetName => _dataset.DatasetName;
     public int NbFeatures => _dataset.NbFeatures;
 
     public IDataset GetUnderlyingDataset() => _dataset;

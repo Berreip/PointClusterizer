@@ -152,7 +152,8 @@
                                           SelectedItem="{Binding CategoryHeaderPosition}" />
 
                             </StackPanel>
-                            <Button Grid.Column="3" ToolTip="Select a file from browser"
+                            <Button Grid.Column="3" 
+                                    ToolTip="Refresh the data"
                                     Margin="10, 2"
                                     Padding="0"
                                     Height="40" Width="40"
@@ -260,6 +261,18 @@
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"
                                            Style="{StaticResource MaterialDesignBody2TextBlock}" />
+                                
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Margin="5, 4" Content="Dataset name:"
+                                           VerticalAlignment="Center" />
+                                    <TextBox
+                                        Margin="2"
+                                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Stretch"
+                                        Foreground="{DynamicResource MaterialDesignBody }"
+                                        Text="{Binding DatasetName}"/>
+                                </StackPanel>
                             </StackPanel>
                             <Button Grid.Column="1"
                                     Margin="10, 5"

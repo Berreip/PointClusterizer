@@ -22,6 +22,7 @@ internal interface IDataset
 {
     IFileInfo File { get; }
     int NbFeatures { get; }
+    string DatasetName { get; }
     IReadOnlyCollection<PointWrapper> GetDatasetContent();
 }
 
@@ -77,14 +78,16 @@ internal sealed class Dataset : IDataset
     private readonly CategoryMapper _categoryMapper;
     private readonly PointWrapper[] _datasetPoints;
 
-    public Dataset(IFileInfo file, IEnumerable<PointWrapper> datasetPoints, CategoryMapper categoryMapper)
+    public Dataset(string datasetName, IFileInfo file, IEnumerable<PointWrapper> datasetPoints, CategoryMapper categoryMapper)
     {
         _categoryMapper = categoryMapper;
         _datasetPoints = datasetPoints.ToArray();
+        DatasetName = datasetName;
         File = file;
         NbFeatures = _datasetPoints.Length;
     }
 
+    public string DatasetName { get; }
     public IFileInfo File { get; }
     public int NbFeatures { get; }
     public IReadOnlyCollection<PointWrapper> GetDatasetContent()

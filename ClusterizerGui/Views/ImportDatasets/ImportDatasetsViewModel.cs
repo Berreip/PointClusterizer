@@ -54,6 +54,7 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
     private string? _yellowCategoryMapping;
     private string? _redCategoryMapping;
     private string? _blueCategoryMapping;
+    private string? _datasetName;
 
     public ICollectionView CurrentFileContent { get; }
 
@@ -96,7 +97,8 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
                     .Where(o => o.IsValid)
                     .Select(PointExtractor.ConvertToPoint)
                     .ToArray();
-                _datasetManager.AddNewDataset(new Dataset(file ?? throw new InvalidOperationException(), convertedPoints, categoryMapper));
+                var datasetFile = file ?? throw new InvalidOperationException();
+                _datasetManager.AddNewDataset(new Dataset(DatasetName ?? "Dataset_Name", datasetFile, convertedPoints, categoryMapper));
             },
             () => IsIdle = true).ConfigureAwait(false);
     }
@@ -219,6 +221,9 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
 
     private void ReLoadDataset(IFileInfo validFile)
     {
+        DatasetName = validFile.Name;
+        _currentFileContent.Clear();
+        
         // handle tab specifically:
         var separator = _selectedSeparator == SEPARATOR_TAB_ALIAS ? "\t" : _selectedSeparator;
 
@@ -276,6 +281,12 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
     {
         get => _greenCategoryMapping;
         set => SetProperty(ref _greenCategoryMapping, value);
+    }
+
+    public string? DatasetName
+    {
+        get => _datasetName;
+        set => SetProperty(ref _datasetName, value);
     }
 
     private void RecomputeCategories(IReadOnlyCollection<string> categories)

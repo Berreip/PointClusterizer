@@ -16,9 +16,14 @@ internal static class PointExtractor
         {
             throw new InvalidOperationException("unable to convert invalid input data");
         }
+        
+        return ConvertAsSimpleProjection(csvLineAdapter.LatitudeParsed, csvLineAdapter.LongitudeParsed);
+    }
 
-        var latitude = csvLineAdapter.LatitudeParsed; // (φ)
-        var longitude = csvLineAdapter.LongitudeParsed; // (λ)
+    private static PointWrapper ConvertAsMercator(CsvLineAdapter csvLineAdapter)
+    {
+        var latitude = csvLineAdapter.LatitudeParsed;
+        var longitude = csvLineAdapter.LongitudeParsed;
 
         // get x value
         var x = (longitude + 180) * (MAP_WIDTH / 360d);
@@ -29,6 +34,14 @@ internal static class PointExtractor
         // get y value
         var mercatorN = Math.Log(Math.Tan(Math.PI / 4 + latRad / 2));
         var y = (MAP_HEIGHT / 2d) - (MAP_WIDTH * mercatorN / (2 * Math.PI));
+
+        return new PointWrapper(x: x, y: y, z: 0);
+    }
+    
+    public static PointWrapper ConvertAsSimpleProjection(double latitude, double longitude)
+    {
+        var x = (longitude + 180) * (MAP_WIDTH / 360d);
+        var y = -(latitude - 90) * (MAP_HEIGHT / 180d);
 
         return new PointWrapper(x: x, y: y, z: 0);
     }
