@@ -2,6 +2,7 @@
 using ClusterizerGui.Main;
 using ClusterizerGui.Services.Navigation;
 using ClusterizerGui.Views.ImportDatasets;
+using ClusterizerGui.Views.ImportDatasets.Extraction;
 using ClusterizerGui.Views.MainDisplay;
 using PRF.Utils.Injection.Containers;
 using PRF.Utils.Injection.Utils;
@@ -43,6 +44,7 @@ public class ClusterizerGuiBootstrapper
 
     private void Initialize()
     {
+        IconExtraction.LoadIconUri();
         _internalContainer.Resolve<IMenuNavigator>().NavigateToFirstView();
     }
 

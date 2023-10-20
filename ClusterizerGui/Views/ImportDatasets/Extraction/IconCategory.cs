@@ -53,27 +53,13 @@ internal static class IconCategoryExtensions
         { IconCategory.Red, Color.Red },
         { IconCategory.Green, Color.Green },
     };
-    
-    private static readonly Dictionary<IconCategory, BitmapImage?> _categoryBitmapImageMapping = new Dictionary<IconCategory, BitmapImage?>
-    {
-        // nothing for none
-        { IconCategory.None, null },
-        { IconCategory.Blue, new BitmapImage(new Uri("pack://application:,,,/Ressources/blue.png")) },
-        { IconCategory.Yellow, new BitmapImage(new Uri("pack://application:,,,/Ressources/yellow.png")) },
-        { IconCategory.Red, new BitmapImage(new Uri("pack://application:,,,/Ressources/red.png")) },
-        { IconCategory.Green, new BitmapImage(new Uri("pack://application:,,,/Ressources/green.png")) },
-    };
+ 
     
     public static SolidColorBrush ToCategoryColorBrush(this IconCategory category)
     {
         return _colorBrushMapping[category];
     }
     
-    public static BitmapImage? ToCategoryIcon(this IconCategory category)
-    {
-        return _categoryBitmapImageMapping[category];
-    }
-
     public static Color ToCategoryColor(this IconCategory category)
     {
         return _colorMapping[category];
