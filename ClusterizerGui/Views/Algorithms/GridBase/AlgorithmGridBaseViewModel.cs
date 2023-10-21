@@ -10,7 +10,6 @@ using ClusterizerGui.Views.Algorithms.Adapters;
 using ClusterizerGui.Views.ImportDatasets.Extraction;
 using ClusterizerGui.Views.MainDisplay;
 using ClusterizerGui.Views.MainDisplay.Adapters;
-using ClusterizerLib;
 using ClusterizerLib.GridBased;
 
 namespace ClusterizerGui.Views.Algorithms.GridBase;

@@ -95,27 +95,27 @@ internal sealed class PointsRoundedAggregatorTests
         //Assert
         var point1Found = false;
         var point2Found = false;
-        for (int i = 0; i < 10; i++)
+        for (var i = 0; i < 10; i++)
         {
-            for (int j = 0; j < 20; j++)
+            for (var j = 0; j < 20; j++)
             {
                 if (i == 1 && j == 2)
                 {
                     var altitudePoint = res.GetPointAltitude(i, j).Altitude;
-                    Assert.AreNotEqual(altitudePoint, PointsRoundedAggregator.ALTITUDE_NO_VALUE);
+                    Assert.AreNotEqual(PointsRoundedAggregator.ALTITUDE_NO_VALUE, altitudePoint);
                     Assert.AreEqual(99, altitudePoint);
                     point1Found = true;
                 }
                 else if (i == 3 && j == 3)
                 {
                     var altitudePoint = res.GetPointAltitude(i, j).Altitude;
-                    Assert.AreNotEqual(altitudePoint, PointsRoundedAggregator.ALTITUDE_NO_VALUE);
+                    Assert.AreNotEqual(PointsRoundedAggregator.ALTITUDE_NO_VALUE, altitudePoint);
                     Assert.AreEqual(56, altitudePoint);
                     point2Found = true;
                 }
                 else
                 {
-                    Assert.AreEqual(res.GetPointAltitude(i, j).Altitude, PointsRoundedAggregator.ALTITUDE_NO_VALUE);
+                    Assert.AreEqual(PointsRoundedAggregator.ALTITUDE_NO_VALUE, res.GetPointAltitude(i, j).Altitude);
                 }
             }
         }

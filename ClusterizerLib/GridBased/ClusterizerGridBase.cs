@@ -133,9 +133,9 @@ public static class ClusterizerGridBase
                         if (potentialCluster is { HasBeenMerged: false })
                         {
                             // try to merge with cluster around
-                            for (int ii = -neighbouringDistance; ii <= neighbouringDistance; ii++)
+                            for (var ii = -neighbouringDistance; ii <= neighbouringDistance; ii++)
                             {
-                                for (int jj = -neighbouringDistance; jj <= neighbouringDistance; jj++)
+                                for (var jj = -neighbouringDistance; jj <= neighbouringDistance; jj++)
                                 {
                                     var xIndex = i + ii;
                                     var yIndex = j + jj;

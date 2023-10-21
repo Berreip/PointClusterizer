@@ -4,7 +4,6 @@ using System.Windows.Media.Imaging;
 using ClusterizerGui.Views.ImportDatasets.Extraction;
 using ClusterizerGui.Views.MainDisplay;
 using ClusterizerGui.Views.MainDisplay.Adapters;
-using ClusterizerLib;
 using ClusterizerLib.Results;
 using PRF.WPFCore;
 using Color = System.Drawing.Color;

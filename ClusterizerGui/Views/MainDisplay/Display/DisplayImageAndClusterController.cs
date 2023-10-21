@@ -7,7 +7,6 @@ using ClusterizerGui.Utils.BitmapGeneration;
 using ClusterizerGui.Utils.MathMisc;
 using ClusterizerGui.Views.ImportDatasets.Extraction;
 using ClusterizerGui.Views.MainDisplay.Adapters;
-using ClusterizerLib;
 using ClusterizerLib.Results;
 using PRF.WPFCore;
 using PRF.WPFCore.CustomCollections;

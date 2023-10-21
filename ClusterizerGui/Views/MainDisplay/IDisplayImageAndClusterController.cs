@@ -3,7 +3,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ClusterizerGui.Views.ImportDatasets.Extraction;
 using ClusterizerGui.Views.MainDisplay.Adapters;
-using ClusterizerLib;
 using ClusterizerLib.Results;
 using Color = System.Drawing.Color;
 

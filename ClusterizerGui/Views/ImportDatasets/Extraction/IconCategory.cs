@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using Color = System.Drawing.Color;
 
 namespace ClusterizerGui.Views.ImportDatasets.Extraction;

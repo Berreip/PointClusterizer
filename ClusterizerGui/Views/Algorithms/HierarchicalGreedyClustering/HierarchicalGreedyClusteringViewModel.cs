@@ -6,7 +6,6 @@ using System.Windows.Media.Imaging;
 using ClusterizerGui.Views.ImportDatasets.Extraction;
 using ClusterizerGui.Views.MainDisplay;
 using ClusterizerGui.Views.MainDisplay.Adapters;
-using ClusterizerLib;
 using ClusterizerLib.HierarchicalGreedy;
 
 namespace ClusterizerGui.Views.Algorithms.HierarchicalGreedyClustering;
