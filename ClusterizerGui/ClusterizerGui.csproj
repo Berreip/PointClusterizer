@@ -39,9 +39,6 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Resource>
       <None Remove="Ressources\earth.jpg" />
-      <Resource Include="Ressources\earth.jpg">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Resource>
       <None Remove="Ressources\group.png" />
       <Content Include="Ressources\group.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -63,6 +60,7 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Resource>
       <None Remove="Ressources\Miller_projection_SW.jpg" />
+      <None Remove="Ressources\tests.jpg" />
     </ItemGroup>
 
 </Project>
