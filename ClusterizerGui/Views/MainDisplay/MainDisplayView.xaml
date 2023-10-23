@@ -72,7 +72,7 @@
                         <ItemsControl.Resources>
                             <!-- IMAGES OF THE EARTH -->
                             <DataTemplate DataType="{x:Type adapters:EarthImageAdapter}">
-                                <Image Source="/Ressources/earth.jpg" Stretch="Fill"
+                                <Image Source="/Ressources/Miller_projection_SW.jpg" Stretch="Fill"
                                        Width="{Binding Path=ActualWidth, ElementName=CanvasEarth}"
                                        Height="{Binding Path=ActualHeight, ElementName=CanvasEarth}" />
                             </DataTemplate>

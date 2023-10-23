@@ -16,7 +16,7 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         Icon="../Ressources/group.png"
-        Height="1000" Width="1600"
+        Height="1000" Width="1200"
         d:DataContext="{d:DesignInstance main:MainWindowViewModel, IsDesignTimeCreatable=False}"
         x:ClassModifier="internal">
     <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
