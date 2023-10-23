@@ -26,10 +26,10 @@ internal static class CategoryMapperFactory
             {
                 allOtherCategoryDefaultToIcon = icon;
             }
-            // ignore duplicates
-            else if(!category.Contains(category))
+            else
             {
-                mapper.Add(category, icon);
+                // ignore duplicates
+                mapper.TryAdd(category, icon);
             }
         }
     }

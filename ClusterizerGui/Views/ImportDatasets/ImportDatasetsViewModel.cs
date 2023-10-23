@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using ClusterizerGui.Services;
 using ClusterizerGui.Utils;
 using ClusterizerGui.Views.ImportDatasets.Adapter;
@@ -26,7 +27,10 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
     public IDelegateCommandLight ValidateImportCommand { get; }
     public IDelegateCommandLight RefreshCurrentDataCommand { get; }
     public int[] AvailableStartingPosition { get; } = Enumerable.Range(0, 100).ToArray();
-    public int[] AvailableColumnPositions { get; } = Enumerable.Range(DatasetLoader.GUESS_COLUMN_POSITION, 20).ToArray();
+
+    public int[] AvailableColumnPositions { get; } =
+        Enumerable.Range(DatasetLoader.GUESS_COLUMN_POSITION, 20).ToArray();
+
     public string[] AvailableSeparators { get; } = { ";", ",", "|", SEPARATOR_TAB_ALIAS };
     public ICollectionView AvailableCategories { get; }
 
@@ -61,7 +65,8 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
     {
         _datasetManager = datasetManager;
         datasetManager.OnDatasetUpdated += ReloadDatasets;
-        Datasets = ObservableCollectionSource.GetDefaultView(datasetManager.GetAllDatasets().Select(o => new DataSetAdapter(o)), out _datasets);
+        Datasets = ObservableCollectionSource.GetDefaultView(
+            datasetManager.GetAllDatasets().Select(o => new DataSetAdapter(o)), out _datasets);
         CurrentFileContent = ObservableCollectionSource.GetDefaultView(out _currentFileContent);
 
         CurrentFileContent.Filter = FilterSkippedData;
@@ -92,11 +97,12 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
         {
             return;
         }
-        
+
         IsIdle = false;
         await AsyncWrapper.DispatchAndWrapAsync(() =>
             {
-                var categoryMapper = CategoryMapperFactory.Create(_blueCategoryMapping, _yellowCategoryMapping, _redCategoryMapping, _greenCategoryMapping);
+                var categoryMapper = CategoryMapperFactory.Create(_blueCategoryMapping, _yellowCategoryMapping,
+                    _redCategoryMapping, _greenCategoryMapping);
                 var convertedPoints = _currentFileContent
                     .Where(o => o.IsValid)
                     .Select(csvLineAdapter => PointExtractor.ConvertToPoint(csvLineAdapter, categoryMapper))
@@ -137,7 +143,8 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
                     ResetPosition(); // guess again
                     _validFile = validFile;
                     IsIdle = false;
-                    AsyncWrapper.DispatchInFireAndForgetAndWrapAsync(() => ReLoadDataset(validFile), () => IsIdle = true);
+                    AsyncWrapper.DispatchInFireAndForgetAndWrapAsync(
+                        async () => await ReLoadDatasetAsync(validFile).ConfigureAwait(false), () => IsIdle = true);
                 }
             }
         }
@@ -212,25 +219,27 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
     private async void ExecuteRefreshCurrentDataCommand()
     {
         IsIdle = false;
-        await AsyncWrapper.DispatchAndWrapAsync(() =>
+        await AsyncWrapper.DispatchAndWrapAsync(async () =>
         {
             var validFile = _validFile;
             if (validFile != null)
             {
-                ReLoadDataset(validFile);
+                await ReLoadDatasetAsync(validFile).ConfigureAwait(false);
             }
         }, () => IsIdle = true).ConfigureAwait(false);
     }
 
-    private void ReLoadDataset(IFileInfo validFile)
+    private async Task ReLoadDatasetAsync(IFileInfo validFile)
     {
         DatasetName = validFile.Name;
         _currentFileContent.Clear();
-        
+        _categories.Clear();
+
         // handle tab specifically:
         var separator = _selectedSeparator == SEPARATOR_TAB_ALIAS ? "\t" : _selectedSeparator;
 
-        var loadDatasetResult = DatasetLoader.LoadDataset(validFile, separator, _dataStartingPosition, _nameHeaderPosition, _longitudeHeaderPosition, _latitudeHeaderPosition, _categoryHeaderPosition);
+        var loadDatasetResult = DatasetLoader.LoadDataset(validFile, separator, _dataStartingPosition,
+            _nameHeaderPosition, _longitudeHeaderPosition, _latitudeHeaderPosition, _categoryHeaderPosition);
         // refresh guessed position if needed
         NameHeaderPosition = loadDatasetResult.GuessedPositions.GuessedNamePosition;
         LongitudeHeaderPosition = loadDatasetResult.GuessedPositions.GuessedLongitudePosition;
@@ -255,7 +264,7 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
             }
         }
 
-        RecomputeCategories(categories);
+        await RecomputeCategoriesAsync(categories).ConfigureAwait(false);
         DataCount = dataCount;
         ValidDataCount = validDataCount;
         DistinctCategoriesCount = categories.Count;
@@ -292,21 +301,39 @@ internal sealed class ImportDatasetsViewModel : ViewModelBase, IImportDatasetsVi
         set => SetProperty(ref _datasetName, value);
     }
 
-    private void RecomputeCategories(IReadOnlyCollection<string> categories)
+    private async Task RecomputeCategoriesAsync(IReadOnlyCollection<string> categories)
     {
         var categoriesSorted = new List<string>(categories.Count + 2)
         {
-            string.Empty,// no category
+            string.Empty, // no category
             ClusterizerGuiConstants.ALL_REMAINING_ALIAS_CATEGORY,
         };
         var sorted = categories.OrderBy(o => o).ToArray();
         categoriesSorted.AddRange(sorted);
-        _categories.Reset(categoriesSorted);
+        await AsyncWrapper.ExecuteOnUIAsync(() =>
+        {
+            // ensure the category is refreshed before settings them, otherwise, they will be overriden
+            // by stupid WPF combobox behaviour.. again, what a shitty framework...
+            _categories.Reset(categoriesSorted);
 
-        YellowCategoryMapping = ClusterizerGuiConstants.ALL_REMAINING_ALIAS_CATEGORY;
-        GreenCategoryMapping = sorted.Length > 0 ? sorted[0] : null;
-        BlueCategoryMapping = sorted.Length > 1 ? sorted[1] : null;
-        RedCategoryMapping = sorted.Length > 2 ? sorted[2] : null;
+            YellowCategoryMapping = sorted.Length > 0 ? sorted[0] : null;
+            GreenCategoryMapping = sorted.Length > 1 ? sorted[1] : null;
+            BlueCategoryMapping = sorted.Length > 2 ? sorted[2] : null;
+            // for last one, if there is 3 or less, set the 4 to null
+            if (sorted.Length <= 3)
+            {
+                RedCategoryMapping = null;
+            } // if there is just 4, set the 4 instead of all remaining
+            else if (sorted.Length == 4)
+            {
+                RedCategoryMapping = sorted[3];
+            }
+            // else, set all_remaining
+            else
+            {
+                RedCategoryMapping = ClusterizerGuiConstants.ALL_REMAINING_ALIAS_CATEGORY;
+            }
+        }).ConfigureAwait(false);
     }
 
     private static bool FilterSkippedData(object obj)
