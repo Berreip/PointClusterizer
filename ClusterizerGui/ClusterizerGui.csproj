@@ -35,6 +35,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Resource Include="Ressources\Miller_projection_SW.jpg">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
       <None Remove="Ressources\earth.jpg" />
       <Resource Include="Ressources\earth.jpg">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
