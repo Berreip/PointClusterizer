@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClusteringModels", "Cluster
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClusteringGridBase.UnitTests", "ClusteringGridBase.UnitTests\ClusteringGridBase.UnitTests.csproj", "{8BE79D9B-F974-46E9-84E0-ECF7EBA5ED6D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Legacy", "Legacy", "{09999DCD-455B-484B-B782-27B041261BD3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +50,9 @@ Global
 		{8BE79D9B-F974-46E9-84E0-ECF7EBA5ED6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8BE79D9B-F974-46E9-84E0-ECF7EBA5ED6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8BE79D9B-F974-46E9-84E0-ECF7EBA5ED6D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9125C514-62F8-4663-8FE8-7C8BCA73C94F} = {09999DCD-455B-484B-B782-27B041261BD3}
+		{9D9BF329-62BD-4B16-A70F-46F19A14324B} = {09999DCD-455B-484B-B782-27B041261BD3}
 	EndGlobalSection
 EndGlobal
