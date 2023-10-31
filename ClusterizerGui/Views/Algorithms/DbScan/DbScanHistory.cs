@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ClusteringModels.Results;
 using ClusterizerGui.Views.ImportDatasets.Extraction;
 using ClusterizerGui.Views.MainDisplay;
 using ClusterizerGui.Views.MainDisplay.Adapters;
-using ClusterizerLib.Results;
 using Color = System.Drawing.Color;
 
 namespace ClusterizerGui.Views.Algorithms.DbScan;

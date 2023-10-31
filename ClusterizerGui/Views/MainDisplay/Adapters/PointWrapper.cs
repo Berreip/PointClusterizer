@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
+using ClusteringModels;
 using ClusterizerGui.Views.ImportDatasets.Extraction;
-using ClusterizerLib;
 using Point = Dbscan.Point;
 
 namespace ClusterizerGui.Views.MainDisplay.Adapters;

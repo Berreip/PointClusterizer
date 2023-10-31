@@ -1,5 +1,6 @@
 ﻿using System;
-using ClusterizerLib.Results;
+using ClusteringModels;
+using ClusteringModels.Results;
 
 namespace ClusterizerLib.HierarchicalGreedy;
 

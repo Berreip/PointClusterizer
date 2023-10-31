@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using ClusteringModels;
 using ClusterizerGui.Views.ImportDatasets.Extraction;
 using ClusterizerGui.Views.MainDisplay.Adapters;
-using ClusterizerLib;
 
 namespace ClusterizerGui.Utils.MathMisc;
 

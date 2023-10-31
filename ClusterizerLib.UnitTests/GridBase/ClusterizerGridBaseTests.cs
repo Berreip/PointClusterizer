@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using ClusteringModels;
 using ClusterizerLib.GridBased;
 
 namespace ClusterizerLib.UnitTests.GridBase;

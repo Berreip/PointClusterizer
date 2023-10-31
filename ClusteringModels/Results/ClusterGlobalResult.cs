@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-
-namespace ClusterizerLib.Results;
+﻿namespace ClusteringModels.Results;
 
 /// <summary>
 /// Regroup all cluster and un-clustered object
 /// </summary>
-public sealed class ClusterGlobalResult<T> where T : IPoint
+public sealed record ClusterGlobalResult<T> where T : IPoint
 {
     public IReadOnlyList<ClusterResult<T>> ClusterResults { get; }
     public IReadOnlyList<T> UnClusteredPoint { get; }

@@ -1,8 +1,6 @@
-﻿using Dbscan;
+﻿namespace ClusteringModels;
 
-namespace ClusterizerLib;
-
-public interface IPoint : IPointData
+public interface IPoint
 {
     public double X { get; }
     public double Y { get; }

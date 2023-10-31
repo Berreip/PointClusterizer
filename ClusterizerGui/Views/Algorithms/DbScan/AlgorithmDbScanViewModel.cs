@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 using System.Windows.Media.Imaging;
+using ClusteringModels;
 using ClusterizerGui.Views.ImportDatasets.Extraction;
 using ClusterizerGui.Views.MainDisplay;
 using ClusterizerGui.Views.MainDisplay.Adapters;
@@ -40,7 +41,7 @@ internal sealed class AlgorithmDbScanViewModel : AlgorithmViewModelBase<DbScanHi
 
         var watch = Stopwatch.StartNew();
         // execute
-        var results = ClusterizerDbScan.Run(points: points, epsilon: epsilonDbScan, minimumPointsPerCluster: minimumPointsPerCluster);
+        var results = ClusterizerDbScan.Run(points: points, epsilon: epsilonDbScan, minimumPointsPerCluster: minimumPointsPerCluster, o => ConvertMethod(o, category));
         watch.Stop();
         return new DbScanHistory(
             displayImageAndClusterController: _displayImageAndClusterController,
@@ -52,5 +53,10 @@ internal sealed class AlgorithmDbScanViewModel : AlgorithmViewModelBase<DbScanHi
             minPointByCluster: minimumPointsPerCluster,
             sourceImage: img,
             category:category);
+    }
+
+    private static PointWrapper ConvertMethod(IPoint pt, IconCategory iconCategory)
+    {
+        return new PointWrapper(pt.X, pt.Y, pt.Z, iconCategory);
     }
 }

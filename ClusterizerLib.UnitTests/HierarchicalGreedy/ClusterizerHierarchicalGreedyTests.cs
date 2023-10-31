@@ -1,4 +1,5 @@
-﻿using ClusterizerLib.HierarchicalGreedy;
+﻿using ClusteringModels;
+using ClusterizerLib.HierarchicalGreedy;
 
 namespace ClusterizerLib.UnitTests.HierarchicalGreedy;
 

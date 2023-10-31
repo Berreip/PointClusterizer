@@ -1,4 +1,5 @@
-﻿using ClusterizerLib.DbScanAlgorithm;
+﻿using ClusteringModels;
+using ClusterizerLib.DbScanAlgorithm;
 
 namespace ClusterizerLib.UnitTests.DbScan;
 
@@ -11,7 +12,7 @@ internal sealed class ClusterizerDbScanTests
         //Arrange
 
         //Act
-        var res = ClusterizerDbScan.Run(Array.Empty<IPoint>(), 1.0, 4);
+        var res = ClusterizerDbScan.Run(Array.Empty<IPoint>(), 1.0, 4, o => o);
 
         //Assert
         Assert.AreEqual(0, res.ClusterResults.Count);

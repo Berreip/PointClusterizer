@@ -2,11 +2,11 @@
 using System.Drawing;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ClusteringModels;
 using ClusterizerGui.Utils;
 using ClusterizerGui.Views.ImportDatasets.Extraction;
 using ClusterizerGui.Views.MainDisplay.Display;
 using ClusterizerGui.Views.MainDisplay.Helpers;
-using ClusterizerLib;
 using PRF.WPFCore;
 
 namespace ClusterizerGui.Views.MainDisplay.Adapters;

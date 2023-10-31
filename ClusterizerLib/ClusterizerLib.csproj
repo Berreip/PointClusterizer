@@ -9,4 +9,8 @@
       <PackageReference Include="Dbscan" Version="3.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\ClusteringModels\ClusteringModels.csproj" />
+    </ItemGroup>
+
 </Project>

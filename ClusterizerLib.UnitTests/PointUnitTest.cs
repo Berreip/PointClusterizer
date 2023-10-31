@@ -1,4 +1,5 @@
-﻿using Dbscan;
+﻿using ClusteringModels;
+using Dbscan;
 
 namespace ClusterizerLib.UnitTests;
 
