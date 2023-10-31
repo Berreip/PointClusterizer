@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Windows.Media.Imaging;
@@ -28,8 +27,8 @@ internal sealed class AlgorithmGridBaseViewModel : AlgorithmViewModelBase<GridBa
     public IReadOnlyList<int> AvailableNbRows { get; } = Enumerable.Range(1, 100).ToArray();
     public IReadOnlyList<int> AvailablePassesNumber { get; } = Enumerable.Range(1, Clusterizer.NUMBER_PASSES_LIMIT).ToArray();
 
-    public AlgorithmGridBaseViewModel(IAlgorithmExecutor algorithmExecutor, IDisplayImageAndClusterController displayImageAndClusterController)
-        : base(algorithmExecutor, displayImageAndClusterController)
+    public AlgorithmGridBaseViewModel(IAlgorithmExecutor algorithmExecutor, IDisplayImageAndClusterController displayImageAndClusterController, IRadiusModeProvider radiusModeProvider)
+        : base(algorithmExecutor, displayImageAndClusterController, radiusModeProvider)
     {
         _selectedNbRows = 15;
         _selectedNbColumn = 30;
@@ -86,7 +85,7 @@ internal sealed class AlgorithmGridBaseViewModel : AlgorithmViewModelBase<GridBa
         }
     }
 
-    protected override GridBasedHistory ExecuteAlgorithmImplementation(BitmapImage? img, PointWrapper[] points, IconCategory category)
+    protected override GridBasedHistory ExecuteAlgorithmImplementation(BitmapImage? img, PointWrapper[] points, IconCategory category, AvailableRadiusCalculationModeAdapter radiusMode)
     {
         var density = _minimumDensity;
         var rows = _selectedNbRows;
@@ -96,9 +95,13 @@ internal sealed class AlgorithmGridBaseViewModel : AlgorithmViewModelBase<GridBa
         var watch = Stopwatch.StartNew();
         var results = Clusterizer.Run(
             points: points,
-            aoi: new Rectangle(0, 0, ClusterizerGuiConstants.IMAGE_WIDTH, ClusterizerGuiConstants.IMAGE_HEIGHT),
-            nbRowTargeted: rows,
-            nbColumnTargeted: columns,
+            origin:new PointWrapper(0, 0, 0, default),
+            xLenght : ClusterizerGuiConstants.IMAGE_WIDTH,
+            yLenght : ClusterizerGuiConstants.IMAGE_HEIGHT,
+            zLenght : ClusterizerGuiConstants.IMAGE_ALTITUDE,
+            nbPartX : columns,
+            nbPartY : rows,
+            nbPartZ : 1, // one cell for altitude
             clusteringDensityThreshold: density,
             neighbouringMergingDistance: numberOfPasses);
 
@@ -110,11 +113,11 @@ internal sealed class AlgorithmGridBaseViewModel : AlgorithmViewModelBase<GridBa
             nbInitialPoints: points.Length,
             clusterResults: results,
             sourceImage: img,
-            minimumDensity:density,
-            selectedPassesNumber:numberOfPasses,
-            columns:columns,
-            rows:rows,
-            category:category
-        );
+            minimumDensity: density,
+            selectedPassesNumber: numberOfPasses,
+            columns: columns,
+            rows: rows,
+            category: category,
+            radiusMode: radiusMode);
     }
 }
