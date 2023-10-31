@@ -4,13 +4,13 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Windows.Media.Imaging;
+using ClusteringGridBase;
 using ClusterizerGui.Utils;
 using ClusterizerGui.Utils.BitmapGeneration;
 using ClusterizerGui.Views.Algorithms.Adapters;
 using ClusterizerGui.Views.ImportDatasets.Extraction;
 using ClusterizerGui.Views.MainDisplay;
 using ClusterizerGui.Views.MainDisplay.Adapters;
-using ClusterizerLib.GridBased;
 
 namespace ClusterizerGui.Views.Algorithms.GridBase;
 
@@ -26,7 +26,7 @@ internal sealed class AlgorithmGridBaseViewModel : AlgorithmViewModelBase<GridBa
 
     public IReadOnlyList<int> AvailableNbColumns { get; } = Enumerable.Range(1, 100).ToArray();
     public IReadOnlyList<int> AvailableNbRows { get; } = Enumerable.Range(1, 100).ToArray();
-    public IReadOnlyList<int> AvailablePassesNumber { get; } = Enumerable.Range(1, ClusterizerGridBase.NUMBER_PASSSES_LIMIT).ToArray();
+    public IReadOnlyList<int> AvailablePassesNumber { get; } = Enumerable.Range(1, Clusterizer.NUMBER_PASSES_LIMIT).ToArray();
 
     public AlgorithmGridBaseViewModel(IAlgorithmExecutor algorithmExecutor, IDisplayImageAndClusterController displayImageAndClusterController)
         : base(algorithmExecutor, displayImageAndClusterController)
@@ -94,7 +94,7 @@ internal sealed class AlgorithmGridBaseViewModel : AlgorithmViewModelBase<GridBa
         var numberOfPasses = _selectedPassesNumber;
         
         var watch = Stopwatch.StartNew();
-        var results = ClusterizerGridBase.Run(
+        var results = Clusterizer.Run(
             points: points,
             aoi: new Rectangle(0, 0, ClusterizerGuiConstants.IMAGE_WIDTH, ClusterizerGuiConstants.IMAGE_HEIGHT),
             nbRowTargeted: rows,

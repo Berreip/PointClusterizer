@@ -1,8 +1,7 @@
 ﻿using System.Drawing;
 using ClusteringModels;
-using ClusterizerLib.GridBased;
 
-namespace ClusterizerLib.UnitTests.GridBase;
+namespace ClusteringGridBase.UnitTests;
 
 [TestFixture]
 internal sealed class ClusterizerGridBaseTests
@@ -14,7 +13,7 @@ internal sealed class ClusterizerGridBaseTests
         var points = Array.Empty<IPoint>();
 
         //Act
-        var res = ClusterizerGridBase.Run(
+        var res = Clusterizer.Run(
             points: points,
             aoi: new Rectangle(x: 0, y: 0, width: 600, height: 300),
             nbRowTargeted: 10,
@@ -40,7 +39,7 @@ internal sealed class ClusterizerGridBaseTests
         };
 
         //Act
-        var res = ClusterizerGridBase.Run(
+        var res = Clusterizer.Run(
             points: points,
             aoi: new Rectangle(x: 0, y: 0, width: 600, height: 300),
             nbRowTargeted: 10,
@@ -66,7 +65,7 @@ internal sealed class ClusterizerGridBaseTests
         };
 
         //Act
-        var res = ClusterizerGridBase.Run(
+        var res = Clusterizer.Run(
             points: points,
             aoi: new Rectangle(x: 0, y: 0, width: 600, height: 300),
             nbRowTargeted: 10,
@@ -90,7 +89,7 @@ internal sealed class ClusterizerGridBaseTests
         };
 
         //Act
-        var res = ClusterizerGridBase.Run(
+        var res = Clusterizer.Run(
             points: points,
             aoi: new Rectangle(x: 0, y: 0, width: 600, height: 300),
             nbRowTargeted: 10,
@@ -113,7 +112,7 @@ internal sealed class ClusterizerGridBaseTests
             .ToArray();
 
         //Act
-        var res = ClusterizerGridBase.Run(
+        var res = Clusterizer.Run(
             points: points,
             aoi: new Rectangle(x: 0, y: 0, width: 600, height: 300),
             nbRowTargeted: 10,
@@ -137,7 +136,7 @@ internal sealed class ClusterizerGridBaseTests
             .ToArray();
 
         //Act
-        var res = ClusterizerGridBase.Run(
+        var res = Clusterizer.Run(
             points: points,
             aoi: new Rectangle(x: 0, y: 0, width: 600, height: 300),
             nbRowTargeted: 10,
@@ -158,7 +157,7 @@ internal sealed class ClusterizerGridBaseTests
         var points = new[] { new PointUnitTest(40, 40, 99) };
 
         //Act
-        var res = ClusterizerGridBase.Run(
+        var res = Clusterizer.Run(
             points: points,
             aoi: new Rectangle(x: 0, y: 0, width: 600, height: 300),
             nbRowTargeted: 10,
@@ -193,7 +192,7 @@ internal sealed class ClusterizerGridBaseTests
 
         //Act
         // here, each cell is 10/10
-        var res = ClusterizerGridBase.Run(
+        var res = Clusterizer.Run(
             points: points,
             aoi: new Rectangle(x: 0, y: 0, width: 200, height: 100),
             nbRowTargeted: 10,
@@ -232,7 +231,7 @@ internal sealed class ClusterizerGridBaseTests
 
         //Act
         // here, each cell is 10/10
-        var res = ClusterizerGridBase.Run(
+        var res = Clusterizer.Run(
             points: points,
             aoi: new Rectangle(x: 0, y: 0, width: 200, height: 100),
             nbRowTargeted: 10,
@@ -273,7 +272,7 @@ internal sealed class ClusterizerGridBaseTests
 
         //Act
         // here, each cell is 10/10
-        var res = ClusterizerGridBase.Run(
+        var res = Clusterizer.Run(
             points: points,
             aoi: new Rectangle(x: 0, y: 0, width: 200, height: 100),
             nbRowTargeted: 10,

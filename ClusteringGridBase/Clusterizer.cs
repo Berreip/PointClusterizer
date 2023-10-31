@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
+﻿using System.Drawing;
 using ClusteringModels;
 using ClusteringModels.Results;
 
-namespace ClusterizerLib.GridBased;
+namespace ClusteringGridBase;
 
 /// <summary>
 /// Run a Grid based cluster algorithm
 /// </summary>
-public static class ClusterizerGridBase
+public static class Clusterizer
 {
-    public const int NUMBER_PASSSES_LIMIT = 6;
+    public const int NUMBER_PASSES_LIMIT = 6;
 
     /// <summary>
     /// Run the cluster on given points
@@ -21,9 +18,10 @@ public static class ClusterizerGridBase
     /// <param name="aoi">the targeted Aoi</param>
     /// <param name="nbRowTargeted">the grid rows number</param>
     /// <param name="nbColumnTargeted">the grid columns number</param>
-    /// <param name="clusteringDensityThreshold">the density above which elements are clusterized </param>
+    /// <param name="clusteringDensityThreshold">the density above which elements are clustered </param>
     /// <param name="neighbouringMergingDistance">the number of execution passes that will be done to check if another neighbour cell should be merged</param>
-    public static ClusterGlobalResult<T> Run<T>(IEnumerable<T> points,
+    public static ClusterGlobalResult<T> Run<T>(
+        IEnumerable<T> points,
         Rectangle aoi,
         int nbRowTargeted,
         int nbColumnTargeted,
@@ -35,9 +33,9 @@ public static class ClusterizerGridBase
             throw new ArgumentException("numberOfPasses, nbRowTargeted, clusteringDensityThreshold and nbColumnTargeted should all be greater than zero");
         }
 
-        if (neighbouringMergingDistance > NUMBER_PASSSES_LIMIT)
+        if (neighbouringMergingDistance > NUMBER_PASSES_LIMIT)
         {
-            throw new ArgumentException($"A numberOfPasses greater than {NUMBER_PASSSES_LIMIT} will be slow, may be less accurate and will not lead to better result (asked numberOfPasses = {neighbouringMergingDistance})");
+            throw new ArgumentException($"A numberOfPasses greater than {NUMBER_PASSES_LIMIT} will be slow, may be less accurate and will not lead to better result (asked numberOfPasses = {neighbouringMergingDistance})");
         }
 
         var grid = new ResultGrid<T>(nbRowTargeted, nbColumnTargeted, aoi);

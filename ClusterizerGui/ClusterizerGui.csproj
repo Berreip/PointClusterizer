@@ -10,6 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ClusteringGridBase\ClusteringGridBase.csproj" />
       <ProjectReference Include="..\ClusterizerLib\ClusterizerLib.csproj" />
     </ItemGroup>
 
