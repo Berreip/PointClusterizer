@@ -14,6 +14,7 @@ internal abstract class AlgorithmViewModelBase<T> : ViewModelBase where T : Hist
 {
     private readonly IAlgorithmExecutor _algorithmExecutor;
     protected readonly IDisplayImageAndClusterController _displayImageAndClusterController;
+    private readonly IRadiusModeProvider _radiusModeProvider;
     private readonly ObservableCollectionRanged<T> _history;
     public ICollectionView History { get; }
 
@@ -21,11 +22,15 @@ internal abstract class AlgorithmViewModelBase<T> : ViewModelBase where T : Hist
     public IDelegateCommandLight ClearHistoryCommand { get; }
     public IDelegateCommandLight<T> DeleteSingleHistoryCommand { get; }
 
-    protected AlgorithmViewModelBase(IAlgorithmExecutor algorithmExecutor, IDisplayImageAndClusterController displayImageAndClusterController)
+    protected AlgorithmViewModelBase(
+        IAlgorithmExecutor algorithmExecutor,
+        IDisplayImageAndClusterController displayImageAndClusterController,
+        IRadiusModeProvider radiusModeProvider)
     {
         History = ObservableCollectionSource.GetDefaultView(out _history);
         _algorithmExecutor = algorithmExecutor;
         _displayImageAndClusterController = displayImageAndClusterController;
+        _radiusModeProvider = radiusModeProvider;
         RunAlgorithmCommand = new DelegateCommandLight(ExecuteRunAlgorithmCommand);
         ClearHistoryCommand = new DelegateCommandLight(ExecuteClearHistoryCommand);
         DeleteSingleHistoryCommand = new DelegateCommandLight<T>(ExecuteDeleteSingleHistoryCommand);
@@ -39,14 +44,14 @@ internal abstract class AlgorithmViewModelBase<T> : ViewModelBase where T : Hist
             // Group points depending on their categories:
             foreach (var pointByCategory in points.GroupBy(o => o.Category))
             {
-                _history.Add(ExecuteAlgorithmImplementation(img, pointByCategory.ToArray(), pointByCategory.Key));
+                _history.Add(ExecuteAlgorithmImplementation(img, pointByCategory.ToArray(), pointByCategory.Key, _radiusModeProvider.SelectedRadiusCalculationMode));
             }
             // hide initial data points
             _displayImageAndClusterController.ShowPointsOnMap = false;
         }).ConfigureAwait(false);
     }
 
-    protected abstract T ExecuteAlgorithmImplementation(BitmapImage? img, PointWrapper[] points, IconCategory category);
+    protected abstract T ExecuteAlgorithmImplementation(BitmapImage? img, PointWrapper[] points, IconCategory category, AvailableRadiusCalculationModeAdapter radiusMode);
 
     private void ExecuteDeleteSingleHistoryCommand(T elementToRemove)
     {

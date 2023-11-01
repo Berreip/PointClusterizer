@@ -50,9 +50,11 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
     public IDelegateCommandLight<DatasetAvailableAdapters> AddDataSetContentCommand { get; }
     public ICollectionView AlgorithmsAvailable { get; }
     public IDisplayImageAndClusterController DisplayController { get; }
+    public IRadiusModeProvider RadiusMode { get; }
 
     public IReadOnlyList<int> AvailableClickDispersion { get; } = new[] { 5, 10, 20, 40, 50, 100 };
     public IReadOnlyList<int> AvailableNbPoints { get; } = new[] { 1, 5, 10, 100, 1_000, 10_000, 50_000, 100_000, 500_000, 1_000_000 };
+
 
     public CategorySelectionAdapter[] AvailableCategories { get; } = Enum.GetValues<IconCategory>().Select(o => new CategorySelectionAdapter(o)).ToArray();
 
@@ -61,6 +63,7 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
     public MainDisplayViewModel(IDatasetManager datasetManager)
     {
         _datasetManager = datasetManager;
+        RadiusMode = new RadiusModeProvider();
         AddPointsCommand = new DelegateCommandLight(ExecuteAddPointsCommand);
         ClearPointsCommand = new DelegateCommandLight(ExecuteClearPointsCommand);
         AddDataSetContentCommand = new DelegateCommandLight<DatasetAvailableAdapters>(ExecuteAddDataSetContentCommand);
@@ -81,18 +84,18 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
         DisplayController = new DisplayImageAndClusterController();
 
         // hold vm to hold results
-        var vmDbScan = new AlgorithmDbScanViewModel(executor, DisplayController);
-        var vmGridBase = new AlgorithmGridBaseViewModel(executor, DisplayController);
+        var vmDbScan = new AlgorithmDbScanViewModel(executor, DisplayController, RadiusMode);
+        var vmGridBase = new AlgorithmGridBaseViewModel(executor, DisplayController, RadiusMode);
         _selectedCategory = AvailableCategories.First();
-        
+
         AvailableDatasets = ObservableCollectionSource.GetDefaultView(out _availableDatasets);
         datasetManager.OnDatasetUpdated += ReloadDataSet;
         ReloadDataSet();
-        
+
         AlgorithmsAvailable = ObservableCollectionSource.GetDefaultView(new[]
         {
-            new AlgorithmAvailableAdapter("DBSCAN - density-based spatial clustering", () => new AlgorithmDbScanView(vmDbScan)),
             new AlgorithmAvailableAdapter("Grid-Based Subspace Clustering (CLIQUE/STING)", () => new AlgorithmGridBaseView(vmGridBase)),
+            new AlgorithmAvailableAdapter("DBSCAN - density-based spatial clustering", () => new AlgorithmDbScanView(vmDbScan)),
         }, out var algorithmsAvailable);
 
         SelectedAlgorithm = algorithmsAvailable.FirstOrDefault();
@@ -137,11 +140,7 @@ internal sealed class MainDisplayViewModel : ViewModelBase, IMainDisplayViewMode
 
     private async void ExecuteAddDataSetContentCommand(DatasetAvailableAdapters dataset)
     {
-        await AsyncWrapper.DispatchAndWrapAsync(() =>
-        {
-            AddPointAndRegenerateBitmapAccordingly(dataset.GetDatasetContent());
-        }).ConfigureAwait(false);
-
+        await AsyncWrapper.DispatchAndWrapAsync(() => { AddPointAndRegenerateBitmapAccordingly(dataset.GetDatasetContent()); }).ConfigureAwait(false);
     }
 
     private async void AddPointInternalFireAndForget(PointRange range)

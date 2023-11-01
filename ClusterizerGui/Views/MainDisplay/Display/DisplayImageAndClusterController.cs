@@ -58,12 +58,12 @@ internal sealed class DisplayImageAndClusterController : ViewModelBase, IDisplay
         }
     }
 
-    public void ShowOrHideClusters(bool value, ClusterGlobalResult<PointWrapper> clusterResults, SolidColorBrush clusterColor, Color unclusteredPointsColor, IconCategory category)
+    public void ShowOrHideClusters(bool value, ClusterGlobalResult<PointWrapper> clusterResults, SolidColorBrush clusterColor, Color unclusteredPointsColor, IconCategory category, AvailableRadiusCalculationModeAdapter mode)
     {
         if (value)
         {
             // generate adapter:
-            var adapters = clusterResults.ClusterResults.Select(o => new ClusterAdapter(clusterColor, o.Points.Count, MathHelper.ComputeClusterInfo(o.Points, category), category)).ToArray();
+            var adapters = clusterResults.ClusterResults.Select(o => new ClusterAdapter(clusterColor, o.Points.Count, MathHelper.ComputeClusterInfo(o.Points, category), category, mode)).ToArray();
 
             // create both images:
             var imageUnclusterized = clusterResults.UnClusteredPoint.GenerateBitmapImageFromPoint();

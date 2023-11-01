@@ -17,7 +17,7 @@ public class RadiusCalculationTests
         //Arrange
 
         //Act
-        var res = RadiusCalculation.ComputeRadiusFromPointCountsLogBased(pointsCount, new Rectangle(0, 0, 10, 10));
+        var res = RadiusCalculation.Radius4Log2(pointsCount, new Rectangle(0, 0, 10, 10));
 
         //Assert
         Assert.AreEqual(expectedRadius, res);

@@ -20,6 +20,7 @@ internal abstract class HistoryBase : ViewModelBase, IDisposable
     private readonly SolidColorBrush _clusterColor;
     private readonly Color _unclusteredPointsColor;
     private readonly IconCategory _category;
+    private readonly AvailableRadiusCalculationModeAdapter _radiusMode;
     public int RunNumber { get; }
     public TimeSpan Duration { get; }
     public int NbInitialPoints { get; }
@@ -28,21 +29,23 @@ internal abstract class HistoryBase : ViewModelBase, IDisposable
     public string DurationInSecond { get; }
 
     protected HistoryBase(
-        IDisplayImageAndClusterController displayImageAndClusterController, 
+        IDisplayImageAndClusterController displayImageAndClusterController,
         int runNumber,
         TimeSpan duration,
         int nbInitialPoints,
         ClusterGlobalResult<PointWrapper> clusterResults,
-        BitmapImage? sourceImage, 
+        BitmapImage? sourceImage,
         SolidColorBrush clusterColor,
-        Color unclusteredPointsColor, 
-        IconCategory category)
+        Color unclusteredPointsColor,
+        IconCategory category,
+        AvailableRadiusCalculationModeAdapter radiusMode)
     {
         _displayImageAndClusterController = displayImageAndClusterController;
         _clusterResults = clusterResults;
         _clusterColor = clusterColor;
         _unclusteredPointsColor = unclusteredPointsColor;
         _category = category;
+        _radiusMode = radiusMode;
         RunNumber = runNumber;
         Duration = duration;
         DurationInSecond = $"{duration.TotalSeconds:0.##}";
@@ -53,6 +56,7 @@ internal abstract class HistoryBase : ViewModelBase, IDisposable
         {
             _sourceImageAdapter = new PointImageAdapter(sourceImage, false);
         }
+
         ShowClusters = true;
     }
 
@@ -63,7 +67,7 @@ internal abstract class HistoryBase : ViewModelBase, IDisposable
         {
             if (SetProperty(ref _showClusters, value))
             {
-                _displayImageAndClusterController.ShowOrHideClusters(value, _clusterResults, _clusterColor, _unclusteredPointsColor, _category);
+                _displayImageAndClusterController.ShowOrHideClusters(value, _clusterResults, _clusterColor, _unclusteredPointsColor, _category, _radiusMode);
             }
         }
     }
@@ -83,11 +87,12 @@ internal abstract class HistoryBase : ViewModelBase, IDisposable
     public void Dispose()
     {
         // remove all line if needed
-        _displayImageAndClusterController.ShowOrHideClusters(false, _clusterResults, _clusterColor, _unclusteredPointsColor, _category);
+        _displayImageAndClusterController.ShowOrHideClusters(false, _clusterResults, _clusterColor, _unclusteredPointsColor, _category, _radiusMode);
         if (_sourceImageAdapter != null)
         {
             _displayImageAndClusterController.ShowOrHideSourceImage(false, _sourceImageAdapter);
         }
-        _displayImageAndClusterController.ShowOrHideClusters(false, _clusterResults, _clusterColor, _unclusteredPointsColor, _category);
+
+        _displayImageAndClusterController.ShowOrHideClusters(false, _clusterResults, _clusterColor, _unclusteredPointsColor, _category, _radiusMode);
     }
 }

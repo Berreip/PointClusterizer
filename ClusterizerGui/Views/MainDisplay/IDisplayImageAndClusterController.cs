@@ -13,7 +13,7 @@ namespace ClusterizerGui.Views.MainDisplay;
 /// </summary>
 internal interface IDisplayImageAndClusterController
 {
-    void ShowOrHideClusters(bool value, ClusterGlobalResult<PointWrapper> clusterResults, SolidColorBrush clusterColor, Color unclusteredPointsColor, IconCategory category);
+    void ShowOrHideClusters(bool value, ClusterGlobalResult<PointWrapper> clusterResults, SolidColorBrush clusterColor, Color unclusteredPointsColor, IconCategory category, AvailableRadiusCalculationModeAdapter mode);
     void ShowOrHideSourceImage(bool value, IPointImageAdapter sourceImage);
     void ClearCurrentImage();
     void SetNewCurrentImage(BitmapImage newImage);

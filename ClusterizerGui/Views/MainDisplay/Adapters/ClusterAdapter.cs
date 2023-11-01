@@ -33,7 +33,12 @@ internal sealed class ClusterAdapter : ViewModelBase, ICanvasItemAdapter
 
     private const double MIN_IMAGE_SIZE = 10d;
 
-    public ClusterAdapter(SolidColorBrush clusterKindColor, int pointsCount, (IPoint centroid, Rectangle aoi) clusterInfo, IconCategory category)
+    public ClusterAdapter(
+        SolidColorBrush clusterKindColor,
+        int pointsCount,
+        (IPoint centroid, Rectangle aoi) clusterInfo,
+        IconCategory category,
+        AvailableRadiusCalculationModeAdapter mode)
     {
         ClusterKindColor = clusterKindColor;
         Category = category;
@@ -41,7 +46,7 @@ internal sealed class ClusterAdapter : ViewModelBase, ICanvasItemAdapter
         HasCategory = category != IconCategory.None;
         CategoryIcon = category.ToCategoryIcon();
         // Test with different radius
-        Radius = RadiusCalculation.ComputeRadiusFromPointCountsLogBased(pointsCount, clusterInfo.aoi);
+        Radius = mode.ComputeRadius(pointsCount, clusterInfo.aoi);
         // Radius = RadiusCalculation.ComputeRadiusFromPointCountsSurfaceBased(pointsCount, clusterInfo.aoi);
         Centroid = clusterInfo.centroid;
         WidthPercentage = clusterInfo.centroid.X / ClusterizerGuiConstants.IMAGE_WIDTH;

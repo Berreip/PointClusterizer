@@ -14,8 +14,7 @@ internal sealed class DbScanHistory : HistoryBase
     public int Epsilon { get; }
     public int MinPointByCluster { get; }
 
-    public DbScanHistory(
-        IDisplayImageAndClusterController displayImageAndClusterController,
+    public DbScanHistory(IDisplayImageAndClusterController displayImageAndClusterController,
         int runNumber,
         TimeSpan duration,
         int nbInitialPoints,
@@ -23,7 +22,8 @@ internal sealed class DbScanHistory : HistoryBase
         int epsilon,
         int minPointByCluster,
         BitmapImage? sourceImage,
-        IconCategory category)
+        IconCategory category,
+        AvailableRadiusCalculationModeAdapter radiusMode)
         : base(
             displayImageAndClusterController,
             runNumber,
@@ -33,7 +33,8 @@ internal sealed class DbScanHistory : HistoryBase
             sourceImage,
             Brushes.Green,
             Color.Green, 
-            category)
+            category,
+            radiusMode)
     {
         Epsilon = epsilon;
         MinPointByCluster = minPointByCluster;

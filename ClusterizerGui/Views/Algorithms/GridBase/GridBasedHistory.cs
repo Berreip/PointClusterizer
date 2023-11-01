@@ -11,28 +11,29 @@ namespace ClusterizerGui.Views.Algorithms.GridBase;
 
 internal sealed class GridBasedHistory : HistoryBase
 {
-    public GridBasedHistory(
-        IDisplayImageAndClusterController displayImageAndClusterController,
+    public GridBasedHistory(IDisplayImageAndClusterController displayImageAndClusterController,
         int runNumber,
         TimeSpan duration,
         int nbInitialPoints,
         ClusterGlobalResult<PointWrapper> clusterResults,
         BitmapImage? sourceImage,
-        int minimumDensity, 
-        int selectedPassesNumber, 
+        int minimumDensity,
+        int selectedPassesNumber,
         int columns,
         int rows,
-        IconCategory category)
+        IconCategory category,
+        AvailableRadiusCalculationModeAdapter radiusMode)
         : base(
             displayImageAndClusterController,
             runNumber,
             duration,
             nbInitialPoints,
             clusterResults,
-            sourceImage, 
-            Brushes.Orange, 
+            sourceImage,
+            Brushes.Orange,
             Color.Orange,
-            category)
+            category,
+            radiusMode)
     {
         MinimumDensity = minimumDensity;
         SelectedPassesNumber = selectedPassesNumber;

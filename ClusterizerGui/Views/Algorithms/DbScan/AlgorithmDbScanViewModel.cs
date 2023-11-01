@@ -15,8 +15,8 @@ internal sealed class AlgorithmDbScanViewModel : AlgorithmViewModelBase<DbScanHi
     private int _epsilonDbScan;
     private int _minimumPointsPerCluster;
 
-    public AlgorithmDbScanViewModel(IAlgorithmExecutor algorithmExecutor, IDisplayImageAndClusterController displayImageAndClusterController)
-        : base(algorithmExecutor, displayImageAndClusterController)
+    public AlgorithmDbScanViewModel(IAlgorithmExecutor algorithmExecutor, IDisplayImageAndClusterController displayImageAndClusterController, IRadiusModeProvider radiusModeProvider)
+        : base(algorithmExecutor, displayImageAndClusterController, radiusModeProvider)
     {
         _epsilonDbScan = 5;
         _minimumPointsPerCluster = 10;
@@ -34,7 +34,7 @@ internal sealed class AlgorithmDbScanViewModel : AlgorithmViewModelBase<DbScanHi
         set => SetProperty(ref _minimumPointsPerCluster, value);
     }
 
-    protected override DbScanHistory ExecuteAlgorithmImplementation(BitmapImage? img, PointWrapper[] points, IconCategory category)
+    protected override DbScanHistory ExecuteAlgorithmImplementation(BitmapImage? img, PointWrapper[] points, IconCategory category, AvailableRadiusCalculationModeAdapter radiusMode)
     {
         var epsilonDbScan = EpsilonDbScan;
         var minimumPointsPerCluster = MinimumPointsPerCluster;
@@ -52,7 +52,8 @@ internal sealed class AlgorithmDbScanViewModel : AlgorithmViewModelBase<DbScanHi
             epsilon: epsilonDbScan,
             minPointByCluster: minimumPointsPerCluster,
             sourceImage: img,
-            category:category);
+            category: category,
+            radiusMode: radiusMode);
     }
 
     private static PointWrapper ConvertMethod(IPoint pt, IconCategory iconCategory)

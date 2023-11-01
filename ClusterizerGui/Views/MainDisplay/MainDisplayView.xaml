@@ -181,11 +181,14 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <CheckBox Grid.Column="0"
                                               Margin="2"
-                                              IsChecked="{Binding AddPointOnClick}" Content="Add point on click" />
-                                    <Label Grid.Column="1" Margin="10, 4"
+                                              ToolTip="Add point on click"
+                                              IsChecked="{Binding AddPointOnClick}" Content="Add on click" />
+                                    <Label Grid.Column="1" Margin="4, 4"
                                            IsEnabled="{Binding AddPointOnClick}"
                                            Content="Dispersion:"
                                            ToolTip="The distribution factor when adding points from a click"
@@ -204,17 +207,11 @@
                                             </ItemsPanelTemplate>
                                         </ComboBox.ItemsPanel>
                                     </ComboBox>
-                                </Grid>
 
-                                <!-- Nb Points to add: -->
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <Label Margin="10, 4" Content="Nb Points to add:" VerticalAlignment="Center" />
+                                    <Label Grid.Column="3" Margin="5, 4" Content="Nb pt:" VerticalAlignment="Center" />
 
-                                    <ComboBox Grid.Column="1" Margin="10"
+                                    <ComboBox Grid.Column="4" Margin="5"
+                                              ToolTip="Nb Points to add on each click"
                                               VerticalAlignment="Center"
                                               HorizontalAlignment="Stretch"
                                               HorizontalContentAlignment="Right"
@@ -226,6 +223,22 @@
                                             </ItemsPanelTemplate>
                                         </ComboBox.ItemsPanel>
                                     </ComboBox>
+                                </Grid>
+
+                                <!-- RADIUS factor: -->
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Margin="10, 4" Content="Radius mode" VerticalAlignment="Center" />
+
+                                    <ComboBox Grid.Column="1" Margin="10"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Stretch"
+                                              HorizontalContentAlignment="Right"
+                                              ItemsSource="{Binding RadiusMode.AvailableRadiusCalculationMode}"
+                                              SelectedItem="{Binding RadiusMode.SelectedRadiusCalculationMode}"/>
                                 </Grid>
 
                                 <!-- DISPLAY ICONS ON CLUSTERS -->
