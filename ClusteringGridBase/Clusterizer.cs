@@ -78,7 +78,7 @@ public static class Clusterizer
     }
 
 
-    private sealed class ResultGrid<T> where T : IPoint
+    private readonly struct ResultGrid<T> where T : IPoint
     {
         private readonly int _nbPartX;
         private readonly int _nbPartY;

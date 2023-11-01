@@ -2,7 +2,7 @@ using ClusteringModels;
 
 namespace ClusteringGridBase;
 
-internal sealed class Cube
+internal readonly struct Cube
 {
     private readonly double _originX;
     private readonly double _originY;

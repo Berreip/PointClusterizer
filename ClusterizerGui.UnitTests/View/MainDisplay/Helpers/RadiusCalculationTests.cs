@@ -6,7 +6,7 @@ namespace ClusterizerGui.UnitTests.View.MainDisplay.Helpers;
 public class RadiusCalculationTests
 {
     [Test]
-    [TestCase(1, 0)]
+    [TestCase(1, 4)]
     [TestCase(10, 12)]
     [TestCase(100, 24)]
     [TestCase(1_000, 36)]

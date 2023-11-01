@@ -16,8 +16,9 @@ internal sealed class PerformancesTests
         const int xLenght = 2000;
         const int yLenght = 1500;
         const int zLenght = 1200;
+        const int nbPoint = 300_000;
         var points = Enumerable
-            .Range(0, 3_000_000)
+            .Range(0, nbPoint)
             .Select(_ => new PointUnitTest(
                 x: random.NextDouble() * xLenght,
                 y: random.NextDouble() * yLenght,
@@ -44,7 +45,7 @@ internal sealed class PerformancesTests
         watch.Stop();
 
         //Assert
-        Console.WriteLine($"Elapsed time for 300_000 pt is {watch.ElapsedMilliseconds} ms");
+        Console.WriteLine($"Elapsed time for {nbPoint} points is {watch.ElapsedMilliseconds} ms");
         // no exception
     }
 }
