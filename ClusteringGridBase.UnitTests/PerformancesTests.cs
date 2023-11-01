@@ -5,7 +5,6 @@ namespace ClusteringGridBase.UnitTests;
 [TestFixture]
 internal sealed class PerformancesTests
 {
-
     // Same case than previous, but this times, distance is 3 so it should be merged
     [Test]
     [Repeat(10)]
@@ -27,7 +26,7 @@ internal sealed class PerformancesTests
 
         //Act
         var watch = Stopwatch.StartNew();
-        Clusterizer.Run(
+        var res = Clusterizer.Run(
             points: points,
             // random initial origin
             origin: new PointUnitTest(
@@ -46,6 +45,8 @@ internal sealed class PerformancesTests
 
         //Assert
         Console.WriteLine($"Elapsed time for {nbPoint} points is {watch.ElapsedMilliseconds} ms");
-        // no exception
+        // Check total number of points
+        var totalNumberOfPoints = res.UnClusteredPoints.Count + res.ClusterResults.Sum(o => o.Points.Count);
+        Assert.AreEqual(nbPoint, totalNumberOfPoints);
     }
 }

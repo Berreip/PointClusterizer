@@ -26,7 +26,7 @@ internal sealed class ClusterizerGridBaseTests
 
         //Assert
         Assert.AreEqual(0, res.ClusterResults.Count);
-        Assert.AreEqual(0, res.UnClusteredPoint.Count);
+        Assert.AreEqual(0, res.UnClusteredPoints.Count);
     }
 
     [Test]
@@ -56,7 +56,7 @@ internal sealed class ClusterizerGridBaseTests
 
         //Assert
         Assert.AreEqual(0, res.ClusterResults.Count);
-        Assert.AreEqual(4, res.UnClusteredPoint.Count);
+        Assert.AreEqual(4, res.UnClusteredPoints.Count);
     }
 
     [Test]
@@ -86,7 +86,7 @@ internal sealed class ClusterizerGridBaseTests
 
         //Assert
         Assert.AreEqual(0, res.ClusterResults.Count);
-        Assert.AreEqual(0, res.UnClusteredPoint.Count);
+        Assert.AreEqual(4, res.UnClusteredPoints.Count);
     }
 
     [Test]
@@ -114,7 +114,7 @@ internal sealed class ClusterizerGridBaseTests
 
         //Assert
         Assert.AreEqual(0, res.ClusterResults.Count);
-        Assert.AreEqual(2, res.UnClusteredPoint.Count);
+        Assert.AreEqual(2, res.UnClusteredPoints.Count);
     }
 
     [Test]
@@ -141,7 +141,7 @@ internal sealed class ClusterizerGridBaseTests
 
         //Assert
         Assert.AreEqual(1, res.ClusterResults.Count);
-        Assert.AreEqual(0, res.UnClusteredPoint.Count);
+        Assert.AreEqual(0, res.UnClusteredPoints.Count);
         Assert.AreEqual(2000, res.ClusterResults.Single().Points.Count);
     }
 
@@ -169,7 +169,7 @@ internal sealed class ClusterizerGridBaseTests
 
         //Assert
         Assert.AreEqual(1, res.ClusterResults.Count);
-        Assert.AreEqual(0, res.UnClusteredPoint.Count);
+        Assert.AreEqual(0, res.UnClusteredPoints.Count);
         Assert.AreEqual(2000, res.ClusterResults.Single().Points.Count);
     }
 
@@ -194,7 +194,7 @@ internal sealed class ClusterizerGridBaseTests
 
         //Assert
         Assert.AreEqual(0, res.ClusterResults.Count);
-        Assert.AreEqual(1, res.UnClusteredPoint.Count);
+        Assert.AreEqual(1, res.UnClusteredPoints.Count);
     }
 
 
@@ -233,7 +233,7 @@ internal sealed class ClusterizerGridBaseTests
 
         //Assert
         Assert.AreEqual(1, res.ClusterResults.Count);
-        Assert.AreEqual(0, res.UnClusteredPoint.Count);
+        Assert.AreEqual(0, res.UnClusteredPoints.Count);
         Assert.AreEqual(2000, res.ClusterResults.Single().Points.Count);
     }
 
@@ -278,7 +278,7 @@ internal sealed class ClusterizerGridBaseTests
 
         //Assert
         Assert.AreEqual(2, res.ClusterResults.Count); // all cluster should not be fused
-        Assert.AreEqual(0, res.UnClusteredPoint.Count);
+        Assert.AreEqual(0, res.UnClusteredPoints.Count);
         Assert.AreEqual(2000, res.ClusterResults[0].Points.Count);
         Assert.AreEqual(1000, res.ClusterResults[1].Points.Count);
     }
@@ -325,7 +325,36 @@ internal sealed class ClusterizerGridBaseTests
 
         //Assert
         Assert.AreEqual(1, res.ClusterResults.Count); // all cluster should not be fused
-        Assert.AreEqual(0, res.UnClusteredPoint.Count);
+        Assert.AreEqual(0, res.UnClusteredPoints.Count);
         Assert.AreEqual(3000, res.ClusterResults.Single().Points.Count);
+    }
+
+    // if a point is outside the aoi, we do not ignore it: we put it in the unclusterized list
+    [Test]
+    public void points_clustering_outside_aoi_are_put_in_unclusterized_list()
+    {
+        //Arrange
+        var points = new[]
+        {
+            new PointUnitTest(1, 1, 1),
+            new PointUnitTest(100, 100, 100),
+        };
+
+        //Act
+        var res = Clusterizer.Run(
+            points: points,
+            origin: new PointUnitTest(10, 10, 10),
+            xLenght: 20,
+            yLenght: 20,
+            zLenght: 20,
+            nbPartX: 4,
+            nbPartY: 4,
+            nbPartZ: 4,
+            clusteringDensityThreshold: 20,
+            neighbouringMergingDistance: 1);
+
+        //Assert
+        Assert.AreEqual(0, res.ClusterResults.Count);
+        Assert.AreEqual(2, res.UnClusteredPoints.Count);
     }
 }

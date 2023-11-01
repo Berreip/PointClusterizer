@@ -6,11 +6,11 @@
 public sealed record ClusterGlobalResult<T> where T : IPoint
 {
     public IReadOnlyList<ClusterResult<T>> ClusterResults { get; }
-    public IReadOnlyList<T> UnClusteredPoint { get; }
+    public IReadOnlyList<T> UnClusteredPoints { get; }
 
-    public ClusterGlobalResult(IReadOnlyList<ClusterResult<T>> clusterResults, IReadOnlyList<T> unClusteredPoint)
+    public ClusterGlobalResult(IReadOnlyList<ClusterResult<T>> clusterResults, IReadOnlyList<T> unClusteredPoints)
     {
         ClusterResults = clusterResults;
-        UnClusteredPoint = unClusteredPoint;
+        UnClusteredPoints = unClusteredPoints;
     }
 }

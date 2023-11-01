@@ -66,7 +66,7 @@ internal sealed class DisplayImageAndClusterController : ViewModelBase, IDisplay
             var adapters = clusterResults.ClusterResults.Select(o => new ClusterAdapter(clusterColor, o.Points.Count, MathHelper.ComputeClusterInfo(o.Points, category), category, mode)).ToArray();
 
             // create both images:
-            var imageUnclusterized = clusterResults.UnClusteredPoint.GenerateBitmapImageFromPoint();
+            var imageUnclusterized = clusterResults.UnClusteredPoints.GenerateBitmapImageFromPoint();
 
             var clusterBag = new ClusterBag(adapters, imageUnclusterized);
             if (_clusterAdapterByResult.TryAdd(clusterResults, clusterBag))

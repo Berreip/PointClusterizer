@@ -16,6 +16,6 @@ internal sealed class ClusterizerDbScanTests
 
         //Assert
         Assert.AreEqual(0, res.ClusterResults.Count);
-        Assert.AreEqual(0, res.UnClusteredPoint.Count);
+        Assert.AreEqual(0, res.UnClusteredPoints.Count);
     }
 }

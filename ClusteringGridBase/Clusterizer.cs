@@ -88,6 +88,7 @@ public static class Clusterizer
         private readonly double _cellXSize;
         private readonly double _cellYSize;
         private readonly double _cellZSize;
+        private readonly List<T> _outsideAoiPoints;
 
         public ResultGrid(Cube aoi, int nbPartX, int nbPartY, int nbPartZ)
         {
@@ -100,6 +101,7 @@ public static class Clusterizer
             _cellXSize = aoi.XSize / nbPartX;
             _cellYSize = aoi.YSize / nbPartY;
             _cellZSize = aoi.ZSize / nbPartZ;
+            _outsideAoiPoints = new List<T>();
         }
 
         private static DensityCell<T>[,,] GetInitializedGrid(int nbPartX, int nbPartY, int nbPartZ)
@@ -131,6 +133,10 @@ public static class Clusterizer
                     var targetCellZ = (int)(point.Z / _cellZSize);
                     _grid[targetCellX, targetCellY, targetCellZ].AddPoint(point);
                 }
+                else
+                {
+                    _outsideAoiPoints.Add(point);
+                }
             }
         }
 
@@ -138,9 +144,10 @@ public static class Clusterizer
         {
             var superClusterGrid = new DensityCell<T>?[_nbPartX, _nbPartY, _nbPartZ];
 
-            // first compute cluster with clusteringDensityThreshold
-            var unClusteredPoint = new List<T>();
+            // create the list of unclusterized points from point outside AOI
+            var unClusteredPoint = new List<T>(_outsideAoiPoints);
 
+            // first compute cluster with clusteringDensityThreshold
             for (var i = 0; i < _nbPartX; i++)
             {
                 for (var j = 0; j < _nbPartY; j++)

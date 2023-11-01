@@ -51,7 +51,7 @@ internal abstract class HistoryBase : ViewModelBase, IDisposable
         DurationInSecond = $"{duration.TotalSeconds:0.##}";
         NbInitialPoints = nbInitialPoints;
         NbClusters = clusterResults.ClusterResults.Count;
-        UnClusteredPoint = clusterResults.UnClusteredPoint.Count;
+        UnClusteredPoint = clusterResults.UnClusteredPoints.Count;
         if (sourceImage != null)
         {
             _sourceImageAdapter = new PointImageAdapter(sourceImage, false);
