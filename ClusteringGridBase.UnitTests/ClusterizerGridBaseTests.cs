@@ -86,7 +86,8 @@ internal sealed class ClusterizerGridBaseTests
 
         //Assert
         Assert.AreEqual(0, res.ClusterResults.Count);
-        Assert.AreEqual(4, res.UnClusteredPoints.Count);
+        Assert.AreEqual(0, res.UnClusteredPoints.Count);
+        Assert.AreEqual(4, res.OutsideAoiPoints.Count);
     }
 
     [Test]
@@ -355,6 +356,7 @@ internal sealed class ClusterizerGridBaseTests
 
         //Assert
         Assert.AreEqual(0, res.ClusterResults.Count);
-        Assert.AreEqual(2, res.UnClusteredPoints.Count);
+        Assert.AreEqual(0, res.UnClusteredPoints.Count);
+        Assert.AreEqual(2, res.OutsideAoiPoints.Count);
     }
 }

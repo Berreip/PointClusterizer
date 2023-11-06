@@ -23,7 +23,7 @@ public static class ClusterizerDbScan
             minimumPointsPerCluster: minimumPointsPerCluster);
 
         var cluster = clustersResult.Clusters.Select(o => new ClusterResult<T>(o.Objects.Select(pt => conversionFunc(pt)).ToArray())).ToArray();
-        return new ClusterGlobalResult<T>(cluster, clustersResult.UnclusteredObjects.Select(pt => conversionFunc(pt)).ToArray());
+        return new ClusterGlobalResult<T>(cluster, clustersResult.UnclusteredObjects.Select(pt => conversionFunc(pt)).ToArray(), Array.Empty<T>());
     }
 
     private sealed record PointDataDbScan(double X, double Y, double Z) : IPointData, IPoint

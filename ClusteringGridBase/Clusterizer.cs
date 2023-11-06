@@ -145,7 +145,7 @@ public static class Clusterizer
             var superClusterGrid = new DensityCell<T>?[_nbPartX, _nbPartY, _nbPartZ];
 
             // create the list of unclusterized points from point outside AOI
-            var unClusteredPoint = new List<T>(_outsideAoiPoints);
+            var unClusteredPoint = new List<T>();
 
             // first compute cluster with clusteringDensityThreshold
             for (var i = 0; i < _nbPartX; i++)
@@ -224,7 +224,7 @@ public static class Clusterizer
 
             // after merging neighbours, retrieve all remaining clusters
             var clusters = ExtractRemainingCluster(superClusterGrid);
-            return new ClusterGlobalResult<T>(clusters, unClusteredPoint);
+            return new ClusterGlobalResult<T>(clusters, unClusteredPoint, _outsideAoiPoints.ToArray());
         }
 
         private IReadOnlyList<ClusterResult<T>> ExtractRemainingCluster(DensityCell<T>?[,,] superClusterGrid)

@@ -45,7 +45,7 @@ internal sealed class PerformancesTests
         //Assert
         Console.WriteLine($"Elapsed time for {nbPoint} points is {watch.ElapsedMilliseconds} ms");
         // Check total number of points
-        var totalNumberOfPoints = res.UnClusteredPoints.Count + res.ClusterResults.Sum(o => o.Points.Count);
+        var totalNumberOfPoints =  res.OutsideAoiPoints.Count + res.UnClusteredPoints.Count + res.ClusterResults.Sum(o => o.Points.Count);
         Assert.AreEqual(nbPoint, totalNumberOfPoints);
     }
 
@@ -88,7 +88,7 @@ internal sealed class PerformancesTests
         //Assert
         Console.WriteLine($"Elapsed time for {nbPoint} points is {watch.ElapsedMilliseconds} ms");
         // Check total number of points
-        var totalNumberOfPoints = res.UnClusteredPoints.Count + res.ClusterResults.Sum(o => o.Points.Count);
+        var totalNumberOfPoints = res.OutsideAoiPoints.Count + res.UnClusteredPoints.Count + res.ClusterResults.Sum(o => o.Points.Count);
         Assert.AreEqual(nbPoint, totalNumberOfPoints);
     }
 }
