@@ -128,9 +128,9 @@ public static class Clusterizer
                 if (_aoi.Contains(point.X, point.Y, point.Z))
                 {
                     // target column if the truncated part of x divided by cell X Size
-                    var targetCellX = (int)(point.X / _cellXSize);
-                    var targetCellY = (int)(point.Y / _cellYSize);
-                    var targetCellZ = (int)(point.Z / _cellZSize);
+                    var targetCellX = (int)((point.X - _aoi.OriginX) / _cellXSize);
+                    var targetCellY = (int)((point.Y - _aoi.OriginY) / _cellYSize);
+                    var targetCellZ = (int)((point.Z - _aoi.OriginZ) / _cellZSize);
                     _grid[targetCellX, targetCellY, targetCellZ].AddPoint(point);
                 }
                 else
